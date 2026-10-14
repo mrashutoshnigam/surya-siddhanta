@@ -315,7 +315,7 @@ The results are consistent with contributions from mean-motion errors, limitatio
 
 ## 8. Code and data availability
 
-The Python implementation of the Surya Siddhanta (`suryasiddhanta`), the regeneration script (`docs/evaluation/regenerate_paper.py`), step-by-step reproduction instructions (`docs/evaluation/REPRODUCE.md`) and the residual data behind every table and figure are available at https://github.com/mrashutoshnigam/Surya_Siddhanta. The script recomputes Tables 2–6, the diagnostics quoted in the text and Figures 1–4, and refuses to run unless the DE440 kernel matches the checksum given in §4.6. The kernel itself is distributed by JPL (https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440.bsp) and is not redistributed with the code.
+The Python implementation of the Surya Siddhanta (`suryasiddhanta`), the regeneration script (`docs/evaluation/regenerate_paper.py`), step-by-step reproduction instructions (`docs/evaluation/REPRODUCE.md`) and the residual data behind every table and figure are available at https://github.com/mrashutoshnigam/surya-siddhanta. The script recomputes Tables 2–6, the diagnostics quoted in the text and Figures 1–4, and refuses to run unless the DE440 kernel matches the checksum given in §4.6. The kernel itself is distributed by JPL (https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440.bsp) and is not redistributed with the code.
 
 ## References
 
