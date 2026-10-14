@@ -1,4 +1,4 @@
-# suryasiddhanta
+# surya-siddhanta
 
 A from-scratch Python implementation of the astronomy of the *Surya Siddhanta*,
 following Ebenezer Burgess's 1860 translation, with all 14 chapters
@@ -13,8 +13,8 @@ get what the Surya Siddhanta itself predicts.
 ## Install
 
 ```bash
-pip install suryasiddhanta
-pip install "suryasiddhanta[plot]"   # adds matplotlib, for eclipse diagrams
+pip install surya-siddhanta
+pip install "surya-siddhanta[plot]"   # adds matplotlib, for eclipse diagrams
 ```
 
 Requires Python 3.9 or later.
@@ -98,5 +98,4 @@ them:
 
 ## License
 
-MIT. See [the repository](https://github.com/mrashutoshnigam/Surya_Siddhanta)
-for the source, tests and design notes.
+MIT.

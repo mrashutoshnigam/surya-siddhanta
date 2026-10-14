@@ -22,7 +22,7 @@ No ephemeris library is used: every number comes from the text's own formulas
 ## Library
 
 ```bash
-pip install suryasiddhanta
+pip install surya-siddhanta
 ```
 
 ```python
