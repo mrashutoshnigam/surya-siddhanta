@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Heliacal rising: a planet first seen at dawn</title>
+  <line x1="20" y1="150" x2="300" y2="150" stroke="#8a919c" stroke-width="1.5"/>
+  <circle cx="120" cy="178" r="13" fill="#f4b000"/>
+  <circle cx="170" cy="96" r="5" fill="#0052ff"/>
+  <line x1="120" y1="178" x2="170" y2="96" stroke="#8a919c" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="24" y="142" fill="#8a919c">eastern horizon</text>
+  <text x="142" y="190" fill="#f4b000">Sun, still below</text>
+  <text x="180" y="92" fill="#0052ff" font-weight="600">planet</text>
+  <text x="180" y="44" fill="#8a919c">gap: visibility arc</text>
+  <text x="180" y="60" fill="#8a919c">11° Jupiter, 17° Mars</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Valana: the tilt of the Moon's horns</title>
+  <line x1="100" y1="30" x2="100" y2="170" stroke="#8a919c" stroke-width="1" stroke-dasharray="4 3"/>
+  <g transform="rotate(25 100 100)">
+    <path d="M100 50 A50 50 0 0 1 100 150 A26 50 0 0 0 100 50 Z" fill="#0052ff" fill-opacity="0.8"/>
+    <circle cx="100" cy="100" r="50" fill="none" stroke="#8a919c" stroke-width="1"/>
+    <line x1="100" y1="38" x2="100" y2="162" stroke="#f4b000" stroke-width="1.5"/>
+  </g>
+  <path d="M100 62 A38 38 0 0 1 116.1 65.6" fill="none" stroke="#f4b000" stroke-width="3"/>
+  <text x="178" y="60" fill="#8a919c">dashes: straight up</text>
+  <text x="178" y="80" fill="#f4b000">gold line: the horns</text>
+  <text x="178" y="118" fill="#f4b000" font-weight="600">gold angle: valana</text>
+  <text x="178" y="134" fill="#f4b000">(horn tilt)</text>
+</svg>

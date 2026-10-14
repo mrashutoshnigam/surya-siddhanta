@@ -1,0 +1,163 @@
+{
+  "kernel_sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+  "epochs": 40176,
+  "variants": {
+    "naive": {
+      "Sun": {
+        "max_abs_difference_deg": 4.999953375772748e-07,
+        "rms_difference_deg": 2.886949711718259e-07
+      },
+      "Moon": {
+        "max_abs_difference_deg": 4.99977261370077e-07,
+        "rms_difference_deg": 2.891805840192511e-07
+      },
+      "Mercury": {
+        "max_abs_difference_deg": 4.999917564418865e-07,
+        "rms_difference_deg": 2.8885133876909033e-07
+      },
+      "Venus": {
+        "max_abs_difference_deg": 4.999888574275246e-07,
+        "rms_difference_deg": 2.8820828861978856e-07
+      },
+      "Mars": {
+        "max_abs_difference_deg": 4.999902785129962e-07,
+        "rms_difference_deg": 2.889675752107126e-07
+      },
+      "Jupiter": {
+        "max_abs_difference_deg": 4.999815246264916e-07,
+        "rms_difference_deg": 2.8889158018214454e-07
+      },
+      "Saturn": {
+        "max_abs_difference_deg": 4.999827751817065e-07,
+        "rms_difference_deg": 2.891404487107867e-07
+      },
+      "Rahu": {
+        "max_abs_difference_deg": 4.999974976271915e-07,
+        "rms_difference_deg": 2.889873966177763e-07
+      }
+    },
+    "deltat": {
+      "Sun": {
+        "max_abs_difference_deg": 5.014112218759692e-07,
+        "rms_difference_deg": 2.8787786888521804e-07
+      },
+      "Moon": {
+        "max_abs_difference_deg": 5.415103032646584e-07,
+        "rms_difference_deg": 2.894731021016209e-07
+      },
+      "Mercury": {
+        "max_abs_difference_deg": 5.027673637414409e-07,
+        "rms_difference_deg": 2.884906813566912e-07
+      },
+      "Venus": {
+        "max_abs_difference_deg": 5.030995851029729e-07,
+        "rms_difference_deg": 2.880335741219049e-07
+      },
+      "Mars": {
+        "max_abs_difference_deg": 5.012682322558248e-07,
+        "rms_difference_deg": 2.889040589105623e-07
+      },
+      "Jupiter": {
+        "max_abs_difference_deg": 4.999954796858219e-07,
+        "rms_difference_deg": 2.8756205321440463e-07
+      },
+      "Saturn": {
+        "max_abs_difference_deg": 5.000189844395209e-07,
+        "rms_difference_deg": 2.879937909250013e-07
+      },
+      "Rahu": {
+        "max_abs_difference_deg": 5.000522378395544e-07,
+        "rms_difference_deg": 2.884155537805232e-07
+      }
+    }
+  },
+  "changed_calendar_table_cells": [
+    {
+      "table": 2,
+      "century": 1850,
+      "body": "Moon",
+      "old": "1.94",
+      "new": "1.95"
+    },
+    {
+      "table": 2,
+      "century": 2150,
+      "body": "Mercury",
+      "old": "3.13",
+      "new": "3.14"
+    },
+    {
+      "table": 2,
+      "century": 2350,
+      "body": "Mercury",
+      "old": "5.79",
+      "new": "5.78"
+    },
+    {
+      "table": 2,
+      "century": 1850,
+      "body": "Venus",
+      "old": "5.97",
+      "new": "5.96"
+    },
+    {
+      "table": 2,
+      "century": 1950,
+      "body": "Venus",
+      "old": "6.60",
+      "new": "6.61"
+    },
+    {
+      "table": 2,
+      "century": 2250,
+      "body": "Venus",
+      "old": "8.56",
+      "new": "8.55"
+    },
+    {
+      "table": 2,
+      "century": 2250,
+      "body": "Jupiter",
+      "old": "4.18",
+      "new": "4.19"
+    }
+  ],
+  "great_inequality_fits": {
+    "Jupiter": {
+      "sequential_drift_arcsec_yr": 7.234593987085675,
+      "sequential_amplitude_arcmin": 16.480596722585034,
+      "joint_drift_arcsec_yr": 7.144078801672926,
+      "joint_amplitude_arcmin": 18.462850710859712
+    },
+    "Saturn": {
+      "sequential_drift_arcsec_yr": -28.07723485959753,
+      "sequential_amplitude_arcmin": 39.47888948315871,
+      "joint_drift_arcsec_yr": -27.861330285329956,
+      "joint_amplitude_arcmin": 44.20757202522865
+    }
+  },
+  "sampled_tithi_index_disagreements": 3966,
+  "sampled_tithi_index_max_circular_difference": 1,
+  "precession_csv_max_difference_deg_by_zero_choice": {
+    "kali_3600": 4.999931864091423e-07,
+    "499_jan_1_julian": 0.003022000167471006
+  },
+  "turning_point_jd": 2560862.785,
+  "turning_point_calendar": [
+    2299,
+    4,
+    21,
+    0.2850000001490116
+  ],
+  "corrected_year_deltat_effect_max_deg": {
+    "Sun": 3.508942363339429e-06,
+    "Moon": 4.574315148708763e-05,
+    "Mercury": 7.049751653553926e-06,
+    "Venus": 4.287257154622637e-06,
+    "Mars": 2.773548377632551e-06,
+    "Jupiter": 1.2118777190650576e-06,
+    "Saturn": 8.421554724691305e-07,
+    "Rahu": 1.157817280272866e-06
+  },
+  "ayanamsha_csv_max_difference_deg": 4.999801497262979e-07
+}

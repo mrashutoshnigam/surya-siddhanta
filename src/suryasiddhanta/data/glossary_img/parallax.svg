@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Parallax: the Moon seen from the Earth's surface shifts</title>
+  <circle cx="70" cy="140" r="42" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <circle cx="70" cy="140" r="2.5" fill="#8a919c"/>
+  <circle cx="70" cy="98" r="4" fill="#0052ff"/>
+  <circle cx="250" cy="45" r="9" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <line x1="70" y1="140" x2="250" y2="45" stroke="#8a919c" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="70" y1="98" x2="250" y2="45" stroke="#0052ff" stroke-width="1.5"/>
+  <path d="M226 57.7 A27 27 0 0 1 224.1 52.6" fill="none" stroke="#f4b000" stroke-width="3"/>
+  <text x="242" y="28" fill="#8a919c">Moon</text>
+  <text x="40" y="192" fill="#8a919c">Earth's centre</text>
+  <text x="46" y="92" fill="#0052ff">you</text>
+  <text x="180" y="110" fill="#f4b000" font-weight="600">gold angle:</text>
+  <text x="180" y="126" fill="#f4b000" font-weight="600">parallax</text>
+  <text x="180" y="150" fill="#8a919c">biggest when the</text>
+  <text x="180" y="166" fill="#8a919c">Moon is low</text>
+</svg>

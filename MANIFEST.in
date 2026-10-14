@@ -1,0 +1,9 @@
+# The source distribution carries the library only; see pyproject.toml.
+prune tests
+prune src/suryasiddhanta/api
+prune src/suryasiddhanta/chatbot
+prune src/suryasiddhanta/daily_panchanga
+prune src/suryasiddhanta/corpus
+exclude README.md
+prune src/suryasiddhanta/data/glossary_img
+global-exclude __pycache__ *.py[cod]

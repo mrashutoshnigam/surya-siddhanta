@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Clepsydra: a bowl that sinks once per ghati</title>
+  <path d="M40 70 L60 170 L240 170 L260 70" fill="none" stroke="#8a919c" stroke-width="2"/>
+  <path d="M45.6 98 L254.4 98 L240 170 L60 170 Z" fill="#0052ff" fill-opacity="0.15"/>
+  <line x1="45.6" y1="98" x2="254.4" y2="98" stroke="#0052ff" stroke-width="1.5"/>
+  <path d="M110 84 A40 40 0 0 0 190 84 Z" fill="none" stroke="#f4b000" stroke-width="2.5"/>
+  <path d="M150 124 L150 112" stroke="#0052ff" stroke-width="2"/>
+  <path d="M146 116 L150 110 L154 116" fill="none" stroke="#0052ff" stroke-width="2"/>
+  <text x="120" y="60" fill="#f4b000" font-weight="600">copper bowl</text>
+  <text x="64" y="160" fill="#0052ff">water enters by a small hole</text>
+  <text x="20" y="190" fill="#8a919c">It sinks 60 times a day: once per ghati.</text>
+</svg>

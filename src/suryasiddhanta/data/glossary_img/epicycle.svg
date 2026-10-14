@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Epicycle: a small circle carried on a planet's main circle</title>
+  <circle cx="88" cy="110" r="64" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <circle cx="133.3" cy="64.7" r="24" fill="none" stroke="#0052ff" stroke-width="1.5"/>
+  <line x1="88" y1="110" x2="133.3" y2="64.7" stroke="#8a919c" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="88" y1="110" x2="155.9" y2="72.9" stroke="#0052ff" stroke-width="1.5"/>
+  <circle cx="88" cy="110" r="5" fill="#8a919c"/>
+  <circle cx="133.3" cy="64.7" r="2.5" fill="#8a919c"/>
+  <circle cx="155.9" cy="72.9" r="5" fill="#f4b000"/>
+  <text x="72" y="130" fill="#8a919c">Earth</text>
+  <text x="192" y="40" fill="#8a919c">dashes: mean place</text>
+  <text x="192" y="58" fill="#0052ff">blue: true place</text>
+  <text x="192" y="90" fill="#0052ff">blue ring: epicycle</text>
+  <text x="192" y="108" fill="#f4b000" font-weight="600">gold: the planet</text>
+  <text x="192" y="150" fill="#8a919c">its centre moves</text>
+  <text x="192" y="166" fill="#8a919c">at the mean speed</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Lagna: the point of the zodiac rising in the east</title>
+  <path d="M40 140 A120 120 0 0 1 280 140" fill="none" stroke="#8a919c" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="20" y1="140" x2="300" y2="140" stroke="#8a919c" stroke-width="1.5"/>
+  <path d="M280 140 A120 72 0 0 0 40 140" fill="none" stroke="#f4b000" stroke-width="2"/>
+  <circle cx="280" cy="140" r="6" fill="#0052ff"/>
+  <text x="290" y="160" fill="#8a919c" font-weight="600">E</text>
+  <text x="22" y="160" fill="#8a919c" font-weight="600">W</text>
+  <text x="118" y="60" fill="#f4b000">zodiac</text>
+  <text x="118" y="134" fill="#8a919c">horizon</text>
+  <text x="160" y="176" fill="#0052ff" font-weight="600">blue: the lagna,</text>
+  <text x="160" y="192" fill="#0052ff">the degree rising now</text>
+</svg>

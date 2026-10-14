@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Ayanamsha: the angle between the star-fixed and season-fixed zodiacs</title>
+  <!-- Season-fixed (tropical) ring and its zero point, the spring equinox. -->
+  <circle cx="110" cy="100" r="78" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <!-- Star-fixed (sidereal) ring and its zero point, the start of Aries. -->
+  <circle cx="110" cy="100" r="58" fill="none" stroke="#0052ff" stroke-width="1.5"/>
+  <line x1="110" y1="100" x2="110" y2="18" stroke="#8a919c" stroke-width="1.5"/>
+  <circle cx="110" cy="22" r="4" fill="#8a919c"/>
+  <line x1="110" y1="100" x2="136.8" y2="26.4" stroke="#0052ff" stroke-width="1.5"/>
+  <circle cx="129.8" cy="45.5" r="4" fill="#0052ff"/>
+  <!-- The ayanamsha arc between the two zero points. -->
+  <path d="M110 70 A30 30 0 0 1 120.3 71.8" fill="none" stroke="#f4b000" stroke-width="3"/>
+  <circle cx="110" cy="100" r="2.5" fill="#8a919c"/>
+  <text x="200" y="40" fill="#8a919c">outer ring: seasons</text>
+  <text x="200" y="56" fill="#8a919c">(0° = spring equinox)</text>
+  <text x="200" y="88" fill="#0052ff">inner ring: stars</text>
+  <text x="200" y="104" fill="#0052ff">(0° = start of Aries)</text>
+  <text x="200" y="136" fill="#f4b000" font-weight="600">gold arc:</text>
+  <text x="200" y="152" fill="#f4b000" font-weight="600">the ayanamsha</text>
+  <text x="200" y="176" fill="#8a919c">at most 27° either way</text>
+</svg>

@@ -1,0 +1,22 @@
+{
+  "_comment": "Maps corpus topics/keywords to tools on your Surya Siddhanta MCP server. Edit the tool names to match your server's actual signatures. s07_finalize.py attaches these to each verse so the chatbot knows which verse authorises which calculation - the retrieval layer can then hand the model both the rule and the function that implements it.",
+  "rules": [
+    { "tool": "ahargana",              "match": ["civil days", "ahargana", "reduction to civil days", "days elapsed", "lords of the day", "intercalary", "intercalary months", "adhimasa", "omitted lunar days", "tithikshaya", "lunar days", "sum of days"] },
+    { "tool": "mean_longitude",        "match": ["mean place of a planet", "mean motions", "mean longitude", "revolutions of the planets"] },
+    { "tool": "true_longitude",        "match": ["true places of the planets", "equation of the apsis", "manda phala", "equation of centre", "true longitude"] },
+    { "tool": "sine_table",            "match": ["table of sines", "table of versed sines", "rule for constructing the table of sines"] },
+    { "tool": "declination",           "match": ["declination", "sun's declination"] },
+    { "tool": "shadow_gnomon",         "match": ["gnomon", "shadow", "equinoctial shadow", "hypothenuse", "dial"] },
+    { "tool": "ascensional_difference","match": ["ascensional difference", "right ascension", "oblique ascension"] },
+    { "tool": "precession",            "match": ["precession of the equinoxes"] },
+    { "tool": "lunar_eclipse",         "match": ["lunar eclipse", "eclipses", "duration of the eclipse", "half-duration"] },
+    { "tool": "solar_eclipse",         "match": ["solar eclipse", "parallax"] },
+    { "tool": "eclipse_projection",    "match": ["projection of eclipses"] },
+    { "tool": "conjunction",           "match": ["conjunction", "planetary conjunctions"] },
+    { "tool": "nakshatra_position",    "match": ["asterism", "polar longitude", "junction-star", "nakshatra"] },
+    { "tool": "heliacal_rising",       "match": ["heliacal rising", "heliacal setting", "rising and setting"] },
+    { "tool": "moon_phase",            "match": ["moon's cusps", "illuminated part", "elevation of her cusps", "moon's rising"] },
+    { "tool": "time_conversion",       "match": ["modes of measuring time", "solar time", "lunar time", "sidereal time", "civil time", "dividing time"] },
+    { "tool": "cosmography",           "match": ["cosmogony", "geography", "dimensions of the earth", "earth-globe"] }
+  ]
+}

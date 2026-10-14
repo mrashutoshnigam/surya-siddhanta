@@ -1,0 +1,116 @@
+{
+  "source": "Surya Siddhanta Ch.12, Bhugoladhikara; Burgess (1860) tr., 'Cosmogony, Geography, and Dimensions of the Creation'",
+  "corpus": "D:/ss_corpus/data/final/corpus.json — 442 verse records; Ch.12 holds 82 of its 90 verses (28, 42, 61, 64-65, 72, 81, 88 absent from the scan)",
+  "chapter": 12,
+  "chapter_name_en": "Cosmogony, Geography, and Dimensions of the Creation",
+  "chapter_name_iast": "bhugoladhikara",
+  "note": "The Surya Siddhanta names seven patalas below the earth but gives them no names, and it has no table of seven upper lokas at all. The named patalas and lokas familiar from the Puranas are deliberately not included here.",
+
+  "inquiries": [
+    {"number": 1, "verse": "SS.12.2", "question": "Of what measure is the earth, of what form, how supported, how divided?", "answered_in": "SS.12.32-34, 12.85-90"},
+    {"number": 2, "verse": "SS.12.2", "question": "How are there in the earth seven interterranean (patala) earths?", "answered_in": "SS.12.33"},
+    {"number": 3, "verse": "SS.12.3", "question": "How does the sun cause the varying distinction of day and night?", "answered_in": "SS.12.45-71"},
+    {"number": 4, "verse": "SS.12.4", "question": "Why are the day and night of the gods and of the demons opposed to one another?", "answered_in": "SS.12.45-52"},
+    {"number": 5, "verse": "SS.12.5", "question": "Why does the day of the Fathers consist of a month, but that of mortals of sixty nadis?", "answered_in": "SS.12.74"},
+    {"number": 6, "verse": "SS.12.6", "question": "Whence is it that the regents of the days, years, months and hours are not the same?", "answered_in": "SS.12.78-79"},
+    {"number": 7, "verse": "SS.12.7", "question": "The orbits of the planets and stars — what are their heights, intervals, dimensions and order?", "answered_in": "SS.12.30-31, 12.80-90"},
+    {"number": 8, "verse": "SS.12.8", "question": "Why are the sun's rays hot in summer and not in winter, and how far do they penetrate?", "answered_in": "SS.12.46, 12.81"},
+    {"number": 9, "verse": "SS.12.8", "question": "How many modes of measuring time (mana) are there, and how are they employed?", "answered_in": "SS Ch.14 — not answered in this chapter"}
+  ],
+
+  "creation_sequence": [
+    {"order": 1, "verse": "SS.12.13", "agent": "Vasudeva", "agent_iast": "vasudeva", "act": "Having created the waters, deposited energy in them."},
+    {"order": 2, "verse": "SS.12.14", "agent": "the waters", "agent_iast": "apas", "act": "That energy became a golden egg, enveloped on all sides in darkness."},
+    {"order": 3, "verse": "SS.12.15", "agent": "the golden egg", "agent_iast": "hiranyagarbha", "act": "In it was manifested the everlasting one — the golden-wombed, called Aditya as the first existence, and the sun as generator."},
+    {"order": 4, "verse": "SS.12.20", "agent": "the sun", "agent_iast": "savitar", "act": "Three quarters remaining immortal and secret, one quarter manifest, he produced Brahma, the principle of consciousness."},
+    {"order": 5, "verse": "SS.12.21", "agent": "the sun", "agent_iast": "savitar", "act": "Bestowing the Vedas on Brahma, established him within the egg as grandfather of all worlds."},
+    {"order": 6, "verse": "SS.12.22", "agent": "Brahma", "agent_iast": "brahma", "act": "Wearing the form of consciousness, produced mind; from mind the moon, from the eyes the sun."},
+    {"order": 7, "verse": "SS.12.23", "agent": "mind", "agent_iast": "manas", "act": "From mind the ether, and thence in succession wind, fire, waters and earth — the five elements, by the successive addition of one quality."},
+    {"order": 8, "verse": "SS.12.24", "agent": "the elements", "agent_iast": "mahabhuta", "act": "Agni and Soma — the sun and moon — then Mars and the rest, produced in succession from the elements."},
+    {"order": 9, "verse": "SS.12.25", "agent": "Brahma", "agent_iast": "brahma", "act": "Dividing himself twelve-fold, produced the signs; and twenty-seven-fold, the asterisms."},
+    {"order": 10, "verse": "SS.12.26", "agent": "Brahma", "agent_iast": "brahma", "act": "Wrought out the whole animate and inanimate creation, from the gods downward, from the upper, middle and lower currents."},
+    {"order": 11, "verse": "SS.12.28", "agent": "Brahma", "agent_iast": "brahma", "act": "Fashioned the distinctive character of each — of the planets, asterisms and stars, of the earth and the universe, of gods, demons, mortals and the Perfected."}
+  ],
+
+  "elements": [
+    {"order": 1, "name": "Ether", "iast": "akasha", "qualities": 1, "verse": "SS.12.23"},
+    {"order": 2, "name": "Wind", "iast": "vayu", "qualities": 2, "verse": "SS.12.23"},
+    {"order": 3, "name": "Fire", "iast": "tejas", "qualities": 3, "verse": "SS.12.23"},
+    {"order": 4, "name": "Waters", "iast": "apas", "qualities": 4, "verse": "SS.12.23"},
+    {"order": 5, "name": "Earth", "iast": "prithivi", "qualities": 5, "verse": "SS.12.23"}
+  ],
+
+  "planet_origins": [
+    {"planet": "Moon", "origin": "the mind of Brahma", "verse": "SS.12.22"},
+    {"planet": "Sun", "origin": "the eyes of Brahma", "verse": "SS.12.22"},
+    {"planet": "Mars", "origin": "light", "verse": "SS.12.24"},
+    {"planet": "Mercury", "origin": "earth", "verse": "SS.12.24"},
+    {"planet": "Jupiter", "origin": "ether", "verse": "SS.12.24"},
+    {"planet": "Venus", "origin": "water", "verse": "SS.12.24"},
+    {"planet": "Saturn", "origin": "wind", "verse": "SS.12.24"}
+  ],
+
+  "patalas": {
+    "count": 7,
+    "verse": "SS.12.33",
+    "named_in_text": false,
+    "description": "Seven cavities within the earth-globe, the abodes of serpents (naga) and demons (asura), endowed with the savor of heavenly plants, delightful. The text neither names them nor gives their depths."
+  },
+
+  "reference_places": [
+    {"name": "Meru", "iast": "meru", "latitude": 90.0, "longitude": null, "clime": null, "direction": "north pole", "verse": "SS.12.34", "note": "A mountain of gold passing through the middle of the earth-globe and protruding on either side; at its upper end are Indra, the gods and the Great Sages. Degrees of latitude at Meru are ninety."},
+    {"name": "Vadavamukha", "iast": "vadavamukha", "latitude": -90.0, "longitude": null, "clime": null, "direction": "south pole", "verse": "SS.12.35", "note": "The lower end of Meru, where the demons (asura) have their place, each the enemy of the other."},
+    {"name": "Lanka", "iast": "lanka", "latitude": 0.0, "longitude": 0.0, "clime": "Bharata", "direction": "south", "verse": "SS.12.39", "note": "The prime meridian of the treatise; 'at Lanka' is its ordinary phrase for a situation of no longitude or no latitude."},
+    {"name": "Yamakoti", "iast": "yamakoti", "latitude": 0.0, "longitude": 90.0, "clime": "Bhadrashva", "direction": "east", "verse": "SS.12.38", "note": "A quadrant of the earth's circumference eastward, famed for walls and gateways of gold."},
+    {"name": "Siddhapura", "iast": "siddhapura", "latitude": 0.0, "longitude": 180.0, "clime": "Kuru", "direction": "north", "verse": "SS.12.40", "note": "The city of the Perfected (siddha), who dwell there free from trouble."},
+    {"name": "Romaka", "iast": "romaka", "latitude": 0.0, "longitude": -90.0, "clime": "Ketumala", "direction": "west", "verse": "SS.12.39", "note": "A quadrant westward of Lanka."},
+    {"name": "Ujjayini", "iast": "ujjayini", "latitude": 23.18, "longitude": 0.0, "clime": "Malava", "direction": "on the Lanka meridian", "verse": "SS.1.62", "note": "Avanti, the modern Ujjain. Its situation is what actually fixes the prime meridian; the meridian is nevertheless named after Lanka."}
+  ],
+
+  "orbital_order": [
+    {"rank": 1, "name": "Clouds", "iast": "megha", "kind": "atmospheric", "verse": "SS.12.31"},
+    {"rank": 2, "name": "Possessors of Knowledge", "iast": "vidyadhara", "kind": "beings", "verse": "SS.12.31"},
+    {"rank": 3, "name": "The Perfected", "iast": "siddha", "kind": "beings", "verse": "SS.12.31"},
+    {"rank": 4, "name": "Moon", "iast": "chandra", "kind": "planet", "verse": "SS.12.31"},
+    {"rank": 5, "name": "Mercury", "iast": "budha", "kind": "planet", "verse": "SS.12.31"},
+    {"rank": 6, "name": "Venus", "iast": "shukra", "kind": "planet", "verse": "SS.12.31"},
+    {"rank": 7, "name": "Sun", "iast": "surya", "kind": "planet", "verse": "SS.12.31"},
+    {"rank": 8, "name": "Mars", "iast": "mangala", "kind": "planet", "verse": "SS.12.31"},
+    {"rank": 9, "name": "Jupiter", "iast": "guru", "kind": "planet", "verse": "SS.12.31"},
+    {"rank": 10, "name": "Saturn", "iast": "shani", "kind": "planet", "verse": "SS.12.31"},
+    {"rank": 11, "name": "Asterisms", "iast": "bha", "kind": "sphere", "verse": "SS.12.30"},
+    {"rank": 12, "name": "Ether", "iast": "vyoman", "kind": "sphere", "verse": "SS.12.30"},
+    {"rank": 13, "name": "Brahma-egg", "iast": "brahmanda", "kind": "sphere", "verse": "SS.12.29"}
+  ],
+
+  "stated_orbits": [
+    {"body": "Moon", "yojanas": 324000, "verse": "SS.12.85"},
+    {"body": "Mercury_sighrocca", "yojanas": 1043209, "verse": "SS.12.85"},
+    {"body": "Venus_sighrocca", "yojanas": 2664637, "verse": "SS.12.86"},
+    {"body": "Sun", "yojanas": 4331500, "verse": "SS.12.86"},
+    {"body": "Mercury", "yojanas": 4331500, "verse": "SS.12.86"},
+    {"body": "Venus", "yojanas": 4331500, "verse": "SS.12.86"},
+    {"body": "Mars", "yojanas": 8146909, "verse": "SS.12.87"},
+    {"body": "Moon_apogee", "yojanas": 38328484, "verse": "SS.12.87"},
+    {"body": "Jupiter", "yojanas": 51375764, "verse": "SS.12.88"},
+    {"body": "Moon_node", "yojanas": 80572864, "verse": "SS.12.88"},
+    {"body": "Saturn", "yojanas": 127668255, "verse": "SS.12.89"},
+    {"body": "Asterisms", "yojanas": 259890012, "verse": "SS.12.89"},
+    {"body": "Ether", "yojanas": 18712080864000000, "verse": "SS.12.90"}
+  ],
+
+  "regents": [
+    {"period": "hora", "verse": "SS.12.79", "rule": "Reckoning downward from Saturn, in the order of SS.12.31.", "horas": 1, "step": 1},
+    {"period": "day", "verse": "SS.12.78", "rule": "Counting downward from Saturn, the fourth successively is regent of the day.", "horas": 24, "step": 3},
+    {"period": "month", "verse": "SS.12.79", "rule": "Reckoning upward from the moon are found, in succession, the regents of the months.", "horas": 720, "step": 6},
+    {"period": "year", "verse": "SS.12.78", "rule": "The third, in like manner, is declared to be the regent of the year.", "horas": 8640, "step": 2}
+  ],
+
+  "day_and_night": [
+    {"beings": "Gods", "iast": "deva", "station": "Meru, the north pole", "day": "six months — the sun's half-revolution from Aries", "night": "six months", "verse": "SS.12.67, SS.12.74"},
+    {"beings": "Demons", "iast": "asura", "station": "Vadavamukha, the south pole", "day": "six months — the sun's half-revolution from Libra", "night": "six months", "verse": "SS.12.67, SS.12.74"},
+    {"beings": "Fathers", "iast": "pitara", "station": "the moon", "day": "a half-month (paksha)", "night": "a half-month", "verse": "SS.12.74"},
+    {"beings": "Mortals", "iast": "manushya", "station": "the earth's surface", "day": "their own day — thirty nadis at no latitude", "night": "thirty nadis at no latitude", "verse": "SS.12.56, SS.12.74"},
+    {"beings": "Brahma", "iast": "brahma", "station": "within the Brahma-egg", "day": "a kalpa, 4,320,000,000 years", "night": "a kalpa", "verse": "SS.1.20-21"}
+  ]
+}

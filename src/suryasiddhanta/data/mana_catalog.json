@@ -1,0 +1,41 @@
+{
+  "source": "Surya Siddhanta Ch.14 (Manadhyaya), Burgess (1860) translation",
+  "chapter": 14,
+  "note": "Descriptive matter for the nine manas, the months-and-asterisms table of xiv.15-16 and the shadasitimukhas of xiv.4-6. The uses listed for each mana are summarised from the design for this chapter, not copied from verse text; check them against corpus records for SS.14.1-19 before quoting.",
+  "manas": [
+    {"key": "brahma", "iast": "Brahma", "devanagari": "ब्राह्म", "english": "of Brahma", "unit": "kalpa, one day of Brahma", "practical": false, "uses": ["The span from creation to dissolution; never used in computation"], "verses": "1-2, 20-21", "source": "verse"},
+    {"key": "daiva", "iast": "Daiva", "devanagari": "दैव", "english": "of the gods", "unit": "solar year, one day and night of the gods", "practical": false, "uses": ["One year of men is one day and night of the gods"], "verses": "1-2, 20", "source": "verse"},
+    {"key": "pitrya", "iast": "Pitrya", "devanagari": "पित्र्य", "english": "of the Fathers", "unit": "lunar month, one day and night of the Fathers", "practical": false, "uses": ["The new moon is the Fathers' midday and the full moon their midnight"], "verses": "1-2, 14", "source": "verse"},
+    {"key": "prajapatya", "iast": "Prajapatya", "devanagari": "प्राजापत्य", "english": "of Prajapati", "unit": "manvantara, 71 mahayugas", "practical": false, "uses": ["Fourteen manvantaras with fifteen sandhis make a kalpa"], "verses": "1-2, 21", "source": "verse"},
+    {"key": "barhaspatya", "iast": "Barhaspatya", "devanagari": "बार्हस्पत्य", "english": "of Jupiter", "unit": "Jovian year, a twelfth of Jupiter's revolution", "practical": false, "uses": ["Names the years of the Jovian cycle from Jupiter's heliacal rising and setting"], "verses": "1-2, 17", "source": "verse"},
+    {"key": "saura", "iast": "Saura", "devanagari": "सौर", "english": "solar", "unit": "solar day, one degree of the Sun's motion", "practical": true, "uses": ["The measure of day and night", "The shadasitimukhas", "The solstices and equinoxes", "The auspicious time at a sign entry"], "verses": "1-2, 3-11", "source": "verse"},
+    {"key": "savana", "iast": "Savana", "devanagari": "सावन", "english": "civil", "unit": "civil day, sunrise to sunrise", "practical": true, "uses": ["The reckoning of civil days and weekdays", "The count of days since the epoch"], "verses": "1-2, 18-19", "source": "verse"},
+    {"key": "candra", "iast": "Candra", "devanagari": "चान्द्र", "english": "lunar", "unit": "tithi, twelve degrees of elongation", "practical": true, "uses": ["The tithis and the lunar month", "Times for rites reckoned by the Moon"], "verses": "1-2, 12-13", "source": "verse"},
+    {"key": "naksatra", "iast": "Naksatra", "devanagari": "नाक्षत्र", "english": "sidereal", "unit": "sidereal day", "practical": true, "uses": ["The sidereal day and the asterisms", "The months and their asterisms"], "verses": "1-2, 15-16", "source": "verse"}
+  ],
+  "month_asterisms": {
+    "verses": "15-16",
+    "months": [
+      {"month": "Kartika", "namesake": "Krittika", "asterisms": ["Krittika", "Rohini"]},
+      {"month": "Margashirsha", "namesake": "Mrigashira", "asterisms": ["Mrigashira", "Ardra"]},
+      {"month": "Pausha", "namesake": "Pushya", "asterisms": ["Punarvasu", "Pushya"]},
+      {"month": "Magha", "namesake": "Magha", "asterisms": ["Ashlesha", "Magha"]},
+      {"month": "Phalguna", "namesake": "Purva Phalguni", "asterisms": ["Purva Phalguni", "Uttara Phalguni", "Hasta"]},
+      {"month": "Chaitra", "namesake": "Chitra", "asterisms": ["Chitra", "Svati"]},
+      {"month": "Vaishakha", "namesake": "Vishakha", "asterisms": ["Vishakha", "Anuradha"]},
+      {"month": "Jyeshtha", "namesake": "Jyeshtha", "asterisms": ["Jyeshtha", "Mula"]},
+      {"month": "Ashadha", "namesake": "Purva Ashadha", "asterisms": ["Purva Ashadha", "Uttara Ashadha"]},
+      {"month": "Shravana", "namesake": "Shravana", "asterisms": ["Shravana", "Dhanishtha"]},
+      {"month": "Bhadrapada", "namesake": "Purva Bhadrapada", "asterisms": ["Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada"]},
+      {"month": "Ashvina", "namesake": "Ashvini", "asterisms": ["Revati", "Ashvini", "Bharani"]}
+    ]
+  },
+  "shadasitimukhas": {
+    "verses": "4-6",
+    "arc_degrees": 86,
+    "from_sidereal_longitude": 180,
+    "remainder_degrees": 16,
+    "note": "Burgess's note to xiv.6 finds no explanation of the division of the Sun's path into arcs of 86 degrees and says the commentary offers nothing on its character. The four longitudes are text; what they are for is not.",
+    "remainder_use": "Offerings to the Fathers in the last sixteen degrees of Virgo are inexhaustible (v.6)."
+  }
+}

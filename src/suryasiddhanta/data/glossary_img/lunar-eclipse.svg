@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Lunar eclipse: the full Moon inside the Earth's shadow</title>
+  <circle cx="38" cy="100" r="28" fill="#f4b000"/>
+  <polygon points="170,87 305,100 170,113" fill="#8a919c" fill-opacity="0.35"/>
+  <line x1="38" y1="72" x2="170" y2="87" stroke="#8a919c" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="38" y1="128" x2="170" y2="113" stroke="#8a919c" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="170" cy="100" r="13" fill="#8a919c"/>
+  <circle cx="245" cy="100" r="7" fill="#0052ff"/>
+  <text x="24" y="150" fill="#f4b000" font-weight="600">Sun</text>
+  <text x="156" y="140" fill="#8a919c">Earth</text>
+  <text x="196" y="76" fill="#8a919c">Earth's shadow</text>
+  <text x="232" y="130" fill="#0052ff" font-weight="600">Moon</text>
+  <text x="20" y="176" fill="#8a919c">Full moon near a node: the Moon</text>
+  <text x="20" y="192" fill="#8a919c">passes through the shadow.</text>
+</svg>

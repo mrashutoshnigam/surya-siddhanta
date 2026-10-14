@@ -1,0 +1,80 @@
+{
+  "source": "Surya Siddhanta Ch.13, Jyotishopanishad; Burgess (1860) tr., 'Of the Armillary Sphere and other Instruments'",
+  "corpus": "D:/ss_corpus/data/final/corpus.json — Ch.13 holds 24 of its 25 verses",
+  "chapter": 13,
+  "chapter_name_en": "Of the Armillary Sphere and other Instruments",
+  "chapter_name_iast": "jyotisopanisad",
+  "missing_verses_note": "Verse 6 is absent from the corpus scan (flag gap:missing_verses_6-6). Its content — laying the Sun's diurnal hoops off at their distances in declination — survives in Burgess's note carried under verses 5 and 8.",
+  "note": "The sphere is an illustration of the heavens about the earth, not an observing instrument: Burgess points out that the wooden earth-globe at its centre alone makes sighting through it impossible. The staff, wheel and arc, and the dimensions of the clepsydra, come from the commentary (citing the Siddhanta-Shiromani), not from the verses.",
+
+  "sphere_components": [
+    {"key": "earth_globe", "name": "Earth-globe", "iast": "bhugola", "verse": "SS.13.3", "description": "A globe of wood of any desired size, representing the earth, fixed at the centre of the sphere."},
+    {"key": "meru_staff", "name": "Meru staff", "iast": "meru", "verse": "SS.13.4", "description": "A staff passing through the midst of the globe and protruding on either side: the axis and poles of the earth (cf. SS xii.34)."},
+    {"key": "supporting_hoops", "name": "Supporting hoops", "iast": "kakshi", "verse": "SS.13.4", "description": "Two hoops fastened to the axis at right angles to one another — the equinoctial and solstitial colures — to which every circle of declination is attached."},
+    {"key": "graduation", "name": "Graduation", "iast": "angula", "verse": "SS.13.5", "description": "The hoops are marked in degrees of the circle, used to set each diurnal hoop at its distance in declination and latitude."},
+    {"key": "solar_diurnal_hoops", "name": "Diurnal hoops of the Sun", "iast": "dyujya-vrtta", "verse": "SS.13.7", "verses": "xiii.5-8", "description": "Three hoops north of the equator for the Sun at the ends of Aries, Taurus and Gemini, answering inversely for Cancer, Leo and Virgo; three south for Libra, Scorpio and Sagittarius, answering inversely for Capricorn, Aquarius and Pisces. Each is sized by its day-radius and set at the Sun's declination."},
+    {"key": "star_diurnal_hoops", "name": "Diurnal hoops of the stars", "iast": "bha", "verse": "SS.13.8", "verses": "xiii.8-9", "description": "Hoops for the junction-stars of the asterisms north and south, for Abhijit, for the Seven Sages, Agastya, Brahma and the other fixed stars. Burgess counts forty-two such circles and doubts the instrument was ever built except on paper."},
+    {"key": "equinoctial_hoop", "name": "Equinoctial hoop", "iast": "vaishuvati", "verse": "SS.13.9", "description": "The equator, fixed just in the midst of all."},
+    {"key": "solstices_and_equinoxes", "name": "Solstices and equinoxes", "iast": "ayana, vishuvat", "verse": "SS.13.10", "description": "The equinoxes lie where the equator crosses the equinoctial colure; the solstices lie on the other colure, 24 degrees above and below the equator."},
+    {"key": "ecliptic", "name": "Ecliptic", "iast": "krantivrtta, apamandala", "verse": "SS.13.11", "verses": "xiii.11-12", "description": "The spaces of the signs are fixed on the solar hoops by oblique chords of 30 degrees laid off from the equinox, and a hoop running obliquely from solstice to solstice through those points is the circle of declination, on which the Sun revolves."},
+    {"key": "planetary_latitude", "name": "Nodes and latitude of the planets", "iast": "vikshepa", "verse": "SS.13.12", "verses": "xiii.12-13", "description": "The Moon and planets, drawn from the ecliptic by their nodes, are seen at their greatest latitude from the corresponding point of declination. No separate hoops are added for their orbits."},
+    {"key": "horizon", "name": "Horizon", "iast": "kshitija", "verse": "SS.13.15", "description": "One's own place on the globe being turned upward, the horizon circle is fixed midway of the sphere, so that the pole stands at an altitude equal to the latitude."},
+    {"key": "casing", "name": "Casing", "iast": "vastra", "verse": "SS.13.16", "description": "The part below the horizon is covered with cloth and the upper half left open: the sphere girt about by the Lokaloka mountains."},
+    {"key": "revolution", "name": "Revolution", "iast": "kalabhrama", "verse": "SS.13.16", "verses": "xiii.16-20", "description": "By the application of water the sphere is made to revolve with time; the use of quicksilver for the purpose is kept a secret."}
+  ],
+
+  "sphere_points": [
+    {"key": "lagna", "name": "Orient ecliptic-point", "iast": "lagna", "verse": "SS.13.13", "definition": "The point of the ecliptic on the eastern horizon at the given moment (cf. SS iii.46-48)."},
+    {"key": "asta_lagna", "name": "Occident ecliptic-point", "iast": "astalagna", "verse": "SS.13.13", "definition": "The point of the ecliptic on the western horizon, found 'in a corresponding manner'. The treatise never names or uses it elsewhere; it lies opposite the lagna."},
+    {"key": "madhya_lagna", "name": "Meridian ecliptic-point", "iast": "madhyalagna", "verse": "SS.13.14", "definition": "The point of the ecliptic at mid-heaven, found by the equivalents of the signs in right ascension (lankodayas; cf. SS iii.49). Its right ascension equals the local sidereal time."},
+    {"key": "antya", "name": "Day-measure", "iast": "antya", "verse": "SS.13.14", "definition": "The sine between the meridian and the horizon (cf. SS iii.34-36). The verse describes the line in the Sun's small diurnal circle; the treatise's own antya is the corresponding great-circle quantity, R + carajya. Both are computed and labelled.", "correction": "Burgess: the verse substitutes line DA of his Fig. 8 for line EG."},
+    {"key": "carajya", "name": "Sine of ascensional difference", "iast": "carajya", "verse": "SS.13.15", "definition": "The interval between the equator and the horizon on the Sun's circle. The verse gives the earth-sine (kujya) where the great-circle carajya is meant, and names the equator where the six-o'clock circle (unmandala) is meant.", "correction": "Burgess: the verse takes line AB (kujya) for its great-circle equivalent CG."}
+  ],
+
+  "fixed_stars": [
+    {"name": "Agastya", "iast": "agastya", "identification": "alpha Carinae (Canopus)", "polar_longitude": 90.0, "polar_latitude": -80.0, "text": "at the end of Gemini, and eighty degrees south", "verse": "SS.8.10", "verses": "viii.10", "hoop_verse": "SS.13.9", "corpus_record": "SS.8.24", "verified_against_corpus": true},
+    {"name": "Mrgavyadha", "iast": "mrgavyadha", "identification": "alpha Canis Majoris (Sirius)", "polar_longitude": 80.0, "polar_latitude": -40.0, "text": "in the twentieth degree of Gemini; his latitude, reckoned from his point of declination, is forty degrees south", "verse": "SS.8.10", "verses": "viii.10-11", "hoop_verse": "SS.13.9", "corpus_record": "SS.8.24", "verified_against_corpus": true},
+    {"name": "Agni", "iast": "hutabhuj", "identification": "beta Tauri", "polar_longitude": 52.0, "polar_latitude": 8.0, "text": "in Taurus, the twenty-second degree, removed in latitude eight degrees northward", "verse": "SS.8.11", "verses": "viii.11-12", "hoop_verse": "SS.13.9", "corpus_record": "SS.8.24", "verified_against_corpus": true},
+    {"name": "Brahmahrdaya", "iast": "brahmahrdaya", "identification": "alpha Aurigae (Capella)", "polar_longitude": 52.0, "polar_latitude": 30.0, "text": "in Taurus, the twenty-second degree, removed in latitude thirty degrees northward", "verse": "SS.8.11", "verses": "viii.11-12", "hoop_verse": "SS.13.9", "corpus_record": "SS.8.24", "verified_against_corpus": true},
+    {"name": "Prajapati", "iast": "prajapati", "identification": "delta Aurigae", "polar_longitude": 57.0, "polar_latitude": 38.0, "text": "five degrees eastward from Brahmahrdaya; at the end of Taurus, and thirty-eight degrees north", "verse": "SS.8.20", "verses": "viii.20", "hoop_verse": "SS.13.9", "corpus_record": "SS.8.24", "verified_against_corpus": true, "note": "Burgess: five degrees east of Brahmahrdaya is the twenty-seventh degree of Taurus, not its end; the longitude here follows the explicit five degrees. xiii.9 calls this star Brahma."},
+    {"name": "Apamvatsa", "iast": "apamvatsa", "identification": "theta Virginis", "polar_longitude": 180.0, "polar_latitude": 3.0, "text": "five degrees north from Citra", "verse": "SS.8.21", "verses": "viii.21", "hoop_verse": "SS.13.9", "corpus_record": "SS.8.24", "verified_against_corpus": true, "note": "Reckoned from Citra's latitude of 2 degrees south, as Burgess does."},
+    {"name": "Apas", "iast": "apas", "identification": "delta Virginis", "polar_longitude": 180.0, "polar_latitude": 9.0, "text": "somewhat greater than Apamvatsa, and six degrees to the north of it", "verse": "SS.8.21", "verses": "viii.21", "hoop_verse": "SS.13.9", "corpus_record": "SS.8.24", "verified_against_corpus": true, "note": "Six degrees north of Apamvatsa, as Burgess reckons it."}
+  ],
+
+  "seven_sages": {
+    "name": "Seven Sages", "iast": "saptarshayas", "identification": "the seven bright stars of Ursa Major",
+    "verse": "SS.13.9",
+    "description": "Named among the stars whose hoops are to be fixed on the sphere, but the treatise gives them no positions, so no hoop is drawn for them.",
+    "note": "Burgess: many Hindu authorities gave the Seven Sages a proper motion of 8 arcminutes a year about the pole; the Surya Siddhanta, by referring to them in this way, is to be understood as rejecting it."
+  },
+
+  "instruments": [
+    {"key": "gola", "name": "Armillary sphere", "iast": "gola-yantra", "verse": "SS.13.3", "verses": "xiii.1-19", "source": "verse", "computable": true, "description": "The wonder-working fabric of the terrestrial and stellar sphere, illustrating the positions and motions of the heavenly bodies about the earth."},
+    {"key": "parada", "name": "Self-revolving sphere", "iast": "parada-yantra", "verse": "SS.13.17", "verses": "xiii.17-22", "source": "verse", "computable": false, "description": "A sphere combined with quicksilver so that it turns of itself; declared a mystery, to be applied privately. The commentary cites a wheel with half-filled mercury holes on a zig-zag line that is claimed to revolve perpetually."},
+    {"key": "shanku", "name": "Gnomon", "iast": "shanku", "verse": "SS.13.20", "source": "verse", "computable": true, "description": "The gnomon of twelve digits whose construction and use are taught in the third chapter."},
+    {"key": "yashti", "name": "Staff", "iast": "yashti-yantra", "verse": "SS.13.20", "source": "commentary", "computable": true, "description": "A staff as long as the radius of a ground circle, pointed at the Sun so it casts no shadow. The chord from its tip to the point of sunrise (marked by the agra) or sunset, applied to an inner circle of the day-radius divided into sixty nadis, gives the time since sunrise or until sunset."},
+    {"key": "dhanus", "name": "Arc", "iast": "dhanus", "verse": "SS.13.20", "source": "commentary", "computable": true, "description": "The lower half, or a quadrant, of the wheel; it yields the Sun's altitude in the same way."},
+    {"key": "cakra", "name": "Wheel", "iast": "cakra", "verse": "SS.13.20", "source": "commentary", "computable": true, "description": "A wheel graduated to degrees, suspended by a string with its edge to the Sun; the shadow of a central peg on the rim gives the Sun's altitude and zenith-distance, and from them the time (SS iii.37-39)."},
+    {"key": "ghati", "name": "Clepsydra", "iast": "kapala, ghati-yantra", "verse": "SS.13.23", "verses": "xiii.21-23", "source": "verse", "computable": true, "description": "A copper vessel with a hole in the bottom, set in a basin of pure water, sinks sixty times in a day and night. The sixtieth part of the day, ghati or ghatika ('vessel'), takes its name from it."},
+    {"key": "nara", "name": "Man-instrument", "iast": "nara-yantra", "verse": "SS.13.24", "verses": "xiii.21, 24", "source": "verse", "computable": true, "description": "Good in the day-time when the Sun is clear: a gnomon, perhaps of about a man's height, by whose shadow time is determined as explained in the third chapter."},
+    {"key": "mayura", "name": "Peacock", "iast": "mayura", "verse": "SS.13.21", "source": "verse", "computable": false, "description": "Obscure. The commentator connects it with the sand-vessels, as a figure of the bird letting sand pour from its mouth."},
+    {"key": "vanara", "name": "Monkey", "iast": "vanara", "verse": "SS.13.21", "source": "verse", "computable": false, "description": "Obscure; not explained by the commentator."},
+    {"key": "renugarbha", "name": "Sand-vessels with cords", "iast": "renugarbha", "verse": "SS.13.21", "source": "verse", "computable": false, "description": "Probably suspended instruments of the general character of hour-glasses."}
+  ],
+
+  "clepsydra_vessel": {
+    "verse": "SS.13.23",
+    "source": "commentary",
+    "sinkings_per_day": 60,
+    "material": "copper",
+    "copper_palas": 10,
+    "height_angulas": 6,
+    "mouth_width_angulas": 12,
+    "capacity_palas_of_water": 60,
+    "pin_material": "gold",
+    "pin_length_angulas": 4,
+    "pin_weight_mashas": 3.3333,
+    "description": "Of ten palas' weight of copper, six digits high and twice that wide at the mouth, containing sixty palas of water; the hole is such as will just admit a gold pin four digits long weighing three and a third mashas.",
+    "note": "Burgess: the Ayin-Akbari's description does not quite agree, and such a vessel could not be made accurate from measurements alone — it would have to be tested against a standard, or by use."
+  }
+}

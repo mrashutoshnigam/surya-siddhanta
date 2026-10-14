@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Elongation: the Moon's angle from the Sun</title>
+  <line x1="100" y1="120" x2="290" y2="120" stroke="#f4b000" stroke-width="1.5"/>
+  <line x1="100" y1="120" x2="140.0" y2="50.7" stroke="#0052ff" stroke-width="1.5"/>
+  <path d="M140 120 A40 40 0 0 0 120 85.4" fill="none" stroke="#f4b000" stroke-width="3"/>
+  <circle cx="100" cy="120" r="6" fill="#8a919c"/>
+  <circle cx="140.0" cy="50.7" r="7" fill="#0052ff"/>
+  <circle cx="296" cy="120" r="10" fill="#f4b000"/>
+  <text x="84" y="145" fill="#8a919c">Earth</text>
+  <text x="150" y="45" fill="#0052ff" font-weight="600">Moon</text>
+  <text x="262" y="145" fill="#f4b000">to the Sun</text>
+  <text x="146" y="105" fill="#f4b000" font-weight="600">elongation E</text>
+  <text x="20" y="176" fill="#8a919c">Each 12° of E is one tithi;</text>
+  <text x="20" y="192" fill="#8a919c">at 180° it is full moon.</text>
+</svg>

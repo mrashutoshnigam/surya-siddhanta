@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Declination: angle from the celestial equator</title>
+  <circle cx="150" cy="100" r="78" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <line x1="72" y1="100" x2="228" y2="100" stroke="#8a919c" stroke-width="1.5"/>
+  <line x1="150" y1="18" x2="150" y2="182" stroke="#8a919c" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="150" y1="100" x2="221.3" y2="68.3" stroke="#0052ff" stroke-width="1.5"/>
+  <path d="M200 100 A50 50 0 0 0 195.7 79.7" fill="none" stroke="#f4b000" stroke-width="3"/>
+  <circle cx="221.3" cy="68.3" r="7" fill="#f4b000"/>
+  <text x="156" y="16" fill="#8a919c">north pole</text>
+  <text x="20" y="96" fill="#8a919c">equator</text>
+  <text x="238" y="62" fill="#f4b000" font-weight="600">Sun</text>
+  <text x="208" y="94" fill="#f4b000" font-weight="600">δ</text>
+  <text x="20" y="196" fill="#8a919c">Up to 24° north (June) or south (December)</text>
+</svg>

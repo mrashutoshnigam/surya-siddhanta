@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Solar eclipse: the new Moon between the Sun and the Earth</title>
+  <circle cx="38" cy="100" r="28" fill="#f4b000"/>
+  <polygon points="190,94 268,100 190,106" fill="#8a919c" fill-opacity="0.45"/>
+  <circle cx="190" cy="100" r="6" fill="#0052ff"/>
+  <circle cx="290" cy="100" r="24" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <text x="24" y="150" fill="#f4b000" font-weight="600">Sun</text>
+  <text x="176" y="80" fill="#0052ff" font-weight="600">Moon</text>
+  <text x="270" y="145" fill="#8a919c">Earth</text>
+  <text x="20" y="176" fill="#8a919c">New moon near a node: the Moon's</text>
+  <text x="20" y="192" fill="#8a919c">shadow falls on part of the Earth.</text>
+</svg>

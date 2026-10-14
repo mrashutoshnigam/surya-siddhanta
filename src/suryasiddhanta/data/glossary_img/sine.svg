@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Sine (jya): half of a chord of a circle</title>
+  <circle cx="92" cy="105" r="75" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <line x1="92" y1="105" x2="167" y2="105" stroke="#8a919c" stroke-width="1.5"/>
+  <line x1="92" y1="105" x2="149.5" y2="56.8" stroke="#8a919c" stroke-width="1.5"/>
+  <line x1="149.5" y1="56.8" x2="149.5" y2="153.2" stroke="#8a919c" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="149.5" y1="56.8" x2="149.5" y2="105" stroke="#0052ff" stroke-width="3"/>
+  <path d="M122 105 A30 30 0 0 0 115 85.7" fill="none" stroke="#f4b000" stroke-width="3"/>
+  <text x="126" y="100" fill="#f4b000" font-weight="600">θ</text>
+  <text x="40" y="80" fill="#8a919c">R = 3438′</text>
+  <text x="190" y="60" fill="#0052ff" font-weight="600">blue: half-chord</text>
+  <text x="190" y="76" fill="#0052ff">jya = R sin θ</text>
+  <text x="190" y="120" fill="#8a919c">dashes: the rest</text>
+  <text x="190" y="136" fill="#8a919c">of the whole chord</text>
+</svg>

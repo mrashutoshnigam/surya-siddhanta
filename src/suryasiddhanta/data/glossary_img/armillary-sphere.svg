@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Inter, Arial, sans-serif" font-size="12">
+  <title>Armillary sphere: rings for the sky's circles around the Earth</title>
+  <circle cx="100" cy="100" r="78" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <ellipse cx="100" cy="100" rx="78" ry="18" fill="none" stroke="#8a919c" stroke-width="1.5"/>
+  <ellipse cx="100" cy="100" rx="78" ry="22" fill="none" stroke="#0052ff" stroke-width="1.5" transform="rotate(-23 100 100)"/>
+  <ellipse cx="100" cy="100" rx="78" ry="26" fill="none" stroke="#f4b000" stroke-width="1.5" transform="rotate(-47 100 100)"/>
+  <line x1="100" y1="10" x2="100" y2="190" stroke="#8a919c" stroke-width="2" transform="rotate(-23 100 100)"/>
+  <circle cx="100" cy="100" r="9" fill="#8a919c"/>
+  <text x="196" y="40" fill="#8a919c">axle: Meru staff</text>
+  <text x="196" y="70" fill="#8a919c">grey ring: horizon</text>
+  <text x="196" y="100" fill="#0052ff">blue ring: equator</text>
+  <text x="196" y="130" fill="#f4b000">gold ring: ecliptic</text>
+  <text x="196" y="160" fill="#8a919c">centre: the Earth</text>
+</svg>

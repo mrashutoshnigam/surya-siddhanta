@@ -1,0 +1,1037 @@
+/* ===================================================================
+   Surya Siddhanta — design tokens
+   ===================================================================
+   One accent colour, used scarcely: #0052ff carries primary CTAs, the
+   wordmark and inline emphasis, and nothing else. Everything beyond it
+   is white canvas, ink, soft-gray bands, and the near-black editorial
+   canvas the page header sits on.
+
+   Dark mode is not invented here. The system already documents a dark
+   surface (#0a0b0d canvas, #16181c elevated, white on dark), so dark
+   mode promotes those to page-level and keeps every other token's role.
+
+   Theme resolution, in order:
+     :root                                  -> light
+     @media (prefers-color-scheme: dark)    -> dark, unless data-theme="light"
+     :root[data-theme="dark"]               -> dark, whatever the OS says
+   =================================================================== */
+
+:root {
+  /* Brand — the only action colour */
+  --primary: #0052ff;
+  --primary-active: #003ecc;
+  --primary-disabled: #a8b8cc;
+  /* Text-safe variant of the accent. On white #0052ff clears AA at
+     4.9:1, so in light mode this is simply the accent itself. */
+  --primary-text: #0052ff;
+  --accent-yellow: #f4b000;
+
+  /* Surface */
+  --canvas: #ffffff;
+  --surface-soft: #f7f7f7;
+  --surface-strong: #eef0f3;
+  --surface-dark: #0a0b0d;
+  --surface-dark-elevated: #16181c;
+
+  /* Hairlines */
+  --hairline: #dee1e6;
+  --hairline-soft: #eef0f3;
+
+  /* Text */
+  --ink: #0a0b0d;
+  --body: #5b616e;
+  --muted: #7c828a;
+  --muted-soft: #a8acb3;
+  --on-primary: #ffffff;
+  --on-dark: #ffffff;
+  --on-dark-soft: #a8acb3;
+
+  /* Trading semantics — text colour only, never a fill */
+  --semantic-up: #05b169;
+  --semantic-down: #cf202f;
+
+  /* Elevation — one tier, that is the whole system */
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  /* Radius */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-pill: 100px;
+  --r-full: 9999px;
+
+  /* Aliases the components were written against, kept so every page
+     picks up the palette without touching its markup. */
+  --gold: var(--primary);
+  --bg: var(--canvas);
+  --panel: var(--canvas);
+  --border: var(--hairline);
+  --text: var(--ink);
+  --ink-mute: var(--muted);
+  --ink-secondary: var(--body);
+  --canvas-soft: var(--surface-soft);
+  --canvas-sunken: var(--surface-strong);
+  --canvas-cream: var(--surface-soft);
+  --hairline-input: var(--hairline);
+  --primary-subdued: var(--surface-strong);
+  --primary-deep: var(--primary-active);
+  --ruby: var(--semantic-down);
+
+  color-scheme: light;
+  font-family: Inter, -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* #0052ff on near-black measures ~2.9:1, so text takes a lighter
+       blue while the CTA fill keeps the brand value. */
+    --primary: #0052ff;
+    --primary-active: #1a66ff;
+    --primary-disabled: #2b3442;
+    --primary-text: #4d8bff;
+
+    --canvas: #0a0b0d;
+    --surface-soft: #101215;
+    --surface-strong: #16181c;
+    --surface-dark: #000000;
+    --surface-dark-elevated: #16181c;
+
+    --hairline: #26292f;
+    --hairline-soft: #1c1f24;
+
+    --ink: #ffffff;
+    --body: #a8acb3;
+    --muted: #7c828a;
+    --muted-soft: #5b616e;
+
+    --semantic-up: #21c281;
+    --semantic-down: #f04b5a;
+
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --primary: #0052ff;
+  --primary-active: #1a66ff;
+  --primary-disabled: #2b3442;
+  --primary-text: #4d8bff;
+
+  --canvas: #0a0b0d;
+  --surface-soft: #101215;
+  --surface-strong: #16181c;
+  --surface-dark: #000000;
+  --surface-dark-elevated: #16181c;
+
+  --hairline: #26292f;
+  --hairline-soft: #1c1f24;
+
+  --ink: #ffffff;
+  --body: #a8acb3;
+  --muted: #7c828a;
+  --muted-soft: #5b616e;
+
+  --semantic-up: #21c281;
+  --semantic-down: #f04b5a;
+
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every number renders in the mono face: longitudes, day counts,
+   revolution totals, slider readouts. */
+.ss-table td,
+.ss-grid td,
+.verse-readout,
+.slider-label strong,
+.verse-formula,
+.tool-trace-item pre {
+  font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3 { color: var(--ink); margin-top: 0; }
+h1 { font-size: 64px; font-weight: 400; line-height: 1; letter-spacing: -1.6px; }
+h2 { font-size: 36px; font-weight: 400; line-height: 1.11; letter-spacing: -0.5px; }
+h3 { font-size: 18px; font-weight: 600; line-height: 1.33; letter-spacing: 0; }
+
+a { color: var(--primary-text); text-decoration: none; }
+
+/* --- Shell ----------------------------------------------------------- */
+
+.app-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 264px;
+  flex-shrink: 0;
+  background: var(--canvas);
+  border-right: 1px solid var(--hairline);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.brand {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--primary);
+}
+
+.brand-caption {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 8px 0 32px;
+}
+
+.nav-group { margin-bottom: 32px; }
+
+.nav-group-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.nav-link {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  color: var(--body);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav-link:hover { background: var(--surface-strong); color: var(--ink); }
+.nav-link.active { background: var(--primary); color: var(--on-primary); }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* --- Content and the dark editorial header band ---------------------- */
+
+.content {
+  flex: 1;
+  padding: 0;
+  max-width: 1200px;
+}
+
+/* The dark header band runs full-bleed; everything else is inset. The
+   Book page nests its own children, so it is excluded and pads them. */
+.content > *:not(.page-header):not(.book-page):not(.theme-toggle) {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+/* The signature band: a full-bleed near-black header carrying the page
+   title, with the page's own panels floating on the canvas below it. */
+.page-header {
+  background: var(--surface-dark);
+  color: var(--on-dark);
+  margin: 0 0 48px;
+  padding: 64px 48px;
+}
+.page-header h1 {
+  margin: 0 0 16px;
+  padding-right: 200px;
+  color: var(--on-dark);
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -1.6px;
+  max-width: 20ch;
+}
+.page-header .subtitle {
+  color: var(--on-dark-soft);
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+/* --- Controls -------------------------------------------------------- */
+
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.field-row label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  color: var(--muted);
+  gap: 8px;
+}
+
+.field-row input, .field-row select, .chat-input-row input {
+  padding: 14px 16px;
+  height: 48px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 400;
+  width: 140px;
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+.field-row input:focus, .field-row select:focus, .chat-input-row input:focus {
+  outline: none;
+  border: 2px solid var(--primary);
+  padding: 13px 15px;
+}
+
+.field-row button, .chat-input-row button {
+  padding: 12px 20px;
+  height: 44px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.field-row button:active, .chat-input-row button:active { background: var(--primary-active); }
+.field-row button:disabled, .chat-input-row button:disabled {
+  background: var(--primary-disabled);
+  cursor: not-allowed;
+}
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.chip {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 20px;
+  height: 44px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface-strong);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* --- Blocks and tables ----------------------------------------------- */
+
+.ss-block { margin-bottom: 48px; }
+.ss-block h3, .ss-subhead {
+  color: var(--ink);
+  border: none;
+  padding: 0;
+  margin: 32px 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.33;
+}
+
+.ss-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.ss-table th {
+  text-align: left; padding: 16px 24px 16px 0; color: var(--muted);
+  font-weight: 400; white-space: nowrap; width: 260px;
+  vertical-align: top; font-size: 14px;
+}
+.ss-table td {
+  padding: 16px 0; vertical-align: top; font-size: 18px; color: var(--ink);
+  border-bottom: 1px solid var(--hairline-soft);
+}
+
+.ss-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+.ss-grid th {
+  background: none;
+  padding: 12px 16px 12px 0;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  border-bottom: 1px solid var(--hairline);
+}
+.ss-grid td {
+  padding: 16px 16px 16px 0;
+  border-bottom: 1px solid var(--hairline-soft);
+  color: var(--ink);
+  font-size: 16px;
+}
+.ss-grid tr:last-child td { border-bottom: none; }
+
+.ss-tabs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  border: none; margin-bottom: 32px;
+}
+.ss-tab {
+  padding: 12px 20px;
+  height: 44px;
+  background: var(--surface-strong);
+  border: none;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ss-tab.active { background: var(--primary); color: var(--on-primary); }
+
+.ss-note { color: var(--muted); font-size: 14px; margin: 12px 0 16px; }
+.ss-error {
+  color: var(--semantic-down);
+  background: none;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  padding: 20px 24px;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.two-col { display: flex; gap: 24px; flex-wrap: wrap; }
+.two-col > * { flex: 1; min-width: 280px; }
+
+.chart-block { margin-top: 24px; }
+
+/* --- Chat ------------------------------------------------------------ */
+
+.chat-page { display: flex; flex-direction: column; height: calc(100vh - 220px); }
+.chat-window {
+  flex: 1; overflow-y: auto;
+  border: 1px solid var(--hairline); border-radius: var(--r-xl);
+  padding: 32px; margin-bottom: 16px; background: var(--canvas);
+}
+.chat-msg { margin-bottom: 24px; }
+.chat-bubble {
+  display: inline-block; padding: 16px 20px; border-radius: var(--r-lg); max-width: 80%;
+  white-space: pre-wrap; font-size: 16px; line-height: 1.5;
+}
+.chat-user .chat-bubble { background: var(--primary); color: var(--on-primary); }
+.chat-assistant .chat-bubble { background: var(--surface-strong); color: var(--ink); }
+.tool-trace { margin-top: 8px; font-size: 13px; color: var(--muted); }
+.tool-trace-item { padding: 4px 0; }
+.tool-trace-item pre {
+  background: var(--surface-dark-elevated); color: var(--on-dark); padding: 16px;
+  border-radius: var(--r-md); overflow-x: auto; font-size: 13px; max-height: 180px;
+}
+.chat-input-row { display: flex; gap: 12px; }
+.chat-input-row input { flex: 1; width: auto; }
+
+/* --- Instruments (Ch.13) --------------------------------------------- */
+
+.sphere-canvas {
+  width: 100%; height: 520px;
+  border: none;
+  border-radius: var(--r-xl);
+  background: var(--surface-dark);
+  margin-bottom: 16px;
+}
+.sphere-label {
+  font-size: 12px; font-weight: 500; white-space: nowrap; pointer-events: none;
+  background: var(--surface-dark-elevated); color: var(--on-dark);
+  padding: 2px 6px; border-radius: var(--r-xs);
+}
+.field-row .checkbox-label, .field-row .range-label { display: flex; align-items: center; gap: 8px; }
+.field-row .checkbox-label input { width: auto; height: auto; }
+.field-row .range-label input { width: 160px; height: auto; accent-color: var(--primary); }
+
+.source-badge {
+  display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 12px;
+  border-radius: var(--r-pill); background: var(--surface-strong); color: var(--ink);
+  text-transform: uppercase;
+}
+.source-badge.verse, .source-badge.commentary { background: var(--surface-strong); color: var(--ink); }
+
+/* --- Theme toggle ----------------------------------------------------- */
+
+/* Fixed to the top-right corner. It rides over the dark header band on
+   every page, so it carries the on-dark palette in both themes rather
+   than flipping with the canvas. */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--surface-dark-elevated);
+}
+.theme-toggle button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: none;
+  color: var(--on-dark-soft);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.theme-toggle button.active { background: var(--primary); color: var(--on-primary); }
+
+/* --- Footer ----------------------------------------------------------- */
+
+/* legal-band: the closing strip under every page. Muted caption type,
+   one hairline above it, no fills. */
+.legal-band {
+  position: sticky;
+  bottom: 0;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 96px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-top: 1px solid var(--hairline);
+  background: var(--canvas);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.legal-band .legal-sep { color: var(--muted-soft); }
+.legal-roll {
+  font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- The Book: chapter menu, verse rail, verse cards ------------------ */
+
+.nav-link-soon {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted-soft);
+  cursor: not-allowed;
+}
+.nav-link-soon em {
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.book-page > *:not(.page-header) { padding-left: 48px; padding-right: 48px; }
+
+.book-datebar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 20px 48px;
+  margin-bottom: 48px;
+  background: var(--canvas);
+  border-bottom: 1px solid var(--hairline);
+}
+.book-datebar .field-row { margin-bottom: 0; }
+
+.book-body { display: flex; gap: 48px; align-items: flex-start; }
+
+.verse-rail {
+  position: sticky;
+  top: 108px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+.verse-rail a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  color: var(--body);
+  text-decoration: none;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.verse-rail a:hover { background: var(--surface-strong); color: var(--ink); }
+.verse-rail-ref { color: var(--primary-text); font-weight: 600; font-size: 12px; }
+
+.verse-cards { flex: 1 1 auto; min-width: 0; }
+
+.verse-card {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-xl);
+  padding: 32px;
+  margin-bottom: 24px;
+  scroll-margin-top: 120px;
+}
+.verse-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+.verse-card-head h2 {
+  margin: 8px 0 0;
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.4px;
+  line-height: 1.13;
+}
+.verse-ref { color: var(--primary-text); font-weight: 600; font-size: 12px; text-transform: uppercase; }
+
+/* badge-pill: surface-strong plate, never a coloured fill */
+.verse-tag {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: var(--surface-strong);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.verse-tag.live { color: var(--semantic-up); }
+
+.verse-does { color: var(--body); font-size: 16px; margin: 0 0 24px; max-width: 62ch; }
+
+/* The verse itself sits on the soft band — an editorial interlude. */
+.verse-text {
+  margin: 0 0 24px;
+  padding: 32px;
+  border: none;
+  border-radius: var(--r-xl);
+  background: var(--surface-soft);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.verse-text cite {
+  display: block;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  font-style: normal;
+  text-transform: uppercase;
+}
+.verse-text-missing { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+
+.verse-panel { border-top: 1px solid var(--hairline-soft); padding-top: 32px; }
+.verse-readout {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 24px 0;
+  color: var(--ink);
+}
+.verse-readout strong { color: var(--primary-text); font-weight: 500; }
+.verse-note {
+  color: var(--muted); font-size: 14px; margin: 12px 0 0; line-height: 1.5;
+  font-family: Inter, system-ui, sans-serif; font-weight: 400;
+}
+.verse-note-error { color: var(--semantic-down); }
+
+/* product-ui-card-dark: the formula panel as a floating dark mockup */
+.verse-formula {
+  font-size: 14px;
+  background: var(--surface-dark-elevated);
+  color: var(--on-dark);
+  border: none;
+  border-radius: var(--r-xl);
+  padding: 32px;
+  margin: 0 0 24px;
+}
+
+.slider { display: block; margin: 0 0 24px; }
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 400;
+}
+.slider-label strong { color: var(--ink); font-size: 18px; font-weight: 500; }
+.slider input[type="range"] { width: 100%; accent-color: var(--primary); height: 4px; }
+
+.picker { margin-bottom: 24px; }
+.picker-label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.picker .chip-row { margin-bottom: 0; }
+.chip-button {
+  cursor: pointer;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-weight: 500;
+}
+.chip-button.selected { background: var(--primary); color: var(--on-primary); }
+
+.unit-selected { color: var(--primary-text); font-weight: 600; }
+.unit-selected em { font-weight: 400; }
+
+/* --- Responsive ------------------------------------------------------- */
+
+@media (max-width: 1279px) {
+  .content > *:not(.page-header):not(.book-page):not(.theme-toggle),
+  .book-page > *:not(.page-header) { padding-left: 32px; padding-right: 32px; }
+  .page-header { padding: 48px 32px; }
+  .book-datebar { padding: 20px 32px; }
+}
+
+@media (max-width: 1023px) {
+  .verse-rail { display: none; }
+  .page-header h1 { font-size: 52px; letter-spacing: -1.3px; }
+  .verse-card-head h2 { font-size: 28px; }
+}
+
+@media (max-width: 767px) {
+  .app-shell { flex-direction: column; }
+  .sidebar {
+    width: 100%; max-height: none; position: static;
+    border-right: none; border-bottom: 1px solid var(--hairline);
+  }
+  .content > *:not(.page-header):not(.book-page):not(.theme-toggle),
+  .book-page > *:not(.page-header) { padding-left: 20px; padding-right: 20px; }
+  .page-header { padding: 72px 20px 48px; }
+  .page-header h1 { font-size: 40px; letter-spacing: -1px; padding-right: 0; }
+  .theme-toggle { top: 12px; right: 12px; }
+  .book-datebar { padding: 16px 20px; }
+  .field-row input, .field-row select { width: 100%; }
+  .verse-card { padding: 24px 20px; }
+  .verse-text { padding: 24px 20px; }
+  .ss-table th { width: auto; }
+}
+
+/* --- Glossary panel --------------------------------------------------- */
+
+/* Docked beside the page at 1784px and up (sidebar 264 + content 1200 +
+   panel 320), so .content keeps its full width; below that the panel is
+   an overlay drawer and never takes part in the page's layout. */
+.glossary-panel {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas);
+  border-left: 1px solid var(--hairline);
+}
+.glossary-panel.is-docked {
+  flex-shrink: 0;
+  margin-left: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.glossary-panel.is-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 70;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+  animation: glossary-slide-in 0.18s ease-out;
+}
+@keyframes glossary-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glossary-panel.is-drawer { animation: none; }
+}
+.glossary-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  background: rgba(10, 11, 13, 0.4);
+}
+
+.glossary-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px 20px 12px;
+}
+/* Clears the fixed theme toggle, which sits over the docked column. */
+.glossary-panel.is-docked .glossary-head { padding-top: 76px; }
+.glossary-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.glossary-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--surface-strong);
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 500;
+}
+.glossary-close {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.glossary-close:hover { background: var(--surface-strong); color: var(--ink); }
+.glossary-filter {
+  margin: 0 20px 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  background: var(--canvas);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+.glossary-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 12px 24px;
+}
+.glossary-body h3 {
+  margin: 16px 8px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.glossary-body h4 {
+  margin: 12px 8px 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-soft);
+}
+.glossary-body ul { list-style: none; margin: 0; padding: 0; }
+.glossary-note { margin: 8px; font-size: 13px; color: var(--muted); }
+.glossary-retry {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--primary-text);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.term-row {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: var(--r-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.term-row:hover, .term-row:focus-visible { background: var(--surface-strong); }
+.term-row-name { display: block; font-size: 14px; font-weight: 600; color: var(--ink); }
+.term-row-short {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--body);
+}
+
+/* The closed panel: a tab on the right edge that opens it. */
+.glossary-tab {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 55;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  padding: 16px 8px;
+  border: 1px solid var(--hairline);
+  border-right: none;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  background: var(--canvas);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.glossary-tab .glossary-count { margin: 8px 0 0; padding: 8px 2px; }
+
+@media (max-width: 767px) {
+  .glossary-panel.is-drawer { width: 100%; border-left: none; }
+  .glossary-tab {
+    top: auto;
+    bottom: 16px;
+    right: 16px;
+    transform: none;
+    writing-mode: horizontal-tb;
+    padding: 10px 16px;
+    border-right: 1px solid var(--hairline);
+    border-radius: var(--r-pill);
+  }
+  .glossary-tab .glossary-count { margin: 0 0 0 6px; padding: 2px 8px; }
+}
+
+/* --- Glossary term popup ---------------------------------------------- */
+
+.term-dialog {
+  width: min(640px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px);
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  background: var(--canvas);
+  color: var(--ink);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+  overflow-y: auto;
+}
+.term-dialog::backdrop { background: rgba(10, 11, 13, 0.5); }
+.term-dialog-inner { padding: 16px 32px 32px; }
+.term-dialog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 36px;
+  margin: 0 -16px 8px;
+}
+.term-dialog-close { margin-left: auto; }
+.term-dialog-close,
+.term-dialog-back {
+  border: none;
+  background: none;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.term-dialog-close { font-size: 22px; line-height: 1; }
+.term-dialog-back { font-size: 14px; font-weight: 500; }
+.term-dialog-close:hover,
+.term-dialog-back:hover { background: var(--surface-strong); color: var(--ink); }
+.term-category {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface-strong);
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 500;
+}
+.term-dialog h2 {
+  margin: 12px 0 4px;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--ink);
+}
+.term-aliases { margin: 0 0 16px; font-size: 13px; color: var(--muted); }
+.term-short { margin: 0 0 16px; font-size: 17px; line-height: 1.5; color: var(--ink); }
+.term-full { margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: var(--body); }
+.term-equation {
+  margin: 20px 0;
+  padding: 16px;
+  border-radius: var(--r-md);
+  background: var(--surface-soft);
+  overflow-x: auto;
+}
+.term-equation .katex-display { margin: 0; }
+.term-equation figcaption,
+.term-image figcaption { margin-top: 8px; font-size: 13px; color: var(--muted); }
+/* Diagrams are drawn for a white ground and keep it in both themes, the
+   way a printed figure would; their blues are too dark for a black one. */
+.term-image {
+  margin: 20px 0;
+  padding: 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  background: #ffffff;
+}
+.term-image img { display: block; width: 100%; max-width: 440px; height: auto; margin: 0 auto; }
+.term-cite { margin: 20px 0 0; font-size: 13px; color: var(--body); }
+.term-cite span,
+.term-related > span {
+  margin-right: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.term-related { margin-top: 16px; }
+.term-related > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.term-chip {
+  padding: 6px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  background: var(--canvas);
+  color: var(--primary-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.term-chip:hover { background: var(--surface-strong); }
+
+@media (max-width: 767px) {
+  .term-dialog { width: 100vw; max-width: 100vw; max-height: 100vh; height: 100vh; border-radius: 0; }
+  .term-dialog-inner { padding: 12px 20px 32px; }
+}
+
+/* Wide verse tables scroll sideways instead of widening the page. */
+.table-scroll { overflow-x: auto; margin-bottom: 16px; }
