@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, ChatSource, DEFAULT_LAT, DEFAULT_LON, ToolUse } from "../api";
+import { api, ChatRequest, ChatSource, DEFAULT_LAT, DEFAULT_LON, ToolUse } from "../api";
 import { DEFAULT_LATLON, LatLon, LatLonInput } from "../components/Inputs";
 import { Markdown } from "../components/Markdown";
-import { PageHeader } from "../components/Tables";
 
 interface Message {
   role: "user" | "assistant";
@@ -49,43 +48,59 @@ export function Chat() {
   const [place, setPlace] = useState<LatLon>(DEFAULT_LATLON);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const [failedRequest, setFailedRequest] = useState<ChatRequest | null>(null);
+  const sending = useRef(false);
+  const conversationRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const conversation = conversationRef.current;
+    if (conversation) conversation.scrollTop = conversation.scrollHeight;
+  }, [messages, loading]);
+
+  function submit(request: ChatRequest, appendMessage: boolean) {
+    if (sending.current) return;
+    sending.current = true;
+    if (appendMessage) setMessages(m => [...m, { role: "user", text: request.message }]);
+    setLoading(true);
+    setError(null);
+    setFailedRequest(null);
+    api.chat(request)
+      .then(res => {
+        setSessionId(res.session_id);
+        setMessages(m => [...m, { role: "assistant", text: res.reply, toolUses: res.tool_uses, sources: res.sources }]);
+      })
+      .catch(reason => { setError(reason); setFailedRequest(request); })
+      .finally(() => { sending.current = false; setLoading(false); });
+  }
 
   function send() {
     const text = input.trim();
-    if (!text || loading) return;
-    setMessages((m) => [...m, { role: "user", text }]);
+    if (!text || sending.current) return;
     setInput("");
-    setLoading(true);
-    api
-      .chat({
-        message: text,
-        session_id: sessionId,
-        client_now: new Date().toISOString(),
-        utc_offset: browserUtcOffset(),
-        place: placeName(place),
-        latitude: place.latitude,
-        longitude: place.longitude,
-      })
-      .then((res) => {
-        setSessionId(res.session_id);
-        setMessages((m) => [
-          ...m,
-          { role: "assistant", text: res.reply, toolUses: res.tool_uses, sources: res.sources },
-        ]);
-        setError(null);
-      })
-      .catch(setError)
-      .finally(() => setLoading(false));
+    submit({
+      message: text,
+      session_id: sessionId,
+      client_now: new Date().toISOString(),
+      utc_offset: browserUtcOffset(),
+      place: placeName(place),
+      latitude: place.latitude,
+      longitude: place.longitude,
+    }, true);
   }
 
   function reset() {
+    if (sending.current) return;
     if (sessionId) api.chatReset(sessionId).catch(() => {});
     setMessages([]);
+    setSessionId(undefined);
+    setInput("");
+    setError(null);
+    setFailedRequest(null);
   }
 
   return (
-    <div className="chat-page">
-      <PageHeader title="Surya Siddhanta AI" subtitle="Ask about the book's text, or ask it to compute something" />
+    <div className="chat-content" aria-busy={loading}>
+      <p className="chat-intro">Ask about the book’s text, or ask it to compute something.</p>
       <details className="chat-place">
         <summary>
           Asking from {placeName(place)} ({place.latitude.toFixed(2)}, {place.longitude.toFixed(2)}),
@@ -93,7 +108,8 @@ export function Chat() {
         </summary>
         <LatLonInput value={place} onChange={setPlace} />
       </details>
-      <div className="chat-window">
+      <div ref={conversationRef} className="chat-window" role="log" aria-label="Conversation" aria-live="polite">
+        {messages.length === 0 && <p className="chat-empty">Ask a question while you explore. Your conversation stays here as you move between pages.</p>}
         {messages.map((m, i) => (
           <div key={i} className={`chat-msg chat-${m.role}`}>
             <div className="chat-bubble">
@@ -114,24 +130,38 @@ export function Chat() {
           </div>
         ))}
         {loading && <div className="chat-msg chat-assistant">
-          <div className="chat-bubble">…</div>
+          <div className="chat-bubble" role="status">Thinking…</div>
         </div>}
       </div>
-      {error != null && <div className="ss-error">Error: {error instanceof Error ? error.message : String(error)}</div>}
-      <div className="chat-input-row">
-        <input
+      {error != null && <div className="ss-error" role="alert">
+        <p>{error instanceof Error ? error.message : String(error)}</p>
+        {failedRequest && <button type="button" className="chat-retry" onClick={() => submit(failedRequest, false)} disabled={loading}>Retry</button>}
+      </div>}
+      <form className="chat-composer" noValidate onSubmit={event => { event.preventDefault(); send(); }}>
+        <label className="project-sr-only" htmlFor="chat-message">Message</label>
+        <textarea
+          id="chat-message"
+          rows={2}
+          className="resize-none"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send()}
+          onKeyDown={event => {
+            if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+              event.preventDefault();
+              send();
+            }
+          }}
           placeholder="Ask about the Surya Siddhanta…"
         />
-        <button onClick={send} disabled={loading}>
-          Send
-        </button>
-        <button onClick={reset} disabled={loading}>
-          Reset
-        </button>
-      </div>
+        <div className="chat-input-row">
+          <button type="submit" disabled={loading || !input.trim()}>
+            Send
+          </button>
+          <button type="button" onClick={reset} disabled={loading}>
+            New chat
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

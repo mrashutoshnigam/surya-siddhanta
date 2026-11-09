@@ -68,6 +68,29 @@ def test_panchanga():
         assert key in body
 
 
+def test_panchanga_includes_yoga_and_karana_names():
+    """The calculator must expose names, including the text's final fixed karana."""
+    response = client.post("/calc/panchanga", json={"year": 2026, "month": 11, "day": 9})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["yoga"] == {"number": 3, "name": "Ayushman"}
+    assert body["karana"] == {"number": 60, "name": "Chatushpada", "type": "fixed"}
+
+
+@pytest.mark.parametrize("utc_offset", [5.5, 0, -4, 5.75])
+def test_panchanga_clock_time_matches_chat_tool(utc_offset):
+    """The page's fractional day and chat's explicit hour describe the same instant."""
+    from suryasiddhanta.chatbot.tools import compute_panchanga
+    import json
+
+    response = client.post("/calc/panchanga", json={
+        "year": 2026, "month": 11, "day": 9 + 12.5 / 24, "utc_offset": utc_offset,
+    })
+    assert response.status_code == 200
+    expected = json.loads(compute_panchanga(2026, 11, 9, hour=12.5, utc_offset=utc_offset))
+    assert response.json() == expected
+
+
 def test_lunar_eclipse():
     r = client.post("/calc/eclipse/lunar", json={"year": 2024, "month": 4})
     assert r.status_code == 200

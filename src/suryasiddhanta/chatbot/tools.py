@@ -183,6 +183,7 @@ def compute_panchanga(
             TITHI_NAMES, julian_day, tithi_from_elongation, vara,
             nakshatra_from_longitude, masa_from_sun_longitude,
             ritu_from_sun_longitude, samvatsara,
+            yoga_from_longitudes, karana_from_elongation,
         )
         from suryasiddhanta.ch02_true_places import compute
 
@@ -201,13 +202,8 @@ def compute_panchanga(
         ritu_num, ritu_name = ritu_from_sun_longitude(sun.true_longitude)
         samv_num, samv_name = samvatsara(jd)
 
-        # Yoga = (Sun + Moon) / 13°20'
-        yoga_val = (sun.true_longitude + moon.true_longitude) % 360.0
-        yoga_num = int(yoga_val / (800.0 / 60.0)) + 1
-
-        # Karana = half-tithi
-        elongation = (moon.true_longitude - sun.true_longitude) % 360.0
-        karana_num = int(elongation / 6.0) + 1
+        yoga_num, yoga_name = yoga_from_longitudes(sun.true_longitude, moon.true_longitude)
+        karana_num, karana_name, karana_type = karana_from_elongation(moon.true_longitude, sun.true_longitude)
 
         result = {
             "date": f"{year}-{month:02d}-{int(day):02d}",
@@ -223,8 +219,8 @@ def compute_panchanga(
             # nakshatra_from_longitude returns a 0-based index; report it
             # 1-based like tithi/yoga/karana beside it.
             "nakshatra": {"number": nak_num + 1, "name": nak_name, "pada": nak_pada},
-            "yoga": {"number": yoga_num},
-            "karana": {"number": karana_num},
+            "yoga": {"number": yoga_num, "name": yoga_name},
+            "karana": {"number": karana_num, "name": karana_name, "type": karana_type},
             "masa": {"number": masa_num, "name": masa_name},
             "ritu": {"number": ritu_num, "name": ritu_name},
             "samvatsara": {"number": samv_num, "name": samv_name},

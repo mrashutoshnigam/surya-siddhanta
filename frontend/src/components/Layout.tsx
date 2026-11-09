@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { GlossaryPanel } from "../glossary/GlossaryPanel";
 import { GlossaryProvider } from "../glossary/GlossaryProvider";
 import { BOOK_CHAPTERS } from "../pages/book/BookChapter";
 import { ThemeToggle } from "./ThemeToggle";
 import { ProjectWelcome } from "./ProjectWelcome";
+import { ChatPanel } from "./ChatPanel";
 
 const NAV = [
   {
@@ -32,21 +33,34 @@ const NAV = [
     group: "Almanac",
     items: [{ to: "/daily-panchanga", label: "Daily Panchanga" }],
   },
-  {
-    group: "AI",
-    items: [{ to: "/chat", label: "Surya Siddhanta AI" }],
-  },
 ];
 
 export function Layout() {
-  const pathname = useLocation().pathname;
+  const location = useLocation();
+  const pathname = location.pathname;
+  const navigate = useNavigate();
   const isLearning = pathname === "/learn" || pathname.startsWith("/learn/");
   const isResearch = pathname === "/research";
   const isUniverse = pathname === "/universe";
   const [universeMenuOpen, setUniverseMenuOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [glossaryRequest, setGlossaryRequest] = useState(0);
+  const chatTriggerRef = useRef<HTMLButtonElement>(null);
+
+  // Keep old /chat bookmarks useful without maintaining a second conversation.
+  useEffect(() => {
+    if (!location.state?.openChat) return;
+    setChatOpen(true);
+    navigate(location.pathname + location.search + location.hash, { replace: true, state: null });
+  }, [location, navigate]);
+
+  function closeChat() {
+    setChatOpen(false);
+    requestAnimationFrame(() => chatTriggerRef.current?.focus({ preventScroll: true }));
+  }
   return (
     <GlossaryProvider>
-      <div className={"app-shell" + (isLearning ? " learning-shell" : isResearch ? " research-shell" : isUniverse ? " universe-shell" : "")}>
+      <div className={"app-shell" + (chatOpen ? " chat-open" : "") + (isLearning ? " learning-shell" : isResearch ? " research-shell" : isUniverse ? " universe-shell" : "")}>
         <nav className={"sidebar" + (universeMenuOpen ? " universe-menu-open" : "")}>
           {(isLearning || isResearch || isUniverse) && <a className="lab-skip" href="#learning-content">Skip to the {isUniverse ? "universe" : isResearch ? "research" : "experiment"} ↓</a>}
           <div className="brand">Surya Siddhanta</div>
@@ -69,6 +83,20 @@ export function Layout() {
               ))}
             </div>
           ))}
+
+          <div className="nav-group">
+            <div className="nav-group-title">AI</div>
+            <button
+              ref={chatTriggerRef}
+              type="button"
+              className={"nav-link chat-nav-trigger" + (chatOpen ? " active" : "")}
+              aria-expanded={chatOpen}
+              aria-controls="chat-panel"
+              onClick={() => chatOpen ? closeChat() : setChatOpen(true)}
+            >
+              Surya Siddhanta AI
+            </button>
+          </div>
 
           {/* The book comes last: the task pages are the everyday entry
               points, and the chapter list is the long reference behind them. */}
@@ -115,7 +143,11 @@ export function Layout() {
         </main>
         {/* Outside <main>: the panel never reflows the page, and the page
             scan (which watches main.content) never sees the panel. */}
-        <GlossaryPanel />
+        <GlossaryPanel suppressed={chatOpen} openRequest={glossaryRequest} onShowChat={() => setChatOpen(true)} />
+        <ChatPanel open={chatOpen} onClose={closeChat} onShowTerms={() => {
+          setChatOpen(false);
+          setGlossaryRequest(request => request + 1);
+        }} />
       </div>
     </GlossaryProvider>
   );

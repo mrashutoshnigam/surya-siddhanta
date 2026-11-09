@@ -13,7 +13,6 @@ import { Patas } from "./pages/Patas";
 import { Cosmography } from "./pages/Cosmography";
 import { PlaceTime } from "./pages/PlaceTime";
 import { DailyPanchanga } from "./pages/DailyPanchanga";
-import { Chat } from "./pages/Chat";
 import { BookChapter } from "./pages/book/BookChapter";
 
 // three.js adds several hundred kilobytes; loading the Instruments page on
@@ -66,7 +65,7 @@ export function App() {
         <Route path="/place-time" element={<PlaceTime />} />
         <Route path="/daily-panchanga" element={<DailyPanchanga />} />
         <Route path="/book/:chapter" element={<BookChapter />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat" element={<Navigate to="/positions" replace state={{ openChat: true }} />} />
       </Route>
     </Routes>
   );

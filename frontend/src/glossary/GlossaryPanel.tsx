@@ -85,7 +85,11 @@ function TermRow({ term, onOpen }: { term: TermEntry; onOpen: (id: string) => vo
  * It sits outside `main.content`, so it never changes the page's layout
  * and its own updates never trigger the page scan.
  */
-export function GlossaryPanel() {
+export function GlossaryPanel({ suppressed = false, openRequest = 0, onShowChat }: {
+  suppressed?: boolean;
+  openRequest?: number;
+  onShowChat?: () => void;
+}) {
   const { status, index, retry } = useGlossary();
   const { core, found } = useTermsOnPage();
   const docked = useMediaQuery(DOCK_QUERY);
@@ -95,7 +99,7 @@ export function GlossaryPanel() {
   const [dialogId, setDialogId] = useState<string | null>(null);
   const filterRef = useRef<HTMLInputElement>(null);
   const tabRef = useRef<HTMLButtonElement>(null);
-  const open = docked ? dockedOpen : drawerOpen;
+  const open = !suppressed && (docked ? dockedOpen : drawerOpen);
 
   function setOpen(next: boolean) {
     if (docked) {
@@ -107,17 +111,34 @@ export function GlossaryPanel() {
     if (!next) requestAnimationFrame(() => tabRef.current?.focus());
   }
 
+  useEffect(() => {
+    if (!openRequest) return;
+    if (docked) {
+      setDockedOpen(true);
+      storeDockedOpen(true);
+    } else {
+      setDrawerOpen(true);
+    }
+    requestAnimationFrame(() => filterRef.current?.focus({ preventScroll: true }));
+  }, [openRequest]);
+
+  // Switching to AI closes the overlay; closing chat must not resurrect a
+  // glossary backdrop over the page. Keep the wide-screen dock preference.
+  useEffect(() => {
+    if (suppressed) setDrawerOpen(false);
+  }, [suppressed]);
+
   // The drawer takes focus when it opens and closes on Escape, unless a
   // term popup is open — that popup handles its own Escape first.
   useEffect(() => {
-    if (docked || !drawerOpen) return;
+    if (docked || !drawerOpen || suppressed) return;
     filterRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !dialogId) setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [docked, drawerOpen, dialogId]);
+  }, [docked, drawerOpen, dialogId, suppressed]);
 
   const query = filter.trim().toLowerCase();
   const coreShown = useMemo(() => core.filter((t) => termMatchesFilter(t, query)), [core, query]);
@@ -133,6 +154,8 @@ export function GlossaryPanel() {
       <TermDialog id={dialogId} index={index} onClose={() => setDialogId(null)} />
     </Suspense>
   );
+
+  if (suppressed) return null;
 
   if (!open) {
     return (
@@ -161,6 +184,7 @@ export function GlossaryPanel() {
           <h2>
             Terms on this page <span className="glossary-count">{total}</span>
           </h2>
+          {onShowChat && <button type="button" className="chat-panel-terms" onClick={onShowChat}>AI chat</button>}
           <button
             type="button"
             className="glossary-close"
