@@ -9,6 +9,7 @@ const RESOURCES = [
   { title: "Computational edition paper", detail: "Running the Text · All fourteen chapters", href: `${DOCUMENTS}/paper/computational-edition/running-the-text-surya-siddhanta-computational-edition.pdf` },
   { title: "JPL DE440 comparison paper", detail: "Planetary accuracy · 1550–2649 CE", href: `${DOCUMENTS}/evaluation/paper/surya-siddhanta-vs-de440.pdf` },
   { title: "Python library (PyPI)", detail: "Install the surya-siddhanta package", href: "https://pypi.org/project/surya-siddhanta/" },
+  { title: "Docker image (Docker Hub)", detail: "Run the application in a container", href: "https://hub.docker.com/r/mrashutoshnigam/surya-siddhanta" },
 ];
 
 function wasDismissed() {

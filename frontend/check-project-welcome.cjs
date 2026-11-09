@@ -10,6 +10,7 @@ const resources = [
   ['Computational edition paper', 'https://github.com/mrashutoshnigam/surya-siddhanta/blob/main/docs/paper/computational-edition/running-the-text-surya-siddhanta-computational-edition.pdf'],
   ['JPL DE440 comparison paper', 'https://github.com/mrashutoshnigam/surya-siddhanta/blob/main/docs/evaluation/paper/surya-siddhanta-vs-de440.pdf'],
   ['Python library (PyPI)', 'https://pypi.org/project/surya-siddhanta/'],
+  ['Docker image (Docker Hub)', 'https://hub.docker.com/r/mrashutoshnigam/surya-siddhanta'],
 ];
 
 async function checkResourceLinks(dialog) {
