@@ -1,0 +1,341 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+
+\newcommand{\SuSi}{\textit{S\=urya Siddh\=anta}}
+\newcommand{\file}[1]{\texttt{#1}}
+% Figures that must be re-measured before submission (see the authors' checklist).
+\newcommand{\pending}[1]{\textcolor{red}{#1}}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\title{Running the Text: A Verse-Traceable Computational Edition Across All Fourteen Chapters of the \SuSi{}, and What Implementing It Reveals}
+\author{Ashutosh Nigam\quad Dinesh Mohan Joshi\\[6pt]
+\small Indian Institute of Technology Jodhpur, India}
+\date{}
+
+\begin{document}
+\maketitle
+
+% ---------------------------------------------------------------------------
+\begin{abstract}
+Published computational work on the \SuSi{} has so far confined itself to the planetary theory: mean and true longitudes and, most recently, latitudes and declinations. We present an executable edition of the computable core across all fourteen chapters of the text, built from Burgess's 1860 translation and checked against the worked examples in Mahavir Prasad Srivastava's Hindi \textit{Vigyan Bhashya}. Beyond the planetary theory it covers eclipses, parallax, eclipse projection, planetary conjunctions, the junction stars, heliacal visibility, the lunar crescent, the \textit{p\=atas}, the cosmography, the armillary sphere and the nine measures of time. The edition takes the form of an open Python library of 224 public functions, one module to each chapter. No modern ephemeris supplies positions to the historical-model calculations. Where the verses leave a procedure unspecified, documented commentary or explicit implementation conventions complete the calculation. Each function cites the verses that authorise it, each rule the text leaves unstated is labelled as commentary, and 1,256 automated tests fix the behaviour, many of them against a particular verse or a printed worked example.
+
+The library is a means; our principal contribution is interpretive. Recasting the text in a form that has to run exposes places where an apparently reasonable reading yields a wrong computation. We document nine such places, giving for each the verse, the symptom and its magnitude. Among them are the mean place of Mercury and Venus (i.29 against i.31--32), whose misreading puts Mercury 153$^\circ$ from the Sun; the sign of the manda anomaly (ii.29, 45); the lunar diameter of iv.2; and the regents counted from creation (xii.78--79). We also show that the epoch of i.50 determines what a ``date'' means. Confusing it with Universal Time rotates sidereal time by about 76$^\circ$; once the two are kept apart, a printed parallax example moves from 3.83 to 1.16 ghatikas, against the book's 1.06. Execution further makes measurable several quantities the text leaves implicit. The 86-degree \textit{\d{s}a\d{d}a\'s\=itimukha} intervals last between 84.8 and 89.5 days; Jupiter's twelve-year names advance by 0, 1 or 2 places in a year (in 8.3, 83.4 and 8.4 per cent of years respectively); the 27 polar longitudes of viii.1--5 follow exactly from the shares the verses give; and the ether orbit of xii.90 follows from the Moon's revolutions in a kalpa. We keep these findings distinct from deviations retained by design and from misprints in the printed sources. For the longitude path, a companion comparison with JPL DE440 measures the error of this implementation under stated frame and time conventions. The code, tests and data are openly available.
+\end{abstract}
+
+\noindent\textbf{Keywords:} S\=urya Siddh\=anta; Indian astronomy; computational history of science; executable edition; textual criticism; software verification
+
+% ---------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+
+The \SuSi{} is the best known of the astronomical treatises of the Indian \textit{siddh\=anta} tradition, though far from the only one. Tradition counts eighteen revealed \textit{siddh\=antas}, matching the eighteen Pur\=a\d{n}as, and places the \SuSi{} first among them \citep{sengupta1935}. Burgess reproduces two native lists of works entitled to the name, one of nineteen treatises from the Sanskrit College at Puna and one of nine from the \textit{\'Sabdakalpadruma}; both put the \SuSi{} second, after the \textit{Brahma-siddh\=anta} \citep[Appendix, note to p.\ ii]{burgess1860}. He chose it for translation because it was the most highly esteemed, the best known and the most widely used of them, and because the astronomy practised in India in his day rested chiefly on its data and processes. Its fourteen chapters give complete procedures for mean and true planetary positions, the three questions of direction, place and time, lunar and solar eclipses, conjunctions, the junction stars, heliacal phenomena, the lunar crescent, the \textit{p\=atas}, cosmography, instruments and the measures of time \citep{burgess1860,pingree1978,plofker2009}. Ebenezer Burgess's 1860 translation, with its extensive notes, opened the text to historians of science, and it remains the standard English edition.
+
+A procedural text admits two kinds of study. It can be read: its rules paraphrased, its parameters tabulated, its methods set beside Greek or modern ones. Or it can be \emph{run}: each rule turned into an operation on numbers, and the whole chain executed for real dates. Running is the more exacting test of a reading. A paraphrase may leave open which of two quantities a verse intends; a program may not. Nor can a program pass silently over a step that the text takes for granted. Every ambiguity has to be settled one way or the other, and the settlement shows in the output.
+
+Computational studies of the \SuSi{} have so far concentrated on its planetary theory (Section~\ref{sec:related}). Here we report an implementation of the computable core across all fourteen chapters and treat the work of implementing it as a method of study. The paper makes five contributions:
+
+\begin{enumerate}
+  \item[\textbf{C1}] \textbf{An executable edition across all fourteen chapters.} An open Python library implementing their computable core, including four (11--14) for which we have found no previous implementation, with no modern ephemeris in the historical-model calculations (Section~\ref{sec:edition}).
+  \item[\textbf{C2}] \textbf{Verse traceability as a design rule.} One module per chapter, verse citations in every function, and an explicit \texttt{source} label (\texttt{verse} or \texttt{commentary}) wherever the text alone does not fix the method (Section~\ref{sec:principles}).
+  \item[\textbf{C3}] \textbf{A layered verification method}, with a published test suite and a classification of every disagreement with the printed worked examples as a defect, a deliberate deviation, a source error or an unimplemented rule (Section~\ref{sec:verification}).
+  \item[\textbf{C4}] \textbf{Findings about the text that come from running it}: points where a reasonable reading produces a wrong computation, the meaning of a date as fixed by the epoch, the competing polar and ecliptic readings of the star coordinates, and quantities the text implies but never states (Section~\ref{sec:findings}).
+  \item[\textbf{C5}] \textbf{A measured longitude comparison} for the longitude path, drawn from a companion 1,100-year comparison with JPL DE440 (Section~\ref{sec:de440}).
+\end{enumerate}
+
+We do not claim that the edition reproduces the practice of any historical \textit{pa\~nc\=a\.ng}-maker, nor that its readings are the only defensible ones. Our claim is narrower. Each reading is stated, attributed to a verse or to commentary, and fixed by a test, so that a scholar who disagrees can change a single function and observe every consequence.
+
+% ---------------------------------------------------------------------------
+\section{Related work}
+\label{sec:related}
+
+Historical and mathematical analyses of the planetary models of the \SuSi{} are numerous. \citet{pingree1978} and \citet{plofker2009} survey the tradition, and \citet{duke2005} reconstructs the mathematical basis of its epicyclic models. These studies read the text and analyse its rules; they do not offer executable implementations.
+
+The nearest computational work is that of Santhoju and colleagues. \citet{santhoju2025} implement the \SuSi{} algorithm for location-specific true (\textit{nir\=aya\d{n}a}) longitudes and compare the results with Stellarium; their model departs from the text in using the fractional part of the \textit{aharga\d{n}a}. \citet{santhoju2026} extend the approach to geocentric latitudes and declinations. \citet{roy2019} analyses the sidereal coordinate system the \SuSi{} uses for the junction stars, a question we take up in Section~\ref{sec:polar}, and \citet{narayanan2010} argues for an epoch of the text from computational simulation. In a companion study \citep{nigam2026de440}, one of us (Ashutosh Nigam) compares the edition's Chapter~1--2 longitudes with JPL DE440 \citep{park2021} at 40,176 epochs; Section~\ref{sec:de440} summarises the result.
+
+So far as we have been able to discover, no published implementation covers the chapters on eclipse projection, conjunctions, heliacal visibility, the crescent, the \textit{p\=atas}, cosmography, instruments or time-reckoning, and none publishes a test suite that ties its outputs to the verses and to printed worked examples. This paper addresses those gaps. Our search was limited to English-language journals and public code repositories, and we would welcome corrections.
+
+% ---------------------------------------------------------------------------
+\section{Sources and editorial principles}
+\label{sec:principles}
+
+\paragraph{Sources.} Burgess's translation and notes \citep{burgess1860} are the primary source for every rule and constant. The second source is Mahavir Prasad Srivastava's Hindi commentary, \textit{S\=urya Siddh\=anta: Vigyan Bhashya} \citep{srivastava}, which works dozens of examples in full for dated events at Kashi, Prayag and elsewhere in the 1920s, printing the intermediate figures at each step. We treated it as an independent check on the computations, not as an authority on the rules. We consulted it through OCR transcripts and checked every doubtful digit against the page image (Section~\ref{sec:book-errors}).
+
+\paragraph{Principles.} Five rules governed the implementation.
+\begin{enumerate}
+  \item[\textbf{P1}] \emph{The verse decides.} Where Burgess's note disagrees with the verse, or supplies a rule the verse does not give, the code follows the verse and records the note's method separately with \texttt{source = "commentary"}. Examples include the staff, wheel and arc instruments and the dimensions of the clepsydra in Chapter~13, and both methods of naming Jupiter's year in Chapter~14.
+  \item[\textbf{P2}] \emph{No modern ephemeris in the historical-model calculation.} The only runtime dependency is NumPy. Where the text gives a value (the obliquity of 24$^\circ$, the trepidation \textit{aya\d{n}\=a\.m\'sa}, the sine table of radius 3438), the code uses it, even where a better modern value is known. Commentary and explicit implementation conventions supply steps that the verses do not specify.
+  \item[\textbf{P3}] \emph{One reckoning of time.} Every function takes and returns a Julian Day reckoned in Ujjain mean time, the clock implied by the epoch of i.50 (Section~\ref{sec:timebase}). Conversion to civil time happens only at the boundaries.
+  \item[\textbf{P4}] \emph{Deviations are pinned, not hidden.} Where the edition knowingly departs from a printed example, the audit records the measured gap and its reason. Numerical assertions, where supplied, detect changes to that gap. No difference is tuned away toward the expected value.
+  \item[\textbf{P5}] \emph{State what is not done.} The documentation for each chapter lists the verses left unimplemented and the reason for each.
+\end{enumerate}
+
+% ---------------------------------------------------------------------------
+\section{The edition}
+\label{sec:edition}
+
+\subsection{Structure}
+
+The library \file{suryasiddhanta} (Python $\geq$ 3.9, MIT licence) has one module per chapter, named after it (\file{ch01\_mean\_motions}, \file{ch02\_true\_places} and so on), so that the code follows the structure of the book. The modules exchange typed records (a planetary position, a \textit{pa\~nc\=a\.nga}, an eclipse, a \textit{p\=ata} event, an armillary sphere), and later chapters call earlier ones in the way the text refers back to earlier rules: Chapter~5's parallax calls Chapter~3's sidereal time, and Chapter~11's \textit{p\=ata} calls Chapter~2's true places and Chapter~3's declination. Material that the text states rather than computes, namely the junction-star catalogue, the cosmographic descriptions, the fixed stars of the armillary sphere and the nine measures of time, is held in four bundled JSON catalogues. Table~\ref{tab:coverage} summarises the coverage.
+
+\begin{table}[ht]
+\centering
+\caption{Coverage of the edition by chapter. ``Fns'' counts public functions; ``Tests'' counts the chapter's automated tests.}
+\label{tab:coverage}
+\small
+\begin{tabularx}{\textwidth}{@{}r l r r L@{}}
+\toprule
+Ch. & Subject & Fns & Tests & Principal content implemented \\
+\midrule
+1 & Mean motions & 33 & 102 & revolutions per age, \textit{aharga\d{n}a}, mean places, epoch positions, \textit{tithi}, \textit{yoga}, \textit{kara\d{n}a}, sixty-year cycle \\
+2 & True places & 35 & 169 & sine table, \textit{manda} and \textit{\'s\=ighra} equations, four-step true place, latitude, daily motion, trepidation \\
+3 & Direction, place, time & 17 & 81 & gnomon, latitude, ascensional difference, rising times, sidereal time, \textit{lagna} \\
+4 & Lunar eclipses & 8 & 52 & disc and shadow diameters, magnitude, half-duration \\
+5 & Solar eclipses & 7 & 55 & nonagesimal, \textit{lambana} and \textit{nati}, topocentric eclipse \\
+6 & Eclipse projection & 7 & 46 & \textit{valana}, contact points, diagram geometry \\
+7 & Conjunctions & 7 & 58 & planet--planet and planet--star conjunction, \textit{yuddha} classification \\
+8 & Junction stars & 8 & 57 & catalogued \textit{dhruvakas} and \textit{vik\d{s}epas} of the 27 \textit{yogat\=ar\=as} and Abhijit, positions, rising and setting \\
+9 & Heliacal phenomena & 6 & 44 & visibility limits, risings and settings \\
+10 & Lunar crescent & 9 & 46 & illuminated part, crescent width, horn angles, moonrise \\
+11 & \textit{P\=atas} & 9 & 24 & declination equality, true instant, duration \\
+12 & Cosmography & 32 & 58 & orbits per kalpa, earth's circumference, \textit{de\'s\=antara}, zones, regents \\
+13 & Instruments & 29 & 56 & parametric armillary sphere, time from altitude, four time instruments, clepsydra \\
+14 & Measures of time & 17 & 29 & nine \textit{m\=anas}, \textit{sa\.mkr\=antis}, \textit{\d{s}a\d{d}a\'s\=itimukhas}, Jovian years \\
+\midrule
+ & Total & 224 & 877 & plus 379 tests of the per-planet interface \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Conventions}
+\label{sec:conventions}
+
+\emph{Time.} All functions use the Julian Day reckoned in Ujjain mean time (P3; Section~\ref{sec:timebase}). Calendar dates follow the Julian calendar before 15 October 1582 and the Gregorian thereafter, so dates earlier than the reform need no special handling.
+
+\emph{Longitude.} Longitudes are sidereal, as in the text. Conversion to tropical longitude uses the text's own oscillating \textit{aya\d{n}\=a\.m\'sa} ($\pm 27^\circ$ over 7,200 years, zero near 499\,CE) rather than continuous precession.
+
+\emph{Sines.} The planetary equations interpolate in the 24-entry table of radius 3438. Where the text gives a geometrical rule without a table, the code uses modern trigonometric functions. The edition therefore reproduces the text's \emph{rules}, not the rounding of a historical hand computation, and the documentation notes where the two can diverge.
+
+\subsection{Two chapters that are not ephemerides}
+
+Chapters 12 and 13 call for a different treatment from the rest.
+
+\emph{Chapter~12} consists largely of fixed dimensions, which the module \emph{derives} from three constants (the earth's diameter of 1,600 \textit{yojanas}, its circumference of $1600\sqrt{10}$, and the Moon's orbit of 324,000 \textit{yojanas}) together with the revolution numbers of Chapter~1. Two of the derivations test the reading. First, the orbits of xii.80--90 are reckoned per kalpa, not per mahayuga; reckoning them by the age makes every orbit a thousand times too small. Second, the Moon's revolutions in a kalpa multiplied by her orbit give an ether orbit of 18,712,080,864,000,000 \textit{yojanas}, exactly the figure xii.90 states outright. The earth's circumference, its correction for latitude and the \textit{de\'s\=antara} belong by verse number to i.59--61, but Chapter~12 cannot be computed without them, and so they are implemented there.
+
+\emph{Chapter~13} describes an instrument rather than a calculation. The module builds the armillary sphere as a parametric model in the equatorial frame (north pole on $z$, vernal equinox on $x$), in which each hoop is a unit normal and an offset; a renderer can therefore draw it without doing any astronomy of its own. For Ujjain the model has 46 hoops. The ecliptic point on the eastern horizon is computed exactly, without interpolating within signs, and the stellar hoops follow the polar-coordinate rule of ii.58 (Section~\ref{sec:polar}). The four time-finding instruments (gnomon, wheel, arc and staff) all reduce to the altitude rule of iii.34--39, so for a given altitude the module returns the same time from each, and the instruments can be seen to agree. Every instrument result carries its \texttt{source} label, because the methods for the wheel, arc and staff are Burgess's reconstruction, not the verse's.
+
+\subsection{Per-planet interface and distribution}
+
+A thin interface regroups the chapter functions by body (\texttt{sun}, \texttt{moon}, \texttt{mars}, \ldots, \texttt{rahu}, \texttt{ketu}) with the body argument already supplied. It computes nothing new, apart from placing Ketu at Rahu $+180^\circ$, a convention adopted because no chapter computes Ketu. Its 379 tests check that each wrapper has the signature of the chapter function it wraps, so that the two cannot drift apart. The calculation library is packaged separately from the interface layers and depends on nothing beyond NumPy.
+
+% ---------------------------------------------------------------------------
+\section{Verification method}
+\label{sec:verification}
+
+Verification proceeds in three layers, each answering a different question.
+
+\begin{enumerate}
+  \item \textbf{Does the code do what the verse says?} This layer comprises 877 chapter tests and 379 interface tests, 1,256 in all, every one of which passes. Many are anchored to a verse. Mercury and Venus, for example, must stay within 28$^\circ$ and 48$^\circ$ of the Sun; the epoch positions of the apsides and nodes must match Burgess's table for the commencement of the Iron Age (commentary under i.44) to one arc-second; the six seasons and twelve solar months of xiv.9--10 must have their stated spans; and the sixty-year name of 1859--60\,CE must be Burgess's \textit{Praj\=apati} (i.55).
+  \item \textbf{Does the chain reproduce a worked example?} The audit reduces 257 selected computations in Srivastava's commentary to their inputs (\textit{aharga\d{n}a}, Vikrama year, place), runs them through the library, and compares the results at the book's own printed precision. Each disagreement was assigned to one of four classes:
+  \begin{itemize}
+    \item \emph{defect}: an error in the library, now fixed;
+    \item \emph{deviation}: a known and documented difference, recorded as an expected deviation with its measured gap;
+    \item \emph{source}: the book or its OCR is inconsistent, so the test is skipped and the reason recorded;
+    \item \emph{no function}: the book computes something the text implies but the library does not implement.
+  \end{itemize}
+  The audit suite has 257 cases. In the reported audit run, 197 pass, 48 are documented deviations and 12 are skipped (3 as source errors, 7 for want of a function, 1 as a deviation that cannot be compared, and 1 that is not a verse of the text).
+  \item \textbf{How far is the result from the sky?} This layer applies to the Chapter~1--2 longitude path only and consists of a comparison with JPL DE440 (Section~\ref{sec:de440}).
+\end{enumerate}
+
+The second layer proved the most productive, and Section~\ref{sec:findings} reports what it found.
+
+% ---------------------------------------------------------------------------
+\section{What implementing the text revealed}
+\label{sec:findings}
+
+\subsection{Readings that produce a wrong computation}
+\label{sec:traps}
+
+Table~\ref{tab:traps} lists nine places where a reasonable reading of the text, or a common modern convention, yielded a program that ran without error and returned a wrong result. Each came to light through a test against a verse or a worked example, and each is now fixed by a test. We report them because they mark the points at which the text is most easily misread; any future implementation, and indeed any paraphrase, would do well to check them.
+
+\begin{table}[ht]
+\centering
+\caption{Readings that ran without error but computed the wrong quantity. ``Detected by'' names the check that exposed each error.}
+\label{tab:traps}
+\small
+\begin{tabularx}{\textwidth}{@{}l L L L@{}}
+\toprule
+Verse & Reading that failed & Symptom and size & Detected by \\
+\midrule
+i.29, i.31--32 & Mercury's and Venus's 17,937,060 and 7,022,376 revolutions used as their mean motion & they belong to the \textit{\'s\=ighrocca}; the \textit{\'s\=ighra} anomaly of ii.44 became identically zero; Mercury 153$^\circ$ from the Sun on 2024-01-01 & elongation bound (28$^\circ$/48$^\circ$) \\
+i.57 & inner \textit{\'s\=ighroccas} given non-zero epoch places (220$^\circ$, 90$^\circ$) & both complete whole revolutions in the half-age to Kali, so both are 0$^\circ$ at the epoch & derivation from i.57 \\
+ii.29, ii.45 & \textit{manda} anomaly taken as planet $-$ apsis & the text defines apsis $-$ planet; the equation of centre changed sign, and the Sun's error swung by $\pm4^\circ$ & worked example; comparison with the modern equation of centre \\
+ii.67 & fixed \textit{kara\d{n}as} 59 and 60 in modern almanac order & the text's order is \'Sakuni, N\=aga, Catu\d{s}pada, Ki\.mstughna & Burgess's table under ii.69 \\
+iv.2 & lunar diameter scaled by $1/(1-0.055\cos\kappa)$ & the disc came out largest at apogee; the verse scales by true over mean motion: $480 \times 853.7/790.6 \div 15 \approx 34.554'$ with the rounded inputs shown for the Kashi example & book example; displayed inputs rounded \\
+xi.14 & \textit{p\=ata} half-duration divided by the rate at which the declinations separate & the verse divides by the difference of the daily motions; durations fell from several hours to 1.7--2.4 hours & verse \\
+xii.78--79 & regents of month and year taken from true solar months and years & uniform 30- and 360-day periods counted from creation (the days from creation to Kali leave 17 and 347) & Burgess i.51--52 \\
+xiv.10 & seasons starting with Vasanta at Taurus & \'Si\'sira begins at Capricorn, so Taurus--Gemini is Gr\=i\d{s}ma; one season off & verse \\
+xiv.17 & mean-longitude Jovian year labelled \texttt{verse} & the verse names the year from Jupiter's heliacal phases; the mean method is Burgess's reading & verse \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Two of these cases merit discussion. The Mercury and Venus error shows why tests must be anchored to the text and not merely to the internal consistency of the code. Before the fix, the mean place and the \textit{\'s\=ighrocca} were one and the same number, so the four-step procedure ran without complaint and returned confident nonsense. Only a bound drawn from the text's own geometry, that an inferior planet cannot stray far from the Sun, exposed it. The lunar diameter shows what a printed example is worth. The formula that failed is the one a modern astronomer would naturally write, and it took the book's arithmetic, reproduced to the third decimal of a minute, to show which reading the verse requires.
+
+\subsection{What a date means: the time base fixed by the epoch}
+\label{sec:timebase}
+
+The epoch of the text (i.50) is midnight at the start of the Kali age \emph{on the meridian of La\.nk\=a}, which passes through Ujjain. A Julian Day derived from the text's day count is therefore reckoned in Ujjain mean time, which runs about 5\,h\,03\,m (75.79/360 of a day) ahead of Universal Time. A modern sidereal-time routine assumes that its input is Universal Time. Given the text's Julian Day unconverted, it silently rotates the sky by about 76$^\circ$, and the error propagates to everything that depends on place: the \textit{lagna}, parallax, \textit{valana}, the rising and setting of the Moon and stars, and the armillary sphere.
+
+The effect is large, yet easy to overlook, because each function remains internally consistent. It surfaced in the solar eclipse of Pau\d{s}a amavasya, Vikrama 1982 (14 January 1926), which Srivastava works for Kashi (Table~\ref{tab:kashi}). With the two clocks mixed, the longitude parallax came out at 3.83 ghatikas against the book's 1.06; with a single clock it comes out at 1.16.
+
+\begin{table}[ht]
+\centering
+\caption{The Kashi solar eclipse of 14 January 1926 and the effect of the time base. The gap that remains after the fix arises mainly from the book's three-pass (\textit{asakrt}) iteration and its larger solar disc, neither of which the edition adopts (Table~\ref{tab:deviations}).}
+\label{tab:kashi}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Quantity & Two clocks mixed & One clock (this edition) & Srivastava \\
+\midrule
+Longitude parallax, first pass (ghatikas) & 3.83 & 1.16 & 1.06 \\
+Latitude parallax (\textit{nati}) & $-12.7'$ & $-33.8'$ & $-34.6'$ \\
+Obscured part (\textit{gr\=asa}) & magnitude 0.50 & $27.5'$ & $25.6'$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The same epoch fixes the zero of the \textit{de\'s\=antara} (i.60--61), which is measured from the La\.nk\=a--Ujjain meridian rather than from Greenwich. Measured in this way, the edition gives Kashi $7^\circ16'58''$, or 1 gha\d{t}ik\=a 12 pala 50 vipala, in agreement with the book's table. We take the point to be general: a computational study of any \textit{siddh\=anta} must establish which clock its epoch defines before comparing event times with anything else.
+
+\subsection{Polar against ecliptic star coordinates}
+\label{sec:polar}
+
+Chapter~8 assigns each junction star a \textit{dhruvaka} and a \textit{vik\d{s}epa}. The coordinate interpretation is disputed. Burgess reads these as polar coordinates tied to a circle of declination; Roy \citep{roy2019} argues instead that the catalogue uses sidereal ecliptic coordinates. The edition implements both readings and keeps them apart: Chapter~8 uses the ecliptic reading, while Chapter~13 uses a polar construction for the armillary sphere under the authors' reading of ii.58. This is a modelling choice, not a settled identification of the historical catalogue's coordinate system. For 2024 the resulting declinations agree to within $0.5^\circ$ for 17 of the 28 stars, but they differ by $2.4^\circ$ for Uttara Bh\=adrapad\=a, $2.0^\circ$ for P\=urva Bh\=adrapad\=a, $1.8^\circ$ for Sv\=at\=i and $1.5^\circ$ for Dhani\d{s}\d{t}h\=a. Against the modern positions quoted by Srivastava, the Chapter~8 ecliptic reading puts Sv\=at\=i's right ascension $16.6^\circ$ out. That comparison motivates retaining a polar alternative, but it does not alone establish which historical convention every verse intends. Table~\ref{tab:deviations} records the computational gap.
+
+The \textit{dhruvakas} offer a second check. viii.1 directs that each star's \emph{share} be multiplied by ten and added to the minutes of the asterisms preceding it, each asterism being $13^\circ20'$ (800 minutes), and viii.2--5 supply the shares:
+\[
+  \text{dhruvaka} = 10\,s_n + 800\,(n-1) \text{ minutes}.
+\]
+Twenty-four stars have a share; three (Uttar\=a\d{s}\=a\d{d}h\=a, \'Srava\d{n}a and Dhani\d{s}\d{t}h\=a), together with Abhijit, are placed by the positions that viii.4 names. The derived values match the catalogue for all 27 stars. The single apparent discrepancy, $0.2'$ for Revat\=i, reflects the catalogue's rounding of $359^\circ50'$ to two decimal places.
+
+\subsection{Quantities the text implies but does not state}
+\label{sec:implicit}
+
+Running the rules allows us to measure quantities that the text leaves implicit.
+
+\paragraph{The \textit{\d{s}a\d{d}a\'s\=itimukhas} (xiv.4--6).} These are four points $86^\circ$ apart counted from Libra~$0^\circ$ (at $266^\circ$, $352^\circ$, $78^\circ$ and $164^\circ$), leaving $16^\circ$ of Virgo over: $4\times86+16=360$. The text's ``eighty-six days'' are thus degrees of the Sun's motion, and since that motion is not uniform, the intervals in days vary. Over the solar years 1800--2200 (1,604 intervals) they range from 84.8 to 89.5 days, the longest falling when the Sun is near his apogee. Burgess finds no stated purpose for the division: the longitudes come from the text, but their use does not.
+
+\paragraph{The Jovian years (xiv.15--17).} The years bear the names of the twelve months, and xiv.15--16 attach the 27 asterisms to the months in pairs, except for three months that take three each: $9\times2+3\times3=27$. A month's name therefore spans between 27 and $40^\circ$ of longitude, whereas a mean Jovian year is exactly $30^\circ$. It follows that the mean reckoning does \emph{not} advance the name by exactly one place each year. Over 1,978 consecutive Jovian years sampled from 1700--2300, the name advances by one place in 83.4 per cent of years, by none in 8.3 per cent and by two in 8.4 per cent, while every run of twelve years returns to its starting name. This is the familiar irregularity of the Jovian cycle \citep{sewell1896}, here derived from the text's own table of months and asterisms rather than assumed. The edition also implements the verse's heliacal method as an option and reports any year for which the two methods give different names.
+
+\paragraph{The scale of the universe (xii.80--90).} The orbits are reckoned per kalpa, and the ether orbit of xii.90 follows exactly from the Moon's revolutions (Section~\ref{sec:edition}). The Sun's orbit comes out at 4,331,500 \textit{yojanas}, which is Burgess's figure.
+
+\paragraph{Instruments (xiii).} All four time-finding instruments return the same time for the same solar altitude, because each reduces to the rule of iii.34--39. The agreement is a consequence of the text's geometry, which the model makes visible by computing each instrument independently.
+
+\subsection{Errors in the printed sources}
+\label{sec:book-errors}
+
+Checking against a printed commentary means deciding, case by case, whether the library or the book is at fault. The OCR transcripts of the Hindi commentary systematically misread the Devanagari numeral nine (\textit{9}) as six (\textit{6}), owing to the shapes of the period typeface. We therefore checked every disagreement involving a 6 or a 9 against the page image before changing the library. The page images confirmed the library's values for Pu\d{s}ya's share of 76 ($106^\circ$), Rohi\d{n}\=i's $49^\circ30'$ (OCR $46^\circ30'$), the Moon's declination of $18^\circ54'11.5''$ in the Chapter~11 example (OCR $15^\circ$), the divisor 900 of x.9 (OCR 600) and the Vikrama years 1991--95 in the Chapter~14 table (OCR 1961--65). The book also contains genuine misprints. In Chapter~3 a zenith distance is printed as $9^\circ51'$, although the sine on the line above corresponds to $10^\circ01'$, the library's value; and Chapter~2 gives two different positions for Jupiter on the same date. In one case the fault appears to lie with an external almanac rather than with the text or the library. The Jupiter of Srivastava's \textit{Visva Pa\~nc\=a\.ng} differs from the edition's by $2.18^\circ$, whereas its Mars, Mercury and Saturn agree to within 1--3$'$. Because the edition's Jupiter matches Burgess's own worked example, we suspect the almanac's Jupiter constant.
+
+\subsection{Deviations kept on purpose}
+\label{sec:deviations}
+
+Several differences from Srivastava are retained deliberately (P2, P4), because the commentary uses modern values or a refinement the edition does not implement. Table~\ref{tab:deviations} lists the principal ones. The audit records each measured gap; only cases with a numerical assertion automatically detect a change in its magnitude.
+
+\begin{table}[ht]
+\centering
+\caption{Documented deviations from the worked examples, retained deliberately.}
+\label{tab:deviations}
+\small
+\begin{tabularx}{\textwidth}{@{}l L L l@{}}
+\toprule
+Area & Edition & Srivastava & Typical gap \\
+\midrule
+Obliquity & $24^\circ$ (text) & $23^\circ27'$ (modern) & declination 22--28$'$ \\
+\textit{Aya\d{n}\=a\.m\'sa}, 1920s & text's trepidation, $21^\circ24'$ & almanac, $22^\circ41'$ & $1^\circ17'$ \\
+Eclipse discs (iv) & solar disc fixed & scaled by anomaly & 1--5$'$ \\
+Eclipse timing & one pass & three-pass \textit{asakrt} iteration & 5--20 min \\
+Eclipse projection (vi) & straight chords & changing latitude & \textit{valana} 0.6--$1.2^\circ$ \\
+Star coordinates (viii) & ecliptic reading in Ch.~8 & polar (ii.58) & up to $2.4^\circ$ in declination \\
+Heliacal limits (ix) & ecliptic elongation & \textit{k\=al\=a\.m\'sa} & 2.6--$3.5^\circ$ for Venus \\
+\textit{P\=ata} (xi) & text's Moon and node & Nautical Almanac & declination $1.8^\circ$ \\
+Jovian year (xiv) & twelfth of a revolution (Burgess) & Sun--Jupiter conjunction interval & method \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------------
+\section{How accurate is the edition? A bound from DE440}
+\label{sec:de440}
+
+A companion, unpublished study \citep{nigam2026de440} compares this implementation's tropical longitudes of the Sun, the Moon, the five planets and the lunar node with JPL DE440 \citep{park2021}. It uses 40,176 epochs at ten-day intervals from 1550 to 2649\,CE, converting the Ujjain-mean-time base to Terrestrial Time through $\Delta T$. Through 2249\,CE its reported per-century RMS error is 1.14--1.93$^\circ$ for the Sun, 1.69--2.29$^\circ$ for the Moon and 1.88--9.45$^\circ$ for the five planets. The companion analysis attributes much of the residual trend to drift in the adopted mean motions and the trepidation model of precession, which reverses in 2299\,CE. Its 40,176 epochs, eight bodies and two time variants yield 642,816 residuals; an independent reconstruction from the kernel agreed with stored residuals to within $5.5\times10^{-7}$ degrees. This checks the residual arithmetic and comparison pipeline under the chosen conventions. It does not by itself verify every reading of the Sanskrit or rule out implementation error as a contributor to the residuals. The comparison is therefore a measurement of this implementation, not proof that it uniquely reproduces the text or historical practice.
+
+% ---------------------------------------------------------------------------
+\section{Availability and reproducibility}
+\label{sec:availability}
+
+The code for version 2.0.0 is at \href{https://github.com/mrashutoshnigam/surya-siddhanta}{the public project repository} \citep{nigam2026software}; this paper refers to main-branch commit \texttt{36d8c53e714d} (full hash in reference~\citep{nigam2026software}). It contains the calculation library, tests, four catalogues, the companion DE440 manuscript, stored results and a regeneration guide. The DE440 run additionally requires the separately obtained JPL kernel specified by that guide. The reported Srivastava audit counts refer to an audit branch and should be treated as reported results until the cases and exact revision are archived with the paper. The repository also contains web and conversational interfaces built on the library; they lie outside the scope of this paper.
+
+% ---------------------------------------------------------------------------
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Implementation as a reading.} The findings of Section~\ref{sec:findings} share a pattern. None of them was visible in a paraphrase; each emerged only when a number came out impossible or disagreed with a printed example. The inner-planet error and the time-base error both produced programs that were internally consistent and confidently wrong. The lesson is not that implementations are fragile. It is rather that a reading of a procedural text is fully specified only once it runs, and that a test suite anchored to the verses records that specification in a form others can check.
+
+\paragraph{What a test suite adds to an edition.} A printed edition records its editor's readings in notes. Here each reading is a function and each check a test, so that a disagreement becomes a concrete change: a scholar who reads ii.58 differently can alter one function and see at once every star, hoop and rising time it affects. The explicit \texttt{source} label preserves a distinction central to historical work, between what the verse says and what a commentator has supplied.
+
+\paragraph{Limitations.} The edition rests principally on a single translation. Burgess's readings are generally followed and his commentary labelled as such, but the Sanskrit was not re-edited for this work. The Hindi worked examples were consulted through OCR, and the page images were checked only where digits were in doubt. Some verses are not implemented, and the documentation lists them chapter by chapter; among them are the disc diameters of vii.13--14, the visibility limits of the stars in ix.12--18, the Moon's visibility limit in x.1, the equation of time, and the descriptive and astrological verses. Because modern trigonometric functions stand in wherever the text gives a geometric rule without a table, the edition does not reproduce the rounding of historical hand computation. The edition covers the computable core of every chapter, not every verse.
+
+% ---------------------------------------------------------------------------
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented an executable edition of the computable core across all fourteen chapters of the \SuSi{}. It is traceable to the verses, it separates verse from commentary, and it is assessed through verse-anchored tests, selected worked examples of a printed commentary, and a modern-ephemeris comparison of the longitude path. Building it yielded findings about the text itself. It identified nine places where a reasonable reading computes the wrong quantity. It showed that the epoch of i.50 fixes the meaning of a date, and that neglecting this rotates the sky by about 76$^\circ$. It measured the gap between the polar and ecliptic readings of the star coordinates. And it derived quantities the text implies without stating: the \textit{\d{s}a\d{d}a\'s\=itimukha} intervals, the irregular advance of the Jovian names, the \textit{dhruvakas} from their shares, and the ether orbit of xii.90. The public code and tests let others check and contest the implementation; publishing the complete audit cases and a fixed revision would make the worked-example classification fully reproducible. We hope that the same method, implementing a text and testing it against its own worked examples, will be applied to other \textit{siddh\=antas}.
+
+% ---------------------------------------------------------------------------
+\section*{Statements}
+
+\paragraph{Author contributions.} Ashutosh Nigam conceived the work, wrote the software and its tests, carried out the verification and wrote the manuscript. Dinesh Mohan Joshi provided guidance on the Sanskrit text and its astronomy, checked the readings adopted in the edition, and reviewed the work and the manuscript. Both authors approved the final manuscript.
+
+\paragraph{Competing interests.} The authors declare no competing interests.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ---------------------------------------------------------------------------
+\appendix
+\section{Verses not implemented, by chapter}
+\label{app:notdone}
+
+\small
+\begin{longtable}{@{}l p{0.8\textwidth}@{}}
+\toprule
+Ch. & Not implemented (reason) \\
+\midrule
+\endhead
+1 & Civil-calendar-to-luni-solar input conversion for the text's \textit{aharga\d{n}a} route; the route itself is implemented as \texttt{ahargana\_from\_luni\_solar} \\
+3 & Equation of time, refraction, sundial-to-standard-time conversion (in the commentary, not the verses) \\
+4 & iv.8, 15, 17--26 (eclipse colour, effects and verses the library does not compute) \\
+4--5 & Three-pass (\textit{asakrt}) iteration; anomaly scaling of the solar disc \\
+7 & vii.7--10, 13--18 (disc diameters and the dependent rules) \\
+9 & ix.4--5, 11, 16--17 (ascensional equivalents); ix.12--18 (visibility limits of the stars) \\
+10 & x.1 (the Moon's visibility limit), x.2--8 (setting interval, elevation of the horns) \\
+11 & xi.4--5, 16--18 (character and effects), 20--23 (the asterism-counted third \textit{yoga}) \\
+12 & Descriptive verses (creation, the underworlds, Maya's questions) and xii.91 onwards \\
+13 & xiii.1--3, 16--19, 21--22 (narrative and construction detail) \\
+14 & xiv.3, 22--27 and Burgess's appendix \\
+\bottomrule
+\end{longtable}
+
+\end{document}
