@@ -29,7 +29,8 @@ dependencies = ["numpy>=1.24.0"]
 [project.optional-dependencies]
 plot = ["matplotlib>=3.7"]
 dev  = ["pytest>=7.4", "pytest-cov>=4.1", "httpx>=0.27"]
-api  = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "openai>=1.40"]
+api  = ["fastapi>=0.110", "pydantic>=2.6,<3", "uvicorn[standard]>=0.29", "openai>=1.40"]
+astronomy = ["skyfield>=1.49,<2"]
 mcp  = ["mcp>=2.0,<3"]
 
 # The published distribution is the calculation library only: the chapter

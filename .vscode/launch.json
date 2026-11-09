@@ -83,6 +83,41 @@
                 "PYTHONPATH": "${workspaceFolder}/src"
             },
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Docker: Build and Push (Docker Hub)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/docker/publish.ps1\" -Version ${input:imageVersion}",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Docker: Build Only (no push)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/docker/publish.ps1\" -Version ${input:imageVersion} -SkipPush",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Docker: Build UI image (Render)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "docker build -f Dockerfile.ui -t surya-siddhanta-render .",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Docker: Build (Render) and Push (Docker Hub)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "docker build -f Dockerfile.ui -t mrashutoshnigam/surya-siddhanta:latest -t mrashutoshnigam/surya-siddhanta:${input:imageVersion} . && docker push mrashutoshnigam/surya-siddhanta:latest && docker push mrashutoshnigam/surya-siddhanta:${input:imageVersion}",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Docker: Build + Run UI as on Render (:10000)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "docker build -f Dockerfile.ui -t surya-siddhanta-render . && docker run --rm --name surya-siddhanta-render -p 10000:10000 -e RENDER=true -e PORT=10000 -e ENABLE_TLS=0 -e FORCE_HTTPS=0 -e DEEPSEEK_API_KEY -e OPENROUTER_API_KEY surya-siddhanta-render",
+            "cwd": "${workspaceFolder}"
         }
     ],
     "inputs": [
@@ -91,6 +126,12 @@
             "type": "promptString",
             "description": "Conda environment to run in (looked up under ~/miniconda3/envs)",
             "default": "surya"
+        },
+        {
+            "id": "imageVersion",
+            "type": "promptString",
+            "description": "Image version tag (published alongside :latest)",
+            "default": "0.1"
         }
     ]
 }

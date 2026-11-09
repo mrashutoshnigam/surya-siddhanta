@@ -160,22 +160,22 @@ def _card_events(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "xi.2-3": (
         "2-3", "The longitude-sum rule",
-        "Vyatipata falls where the tropical longitudes sum to 180 degrees, Vaidhrita where they sum to 360.",
+        "Find the longitude conditions for the two patas: tropical longitudes summing to 180° for Vyatipata or 360° for Vaidhrita.",
         True, _card_sum_rule,
     ),
     "xi.4-11": (
         "4-11", "The Moon's corrected declination",
-        "Her declination is corrected by her latitude, resolved along the declination circle through the ayana valana.",
+        "Correct the Moon's declination for its latitude, using the ayana valana to resolve the correction along the declination circle.",
         True, _card_declination,
     ),
     "xi.12-14": (
         "12-14", "The true instant and its duration",
-        "The true pata falls where the corrected declinations are equal; its half-duration is the combined semi-diameters over the difference of the daily motions.",
+        "Find the true pata when the corrected declinations are equal. Divide the combined semidiameters by the difference in daily motions to calculate its half-duration.",
         True, _card_timing,
     ),
     "xi.19": (
         "19", "Twice, or not at all",
-        "Near the equator a pata can recur within the same crossing; away from it, the declination condition can fail to be met at all.",
+        "Explore why a pata can recur within one crossing near the equator, or fail to meet the declination condition farther from it.",
         True, _card_events,
     ),
 }

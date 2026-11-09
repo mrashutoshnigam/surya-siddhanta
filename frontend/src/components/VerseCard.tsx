@@ -52,8 +52,8 @@ export function VerseCard({
         </blockquote>
       ) : (
         <p className="verse-text-missing">
-          Verse text unavailable — the corpus is not reachable, or these
-          verses are among its gaps.
+          The text for these verses could not be loaded or is missing from the
+          available collection. You can still use the calculation below.
         </p>
       )}
 

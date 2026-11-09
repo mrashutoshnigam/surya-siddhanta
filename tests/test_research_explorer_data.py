@@ -1,6 +1,7 @@
 """Validate every explorer group against the existing paper tables and samples."""
 import csv
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -10,7 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_all_research_groups_preserve_saved_evidence():
-    data = json.loads((ROOT / "frontend/src/pages/research/research-data.json").read_text(encoding="utf-8"))
+    spec = importlib.util.spec_from_file_location("research_export", ROOT / "docs/evaluation/export_research_explorer.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    data = module.build()
     assert len(data["series"]) == 16
     for variant in ("naive", "deltat"):
         source = ROOT / f"docs/evaluation/residuals_{variant}.csv"
@@ -28,3 +32,5 @@ def test_all_research_groups_preserve_saved_evidence():
                 assert len(window["bins"]) == 20
                 assert sum(b["n"] for b in window["bins"]) == window["n"]
                 assert max(max(abs(b["min"]), abs(b["max"])) for b in window["bins"]) == window["max_abs"]
+    saved = json.loads((ROOT / "frontend/src/pages/research/research-data.json").read_text())
+    assert saved == data

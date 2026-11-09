@@ -116,7 +116,7 @@ export function Chapter7() {
     <div className="book-page">
       <PageHeader
         title="Chapter 7 — Of Planetary Conjunctions"
-        subtitle="The verses of the chapter that compute something, for a pair of bodies and the conjunction nearest a date you choose."
+        subtitle="Choose two bodies and a date to find their nearest conjunction. Follow the timing calculation and compare their latitudes at the encounter."
       />
 
       <div className="book-datebar">
@@ -146,8 +146,7 @@ export function Chapter7() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -186,11 +185,11 @@ export function Chapter7() {
               );
             })}
             <p className="ss-note">
-              Not laid out here: verses 7 to 10 (the corrections for meridian distance and
-              declination), 13 and 14 (the diameters of the star-planets), 15 to 18 (the gnomon
-              construction) and 24. The library has no calculation for them. The victor in an
-              encounter is the northern planet; the further tests of brightness and size in
-              v.20-22 are not modelled.
+              These cards leave out verses 7-10 on meridian-distance and declination
+              corrections, 13-14 on planetary diameters, 15-18 on the gnomon construction,
+              and verse 24. Those procedures are not implemented here. The encounter
+              result names the northern planet as victor; it does not apply the
+              brightness and size tests of verses 20-22.
             </p>
           </div>
         </div>

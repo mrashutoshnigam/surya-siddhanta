@@ -34,7 +34,8 @@ export function V60DayLength({ card }: { card: DayLengthCard }) {
         ]}
       />
       <p className="verse-note">
-        Day and night follow the library&apos;s hour-angle formula, not the text&apos;s tabular rule.
+        These day and night lengths use the model&apos;s hour-angle formula.
+        The text gives a tabular rule, which is not worked through here.
       </p>
     </>
   );

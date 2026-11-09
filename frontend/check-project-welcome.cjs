@@ -43,7 +43,7 @@ async function checkResourceLinks(dialog) {
     }
     await page.keyboard.press('Shift+Tab');
     assert(await dialog.evaluate(el => el.contains(document.activeElement)));
-    const output = path.join(os.tmpdir(), "surya-siddhanta-checks", 'project-welcome');
+    const output = path.join(os.tmpdir(), 'surya-siddhanta-checks', 'project-welcome');
     await fs.mkdir(output, { recursive: true });
     await dialog.getByRole('heading', { level: 2 }).focus();
     await page.screenshot({ path: path.join(output, 'desktop.png') });
@@ -64,13 +64,43 @@ async function checkResourceLinks(dialog) {
     await direct.goto('http://127.0.0.1:5173/learn');
     await direct.getByRole('heading', { name: 'Choose your learning path', exact: true }).waitFor();
     assert.equal(await direct.getByRole('dialog').count(), 0);
+    // The shared footer and manual introduction must work on every route,
+    // including fresh deep links that do not automatically show the dialog.
+    const appSource = await fs.readFile(path.join(__dirname, 'src/App.tsx'), 'utf8');
+    const routes = [...appSource.matchAll(/path="([^"]+)"/g)].flatMap(([, route]) =>
+      route === '/book/:chapter' ? Array.from({ length: 14 }, (_, index) => `/book/${index + 1}`) : [route],
+    );
+    for (const route of routes.filter(route => route !== '/positions')) {
+      await direct.goto(`http://127.0.0.1:5173${route}`);
+      const footer = direct.locator('footer.legal-band');
+      const about = footer.getByRole('button', { name: 'About this project', exact: true });
+      await about.waitFor({ timeout: 6000 });
+      for (const text of ['Ashutosh Nigam', 'Roll No: M25AI2006', 'Indian Institute of Technology Jodhpur']) {
+        assert((await footer.innerText()).includes(text), `Footer missing ${text} on ${route}`);
+      }
+      assert.equal(await direct.getByRole('dialog').count(), 0, `No automatic introduction on ${route}`);
+      await about.click();
+      const introduction = direct.getByRole('dialog', { name: 'Computational Implementation of the Surya Siddhanta' });
+      await introduction.waitFor();
+      await introduction.getByRole('img', { name: 'IIT Jodhpur logo' }).evaluate(image => image.decode());
+      await direct.keyboard.press('Escape');
+      await introduction.waitFor({ state: 'detached' });
+      assert(await about.evaluate(button => button === document.activeElement), `Focus restored on ${route}`);
+    }
+    await direct.evaluate(() => localStorage.removeItem('ss.project-introduction.dismissed'));
     await direct.goto('http://127.0.0.1:5173/positions');
     await direct.getByRole('dialog').waitFor();
     await direct.getByRole('button', { name: 'Close project introduction' }).click();
     await direct.getByRole('dialog').waitFor({ state: 'detached' });
     await fresh.close();
+    // Use a non-home route to cover the newly available mobile footer action.
+    await page.goto('http://127.0.0.1:5173/learn');
+    await page.getByRole('heading', { name: 'Choose your learning path', exact: true }).waitFor();
     await page.setViewportSize({ width: 390, height: 844 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.locator('footer.legal-band').scrollIntoViewIfNeeded();
+    assert(await page.locator('footer.legal-band').evaluate(el => el.scrollWidth <= el.clientWidth + 1));
+    await page.screenshot({ path: path.join(output, 'mobile-footer.png') });
     await page.getByRole('button', { name: 'About this project', exact: true }).click();
     await dialog.waitFor();
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
@@ -99,7 +129,7 @@ async function checkResourceLinks(dialog) {
     await noStorage.getByRole('dialog').waitFor();
     await blocked.close();
     assert.deepEqual(errors, []);
-    console.log('PASS: first visit, content/logo/external PDF links, keyboard trap, Escape, persistence, reopen/focus restoration, fresh direct route, close/backdrop, blocked storage, mobile, dark theme');
+    console.log(`PASS: About/footer credits on ${routes.length} routes; first visit, content/logo/external PDF links, keyboard trap, Escape, persistence, reopen/focus restoration, fresh direct route, close/backdrop, blocked storage, mobile, dark theme`);
   } finally {
     await browser.close();
   }

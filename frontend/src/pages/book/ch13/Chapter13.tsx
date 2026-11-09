@@ -72,7 +72,7 @@ export function Chapter13() {
     <div className="book-page">
       <PageHeader
         title="Chapter 13 — Of the Armillary Sphere and other Instruments"
-        subtitle="The hoops, the lagnas and the instruments of time, for a date, a place and a gnomon's shadow you choose."
+        subtitle="Explore the rings of the armillary sphere and the instruments used to tell time. Choose a date and place, then enter a gnomon's shadow to compare the readings."
       />
 
       <div className="book-datebar">
@@ -104,8 +104,7 @@ export function Chapter13() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -144,10 +143,11 @@ export function Chapter13() {
               );
             })}
             <p className="ss-note">
-              Not laid out: v.1-3, 16-19 and 21-22 (building and caring for the sphere, the seven
-              sages), which have nothing to compute. The 3D sphere is on the Instruments page.
-              Only the gnomon is the text&apos;s own; the wheel, arc, staff and the clepsydra&apos;s
-              dimensions come from Burgess&apos;s notes.
+              The passages on building and caring for the sphere and on the seven sages
+              (v.1-3, 16-19 and 21-22) have no calculation cards here. You can explore
+              the 3D sphere on the Instruments page. The gnomon method comes from the
+              text; the wheel, arc and staff methods, and the clepsydra&apos;s dimensions,
+              come from Burgess&apos;s notes.
             </p>
           </div>
         </div>

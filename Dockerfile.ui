@@ -1,0 +1,120 @@
+# Single-image deployment: React UI on one public port, everything else internal.
+#
+# nginx is the only listener bound to a public interface. The FastAPI backend
+# runs inside the same container on 127.0.0.1:8000 and is reachable solely
+# through nginx's /api/ proxy, so no application port is published.
+#
+# Ports are chosen at runtime by the entrypoint:
+#   * Render   -- http on $PORT (Render sets it, 10000 by default); Render's
+#                 edge terminates TLS, so no in-container 443 listener.
+#   * Anywhere else -- http on 80 and https on 443 with a self-signed or
+#                 mounted certificate.
+#
+# Build:
+#   docker build -f Dockerfile.ui -t suryasiddhanta-ui:latest .
+# Run locally:
+#   docker run -p 80:80 -p 443:443 -e DEEPSEEK_API_KEY=... suryasiddhanta-ui:latest
+# Run as Render would:
+#   docker run -p 10000:10000 -e PORT=10000 -e RENDER=true suryasiddhanta-ui:latest
+
+# --- stage 1: build the React bundle ---------------------------------------
+FROM node:20-slim AS frontend
+
+WORKDIR /build
+
+# package*.json first so the dependency layer survives source-only changes.
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+COPY frontend/tsconfig.json frontend/vite.config.ts frontend/index.html ./
+COPY frontend/src ./src
+# Vite copies public assets (institute logo, planet textures and project PDFs) into dist.
+COPY frontend/public ./public
+RUN npx tsc -b && npx vite build
+
+# --- stage 2: runtime ------------------------------------------------------
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app/src \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# nginx serves the UI and proxies /api; openssl generates the fallback
+# self-signed certificate; setpriv (util-linux) drops the backend to a
+# non-root user without an intermediate supervising process.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends nginx openssl util-linux \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /etc/nginx/sites-enabled/default \
+    && ln -sf /dev/stderr /var/log/nginx/error.log \
+    && ln -sf /dev/stdout /var/log/nginx/access.log
+# ^ Debian's nginx.conf writes master-level errors (config, worker crashes) to
+#   /var/log/nginx/error.log, where the platform's log viewer never sees them.
+
+WORKDIR /app
+
+COPY pyproject.toml README.md README_PYPI.md LICENSE ./
+COPY src ./src
+# Only the API extra: the Gradio and Streamlit surfaces are deliberately not
+# part of this image.
+#
+# pyproject.toml packages only the calculation library (suryasiddhanta and
+# suryasiddhanta.planets) for PyPI, so the install below supplies the
+# dependencies but leaves out the api, chatbot and corpus subpackages and their
+# non-library data (corpus/config/*.json, data/glossary.json). PYTHONPATH puts
+# the full source tree ahead of site-packages so the whole app imports from
+# /app/src instead of the trimmed installed copy.
+RUN pip install ".[api,astronomy]"
+ENV PYTHONPATH=/app/src
+
+# Immutable kernel is verified during build; runtime never downloads it.
+COPY docker/fetch_ephemeris.py /app/docker/fetch_ephemeris.py
+RUN python /app/docker/fetch_ephemeris.py --destination /data/ephemeris/de440.bsp \
+    && chmod 644 /data/ephemeris/de440.bsp
+ENV SS_EPHEMERIS_PATH=/data/ephemeris/de440.bsp
+
+COPY --from=frontend /build/dist /srv/www
+
+# nginx.conf and nginx-tls.conf are templates the entrypoint renders at start,
+# since the listen port is only known at runtime on Render.
+COPY docker/nginx.conf       /etc/nginx/templates/ss.conf
+COPY docker/nginx-tls.conf   /etc/nginx/templates/ss-tls.conf
+COPY docker/nginx-site.conf  /etc/nginx/snippets/ss-site.conf
+COPY docker/ui-entrypoint.sh /usr/local/bin/ui-entrypoint.sh
+# The repo is developed on Windows; strip any CRLF so the shebang stays valid.
+RUN sed -i 's/\r$//' /usr/local/bin/ui-entrypoint.sh \
+    && chmod +x /usr/local/bin/ui-entrypoint.sh \
+    && mkdir -p /etc/nginx/certs /etc/nginx/snippets \
+    && useradd --system --no-create-home --shell /usr/sbin/nologin ssapp
+
+# The complete Burgess JSON export (500 verses, chapters 1-14), baked into the image
+# so the citation/RAG tools work with no mount and no host path. The pipeline's
+# .db is a 0-byte placeholder between OCR runs, so the JSON is the only
+# populated source; SS_CORPUS_DB_PATH deliberately points at a file that does
+# not exist, which is what makes retrieve.py take the JSON branch. Mount a real
+# indexed database over /data/corpus/surya_siddhanta.db to prefer it instead.
+#
+# PORT and ENABLE_TLS are deliberately not set here: Render injects PORT, and
+# the entrypoint infers ENABLE_TLS from Render's own RENDER variable.
+COPY src/suryasiddhanta/corpus/data/corpus.json /data/corpus/corpus.json
+ENV SS_CORPUS_JSON_PATH=/data/corpus/corpus.json \
+    SS_CORPUS_DB_PATH=/data/corpus/surya_siddhanta.db \
+    API_PORT=8000 \
+    API_WORKERS=1 \
+    FORCE_HTTPS=0
+
+# Index the export at build time rather than on the first search. retrieve.py
+# caches the built index by source path, timestamp, size and schema version,
+# so this prebuilt copy is reused as-is at runtime. It is chowned to
+# ssapp because /tmp is sticky: a root-owned cache could not be replaced by the
+# backend if a newer corpus were ever mounted in.
+RUN python -c "import shutil; from suryasiddhanta.corpus import retrieve; path = retrieve._corpus_db(); shutil.chown(path, user='ssapp', group='ssapp'); print('corpus backend:', retrieve.backend())"
+
+# Documentation only -- Render routes to whatever $PORT the container listens on.
+EXPOSE 80 443 10000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD python -c "import os,urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:%s/api/health' % os.environ.get('PORT','80'), timeout=4).status == 200 else 1)"
+
+ENTRYPOINT ["/usr/local/bin/ui-entrypoint.sh"]

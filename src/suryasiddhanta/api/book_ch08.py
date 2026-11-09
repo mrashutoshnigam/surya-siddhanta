@@ -201,22 +201,22 @@ def _card_conjunctions(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Optional[str], Callable[[_Ctx], Dict[str, Any]]]] = {
     "viii.1-4": (
         "1-4", "The polar longitudes (dhruva)",
-        "Each asterism's share times ten, plus the minutes of the bhogas before it; four are placed by position.",
+        "Calculate each junction-star's longitude from its asterism's share multiplied by ten, plus the minutes in the preceding bhogas. Four stars are specified by position.",
         False, "1-4", _card_longitudes,
     ),
     "viii.5-9": (
         "5-9", "The latitudes (viksepa)",
-        "The latitude of each junction-star, north or south of its point of declination.",
+        "Read each junction-star's latitude north or south of its point of declination.",
         False, "5-9", _card_latitudes,
     ),
     "viii.1-9": (
         "1-9", "Where the star stands",
-        "The chosen star's sidereal and tropical place, its equatorial coordinates, and its rising and setting.",
+        "Find your chosen star's sidereal, tropical and equatorial coordinates, along with its rising and setting times.",
         True, "1-9", _card_position,
     ),
     "viii.14-15": (
         "14-15", "A planet meets a star",
-        "The method of conjunction taught in Chapter 7, applied to a planet and a junction-star.",
+        "Apply Chapter 7's conjunction method to a planet and a junction-star.",
         True, "14-15", _card_conjunctions,
     ),
 }

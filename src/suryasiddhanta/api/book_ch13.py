@@ -151,27 +151,27 @@ def _card_time(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "xiii.4-9": (
         "4-9", "The hoops of the sphere",
-        "Equator, ecliptic and colures are great hoops; the Sun has a diurnal hoop at each sign boundary, and the stars one each.",
+        "Compare the great hoops of the equator, ecliptic and colures with the Sun's diurnal hoops at sign boundaries and the individual stellar hoops.",
         False, _card_hoops,
     ),
     "xiii.10-11": (
         "10-11", "Equinoxes, solstices and the signs",
-        "The equinoxes lie where the equator meets the equinoctial colure, the solstices 24 degrees off it; the chord of thirty degrees divides the ecliptic into signs.",
+        "Locate the equinoxes where the equator meets the equinoctial colure, and the solstices 24° from the equator. Use the chord of 30° to divide the ecliptic into signs.",
         False, _card_points,
     ),
     "xiii.13-14": (
         "13-14", "The three lagnas",
-        "The orient point is the ecliptic point on the eastern horizon, the occident point on the western, and the meridian point at mid-heaven.",
+        "Locate three points on the ecliptic: orient on the eastern horizon, occident on the western horizon and meridian at mid-heaven.",
         True, _card_lagnas,
     ),
     "xiii.14-15": (
         "14-15", "The sines and the raised pole",
-        "The earth-sine, day-radius and ascensional-difference sine follow from the Sun's declination; the pole stands above the horizon by the latitude.",
+        "Calculate the earth-sine, day-radius and ascensional-difference sine from the Sun's declination. Compare the pole's altitude with the observer's latitude.",
         True, _card_sines,
     ),
     "xiii.20-24": (
         "20-24", "Time from the instruments",
-        "The gnomon's shadow gives the Sun's altitude and so the time; the wheel, arc and staff of the commentary give the same time by their own measures. The clepsydra sinks sixty times a day.",
+        "Use a gnomon's shadow to find the Sun's altitude and the time. Compare the wheel, arc and staff methods from the commentary, and the clepsydra that sinks sixty times a day.",
         True, _card_time,
     ),
 }

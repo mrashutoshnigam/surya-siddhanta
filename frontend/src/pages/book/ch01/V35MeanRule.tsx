@@ -66,7 +66,7 @@ export function V35MeanRule({ card, rashis }: { card: MeanRuleCard; rashis: stri
         ])}
       />
       <p className="verse-note">
-        The table holds the page's date; the slider above moves only this card.
+        The table uses your chosen date. Moving the slider changes only this card.
         Sidereal year: {fmt(card.sidereal_year_days)} days.
       </p>
     </>

@@ -154,37 +154,37 @@ def _card_orbits(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "xii.42-44": (
         "42-44", "How the sphere turns at a latitude",
-        "The pole stands above the horizon by the latitude; at the equator the asterisms pass overhead, at a pole they circle the horizon.",
+        "The pole's altitude equals the observer's latitude. Compare the equator, where the asterisms pass overhead, with the poles, where they circle the horizon.",
         False, _card_sphere,
     ),
     "xii.59-61": (
         "59-61", "The earth, its parallel and the polar day",
-        "The circumference is the diameter times the root of ten; the declination in yojanas, taken from a quarter of it, gives the parallel of the sixty-nadi day. Desantara is the place's distance from Lanka's meridian.",
+        "Find the circumference as diameter × √10. Subtract the declination expressed in yojanas from a quarter-circumference to locate the parallel of the sixty-nadi day. Desantara measures distance from Lanka's meridian.",
         False, _card_earth,
     ),
     "xii.63-68": (
         "63-68", "Where the Sun is lost, and where he is overhead",
-        "The same subtraction at one and two signs of longitude gives the parallels beyond which the Sun is unseen for whole signs; a fifteenth of the circumference is the band he crosses overhead.",
+        "Repeat the subtraction at one and two signs of longitude to locate the parallels beyond which the Sun stays unseen for whole signs. The overhead-Sun band spans a fifteenth of the circumference.",
         False, _card_limits,
     ),
     "xii.70-71": (
         "70-71", "The cities' clock",
-        "The four cities stand a quadrant apart on the equator: when the Sun is overhead at one he is rising at the next, at midnight at the third.",
+        "Compare the times at four equatorial cities a quadrant apart. When the Sun is overhead at one, it is rising at the next and it is midnight at the opposite city.",
         False, _card_clock,
     ),
     "xii.74": (
         "74", "The days of the gods, the manes and Brahma",
-        "The gods' day and night are a year, the manes' a lunar month, and Brahma's an aeon of 4,320,000,000 years.",
+        "Compare the longer days of the text: a year for the gods, a lunar month for the Fathers, and an Aeon of 4,320,000,000 years for Brahma.",
         True, _card_days,
     ),
     "xii.78-79": (
         "78-79", "The regents of day, month and year",
-        "Counting downward from Saturn: the fourth is the day's regent, the third the year's, and from the Moon upward the month's.",
+        "Follow the regent-counting rules: downward from Saturn to the fourth for the day and the third for the year, and upward from the Moon for the month.",
         True, _card_regents,
     ),
     "xii.80-90": (
         "80-90", "The orbits of the planets",
-        "Every planet covers the same distance in a kalpa, so each orbit is proportional to its period; the Moon's 324,000 yojanas fixes the scale.",
+        "Derive each orbit from its period, using the rule that all planets travel the same distance in a kalpa. The Moon's orbit of 324,000 yojanas sets the scale.",
         False, _card_orbits,
     ),
 }

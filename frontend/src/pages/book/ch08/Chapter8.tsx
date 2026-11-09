@@ -81,7 +81,7 @@ export function Chapter8() {
     <div className="book-page">
       <PageHeader
         title="Chapter 8 — Of the Stars"
-        subtitle="The positions of the twenty-seven junction-stars from the verses' own figures, and one star placed on a date you choose."
+        subtitle="Explore the positions of the twenty-seven junction-stars using the chapter's figures. Choose a star, date and place to calculate its position and rising and setting times."
       />
 
       <div className="book-datebar">
@@ -125,8 +125,7 @@ export function Chapter8() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -167,11 +166,11 @@ export function Chapter8() {
               );
             })}
             <p className="ss-note">
-              The corpus export numbers this chapter out of step with the verses: its records
-              after 8.5 carry the translator's notes on the names, not verses 6 to 28. Where
-              a card shows no verse text, that is why. The table cards read the shares and
-              latitudes from the records that hold them; the applied cards compute from the
-              library. The library reads each latitude as ecliptic; the verses call it polar.
+              The available text has a numbering mismatch: records after 8.5 contain the
+              translator's notes on names in place of verses 6-28. Some cards therefore
+              have no quoted verse. The tables use the records containing the shares
+              and latitudes; the position cards use the calculation model. That model
+              treats latitude as ecliptic, while the verses describe it as polar.
             </p>
           </div>
         </div>

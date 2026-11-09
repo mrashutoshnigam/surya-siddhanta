@@ -183,37 +183,37 @@ def _card_converter(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "xiv.1-2": (
         "1-2", "The nine modes of time",
-        "Brahma's, the gods', the Fathers', Prajapati's, Jupiter's, solar, civil, lunar and sidereal time; four are used in practice.",
+        "Compare the nine modes: Brahma's, the gods', the Fathers', Prajapati's, Jupiter's, solar, civil, lunar and sidereal time. The text identifies four for practical use.",
         True, _card_manas,
     ),
     "xiv.4-6": (
         "4-6", "The shadasitimukhas",
-        "Four points at 86-degree intervals from Libra leave sixteen degrees at the end of Virgo. The text gives where they are; Burgess finds nothing on what they are for.",
+        "Locate four points at intervals of 86° from Libra, leaving 16° at the end of Virgo. Burgess notes that their purpose is not explained in the text.",
         True, _card_shadasitimukhas,
     ),
     "xiv.7-11": (
         "7-11", "The solar year and the sign entries",
-        "Two equinoxes and two solstices lie on the same diameter; the Sun's entries into the twelve signs divide the year into progresses, seasons and months. The auspicious time at each entry is the time his disk takes to cross the boundary.",
+        "Follow the Sun's entries into the twelve signs through the half-years, seasons and months, with the equinoxes and solstices as reference points. At each entry, the auspicious interval lasts as long as the solar disk takes to cross the boundary.",
         True, _card_sankrantis,
     ),
     "xiv.12-14": (
         "12-14", "The tithi and the day of the Fathers",
-        "A tithi is twelve degrees of elongation, thirty make a lunar month, and a lunar month is one day and night of the Fathers: new moon their midday, full moon their midnight.",
+        "A tithi spans 12° of elongation, and thirty tithis make a lunar month. For the Fathers, that month is a day and night, with midday at new moon and midnight at full moon.",
         True, _card_fathers,
     ),
     "xiv.15-16": (
         "15-16", "The months and their asterisms",
-        "The months from Kartika take the asterisms from Krittika two by two; the fifth, the last but one and the last take three.",
+        "Match the months beginning with Kartika to asterisms beginning with Krittika. Each takes two asterisms, except the fifth, penultimate and final months, which take three.",
         True, _card_asterisms,
     ),
     "xiv.17": (
         "17", "Jupiter's years",
-        "The years of Jupiter's twelve-year cycle bear the names of the months, from the asterism he stands in. The text's own rule names the year from his heliacal rising.",
+        "Find the month-name assigned to Jupiter's year from his asterism. The text bases the year on his heliacal rising; the card also shows the mean-motion method.",
         True, _card_jupiter,
     ),
     "xiv.18-21": (
         "18-21", "Civil time, and the times of the gods and of Brahma",
-        "Civil time runs from sunrise to sunrise. The gods' day is a year, Prajapati's a manvantara of 71 mahayugas, Brahma's a kalpa; fourteen manvantaras and fifteen sandhis make one.",
+        "Compare civil days from sunrise to sunrise with the longer measures: a year for the gods' day, 71 mahayugas for Prajapati's day and a kalpa for Brahma's. Fourteen manvantaras and fifteen sandhis make a kalpa.",
         False, _card_converter,
     ),
 }

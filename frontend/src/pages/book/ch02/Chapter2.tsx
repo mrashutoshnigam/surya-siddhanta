@@ -131,7 +131,7 @@ export function Chapter2() {
     <div className="book-page">
       <PageHeader
         title="Chapter 2 — Of the True Places of the Planets"
-        subtitle="The verses of the chapter that compute something, each with its own reckoning for a date you choose."
+        subtitle="Follow the corrections that turn a planet's mean position into its true position. The cards walk through the sine table, epicycles and calendar calculations for your chosen date."
       />
 
       <div className="book-datebar">
@@ -142,8 +142,7 @@ export function Chapter2() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -182,10 +181,9 @@ export function Chapter2() {
               );
             })}
             <p className="ss-note">
-              Verses 1-14 (the causes of the irregularities), 46-53 (the correction of the
-              daily motion, and the retrogradation) and 56-58 (the node and the latitude)
-              are not laid out here: the first are narrative, the rest have no calculation
-              in the library yet.
+              These cards cover selected calculations. Verses 1-14 explain the causes of
+              irregular motion; verses 46-53 discuss daily motion and retrogradation;
+              verses 56-58 discuss nodes and latitude. These sections have no cards here.
             </p>
           </div>
         </div>

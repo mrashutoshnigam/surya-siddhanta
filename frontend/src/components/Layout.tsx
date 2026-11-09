@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { GlossaryPanel } from "../glossary/GlossaryPanel";
 import { GlossaryProvider } from "../glossary/GlossaryProvider";
@@ -8,7 +9,7 @@ import { ProjectWelcome } from "./ProjectWelcome";
 const NAV = [
   {
     group: "Learn",
-    items: [{ to: "/learn", label: "Learning Paths" }, { to: "/research", label: "Research Explorer" }],
+    items: [{ to: "/universe", label: "Universe Explorer" }, { to: "/learn", label: "Learning Paths" }, { to: "/research", label: "Research Explorer" }],
   },
   {
     group: "Explorer",
@@ -41,12 +42,15 @@ export function Layout() {
   const pathname = useLocation().pathname;
   const isLearning = pathname === "/learn" || pathname.startsWith("/learn/");
   const isResearch = pathname === "/research";
+  const isUniverse = pathname === "/universe";
+  const [universeMenuOpen, setUniverseMenuOpen] = useState(false);
   return (
     <GlossaryProvider>
-      <div className={"app-shell" + (isLearning ? " learning-shell" : isResearch ? " research-shell" : "")}>
-        <nav className="sidebar">
-          {(isLearning || isResearch) && <a className="lab-skip" href="#learning-content">Skip to the {isResearch ? "research" : "experiment"} ↓</a>}
+      <div className={"app-shell" + (isLearning ? " learning-shell" : isResearch ? " research-shell" : isUniverse ? " universe-shell" : "")}>
+        <nav className={"sidebar" + (universeMenuOpen ? " universe-menu-open" : "")}>
+          {(isLearning || isResearch || isUniverse) && <a className="lab-skip" href="#learning-content">Skip to the {isUniverse ? "universe" : isResearch ? "research" : "experiment"} ↓</a>}
           <div className="brand">Surya Siddhanta</div>
+          {isUniverse && <button type="button" className="universe-mobile-menu-toggle" aria-expanded={universeMenuOpen} onClick={() => setUniverseMenuOpen(open => !open)}>{universeMenuOpen ? "Close menu ×" : "All tools ☰"}</button>}
           <p className="brand-caption">
             Planetary positions, eclipses, conjunctions, stars &amp; the almanac — computed from Surya
             Siddhanta algorithms (Ch.1–14).
@@ -93,7 +97,7 @@ export function Layout() {
 
           <div className="sidebar-footer">suryasiddhanta · default location Ujjain</div>
         </nav>
-        <main className="content" id="learning-content">
+        <main className="content" id="learning-content" tabIndex={isUniverse ? -1 : undefined}>
           <ThemeToggle />
           <Outlet />
           <footer className="legal-band">
@@ -102,8 +106,10 @@ export function Layout() {
             <span className="legal-sep">·</span>
             <span className="legal-roll">Roll No: M25AI2006</span>
             <span className="legal-sep">·</span>
+            <span>Indian Institute of Technology Jodhpur</span>
+            <span className="legal-sep">·</span>
             <span>
-              {isLearning || isResearch ? "SS calculations · separate saved DE440 comparison" : "Computed from the Surya Siddhanta (Burgess, 1860) — no external ephemeris"}
+              {isUniverse ? "Historical SS calculations · independent JPL DE440 modern view" : isLearning || isResearch ? "SS calculations · separate saved DE440 comparison" : "Computed from the Surya Siddhanta (Burgess, 1860) — no external ephemeris"}
             </span>
           </footer>
         </main>

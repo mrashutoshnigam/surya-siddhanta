@@ -66,7 +66,7 @@ export function Chapter10() {
     <div className="book-page">
       <PageHeader
         title="Chapter 10 — Of the Moon's Rising and Setting, and of her Cusps"
-        subtitle="When the Moon is seen, how much of her is lit, and how her cusps stand, for a date and a place you choose."
+        subtitle="Choose a date and place to explore the Moon's rising and setting, the illuminated part of its disk and the tilt of its crescent."
       />
 
       <div className="book-datebar">
@@ -78,8 +78,7 @@ export function Chapter10() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -118,10 +117,11 @@ export function Chapter10() {
               );
             })}
             <p className="ss-note">
-              Not laid out: v.2-5 (the Moon's setting after the Sun by repeated intervals in
-              respirations) and v.6-8 (the elevation of the cusps from the declinations and the
-              noon shadow). The library has no function for them, and v.10-14 are shown as the
-              library's bright-limb and horn angles rather than the verses' construction.
+              The repeated setting-interval calculation in verses 2-5 and the
+              cusp-elevation construction in verses 6-8 are not implemented here.
+              The rise and set times come from the app's calculation model. The figure
+              for verses 10-14 uses its bright-limb and horn angles rather than the
+              construction given in those verses.
             </p>
           </div>
         </div>

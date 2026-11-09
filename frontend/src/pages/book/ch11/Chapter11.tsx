@@ -67,7 +67,7 @@ export function Chapter11() {
     <div className="book-page">
       <PageHeader
         title="Chapter 11 — Of certain malignant Aspects of the Sun and Moon"
-        subtitle="Vyatipata and Vaidhrita: when the Sun and Moon share a declination, for a date and a search window you choose."
+        subtitle="Explore Vyatipata and Vaidhrita through the Sun's and Moon's declinations. Choose a date and search period to find the events and examine their timing."
       />
 
       <div className="book-datebar">
@@ -90,8 +90,7 @@ export function Chapter11() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -130,11 +129,11 @@ export function Chapter11() {
               );
             })}
             <p className="ss-note">
-              Not laid out: v.4-5 and v.16-18 (the pata's character and effects, nothing to
-              compute), v.11's own equation applied to the Moon's node, and v.20-23 (a third
-              yoga counted by asterism-portion, and the asterism-junction points to avoid). The
-              library has no function for the nakshatra-related verses, and this chapter
-              already shares its name with a different yoga in Chapter 1 — see the note above.
+              These cards leave out the descriptions of the pata's character and effects
+              (v.4-5 and v.16-18), the node correction in v.11, and the asterism-based
+              yoga and junction points in v.20-23. The asterism calculations are not
+              implemented here. The Vyatipata discussed in this chapter is distinct
+              from the nitya-yoga of the same name in Chapter 1.
             </p>
           </div>
         </div>

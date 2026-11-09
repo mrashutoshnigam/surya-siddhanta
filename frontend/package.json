@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:universe": "node check-universe-math.cjs && node check-universe-learning-math.cjs && node check-universe.cjs && node check-universe-resilience.cjs && node check-universe-window-errors.cjs && node check-universe-learning.cjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",

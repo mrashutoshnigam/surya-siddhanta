@@ -289,47 +289,47 @@ def _card_rising(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "iii.1-4": (
         "1-4", "The north-south line",
-        "Two shadow tips at equal altitudes fix the east-west line; its bisector is the meridian.",
+        "Two shadow tips taken at equal solar altitudes define an east-west line. Its perpendicular bisector gives the meridian.",
         False, _card_direction,
     ),
     "iii.5-8": (
         "5-8", "The gnomon, its shadow and hypotenuse",
-        "A twelve-digit gnomon at a given altitude: the shadow, and the hypotenuse as root of the two squares.",
+        "Calculate the shadow of a twelve-digit gnomon at a given solar altitude, then find the hypotenuse from the sum of the squares.",
         False, _card_gnomon,
     ),
     "iii.9-12": (
         "9-12", "The precession of the equinoxes",
-        "The ayana degrees, and what they do to each planet's place.",
+        "See how the ayana correction changes each planet's position.",
         True, _card_ayana,
     ),
     "iii.13-17": (
         "13-17", "The latitude from the noon shadow",
-        "The noon shadow and the Sun's declination give the latitude of the place.",
+        "Find the observer's latitude from the noon shadow and the Sun's declination.",
         True, _card_latitude,
     ),
     "iii.18-20": (
         "18-20", "Declination and right ascension",
-        "The Sun's or a planet's ecliptic longitude carried to the equator.",
+        "Convert the Sun's or a planet's ecliptic longitude to equatorial coordinates.",
         True, _card_equatorial,
     ),
     "iii.21-23": (
         "21-23", "The noon shadow from the declination",
-        "Zenith distance is latitude less declination; from it, the noon shadow and hypotenuse.",
+        "Subtract declination from latitude to find the noon zenith distance, then calculate the shadow and hypotenuse.",
         True, _card_noon_shadow,
     ),
     "iii.38-41": (
         "38-41", "Altitude at an hour angle",
-        "The Sun's altitude, azimuth and shadow at any distance in time from noon.",
+        "Find the Sun's altitude, azimuth and shadow for a chosen interval before or after noon.",
         True, _card_hour_angle,
     ),
     "iii.42": (
         "42", "The cara and the length of the day",
-        "The ascensional difference, and how it lengthens or shortens the day at a latitude.",
+        "See how the ascensional difference lengthens or shortens the day at a given latitude.",
         True, _card_cara,
     ),
     "iii.43-44": (
         "43-44", "The rising times of the signs",
-        "Each sign's rising time in respirations, at Lanka and at your latitude.",
+        "Compare each sign's rising time at Lanka and at your chosen latitude, measured in respirations.",
         False, _card_rising,
     ),
 }

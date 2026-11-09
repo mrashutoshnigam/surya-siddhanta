@@ -93,7 +93,7 @@ export function Chapter6() {
     <div className="book-page">
       <PageHeader
         title="Chapter 6 — Of the Projection of Eclipses"
-        subtitle="The construction of the eclipse figure, step by step, for the eclipse nearest a date you choose."
+        subtitle="Build an eclipse diagram step by step. Choose a date and place, then follow the circles, contact points and path for the nearest eclipse."
       />
 
       <div className="book-datebar">
@@ -113,8 +113,7 @@ export function Chapter6() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -153,11 +152,11 @@ export function Chapter6() {
               );
             })}
             <p className="ss-note">
-              Not laid out here: verses 3 and 16 (absent from the corpus) and 24 (the closing
-              admonition). The path is a straight chord, not the arc of the fish-figures, and
-              the library finds no eclipse's duration by repeating the calculation, so figures
-              differ slightly from the book's. The library's own diagram draws every eclipse
-              with the signs of a solar one; the figure above follows the verses (v.4, v.8).
+              Verses 3 and 16 are missing from the available verse text; the closing
+              admonition in verse 24 has no card. The diagram uses a straight chord
+              for the path, and the duration calculation is not repeated to refine it.
+              These choices can give slightly different results from the book.
+              Contact and latitude directions follow verses 4 and 8.
             </p>
           </div>
         </div>

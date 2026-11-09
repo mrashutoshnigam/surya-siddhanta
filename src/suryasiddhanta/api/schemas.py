@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
+from .explorer_schemas import ExplorerContextIn
 
 DEFAULT_LAT = 23.18   # Ujjain -- the SS prime meridian city
 DEFAULT_LON = 75.78
@@ -178,6 +179,7 @@ class ChatIn(BaseModel):
     place: Optional[str] = Field(None, max_length=120)
     latitude: Optional[float] = Field(None, ge=-90.0, le=90.0)
     longitude: Optional[float] = Field(None, ge=-180.0, le=180.0)
+    explorer: Optional[ExplorerContextIn] = None
 
 
 class Ch01In(BaseModel):

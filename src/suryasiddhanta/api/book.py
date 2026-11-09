@@ -513,62 +513,62 @@ def _card_epoch_positions() -> Dict[str, Any]:
 _CARDS: Dict[str, tuple] = {
     "i.11-13": (
         "11-13", "Divisions of time",
-        "The sidereal time units of the text, and the finer ones later authors add.",
+        "Compare the text's sidereal time units with the finer subdivisions described by later authors.",
         _card_time_units,
     ),
     "i.15-22": (
         "15-22", "The Ages and the Aeon",
-        "The lengths of the four Ages, of an Age and an Aeon, and the days in each.",
+        "Compare the lengths of the four Ages, the complete Age (mahayuga) and the Aeon (kalpa), with the number of days in each.",
         _card_yugas,
     ),
     "i.23-24": (
         "23-24", "The Kali epoch and time elapsed",
-        "Civil days and sidereal years from the Kali epoch to this date.",
+        "Count the civil days and sidereal years from the Kali epoch to your chosen date.",
         _card_epoch,
     ),
     "i.29-34": (
         "29-34", "Revolutions in an Age",
-        "The revolution counts the whole system rests on, and their daily motions.",
+        "See how the revolution counts for an Age determine each body's mean daily motion.",
         _card_bhagana,
     ),
     "i.35-37": (
         "35-37", "The rule for a mean place",
-        "The v.35 proportion, worked with this date's own ahargana.",
+        "Work through the proportion in verse 35 using the ahargana, or elapsed day count, for your chosen date.",
         _card_mean_longitude_rule,
     ),
     "i.41-42": (
         "41-42", "The apsides",
-        "Where each apsis (mandocca) stands on this date, from its Aeon rate.",
+        "Find each apsis (mandocca) on your chosen date using its rate of motion per Aeon.",
         _card_apsides,
     ),
     "i.43-44": (
         "43-44", "The nodes",
-        "Where each ascending node stands on this date, moving retrograde.",
+        "Find each ascending node on your chosen date and follow its retrograde motion.",
         _card_nodes,
     ),
     "i.48-51": (
         "48-51", "The ahargana by the text's route",
-        "Years to solar months, add the intercalary, to lunar days, drop the omitted.",
+        "Follow the day count step by step: convert years to solar months, add intercalary months, convert to lunar days, then subtract omitted days.",
         _card_ahargana_route,
     ),
     "i.52-vara": (
         "52", "The lord of the day",
-        "The weekday, the first of the two rules v.52 carries.",
+        "Find the weekday using the first of the two rules in verse 52.",
         _card_vara,
     ),
     "i.52-54": (
         "52-54", "Mean places of the planets",
-        "Every mean longitude for this date, with the conjunctions of the inner planets.",
+        "Compare the mean longitudes for your chosen date, including the conjunction points of Mercury and Venus.",
         _card_mean_places,
     ),
     "i.55": (
         "55", "The year of Jupiter's cycle",
-        "The samvatsara, from Jupiter's elapsed revolutions.",
+        "Find the samvatsara, or year of Jupiter's sixty-year cycle, from his elapsed revolutions.",
         _card_samvatsara,
     ),
     "i.56-58": (
         "56-58", "Epochs, and positions at the epoch",
-        "What the apsides and nodes stood at in 3102 BCE, and what a later epoch costs.",
+        "See the positions of the apsides and nodes at the Kali epoch in 3102 BCE, and the day count subtracted when reckoning from this later epoch.",
         _card_epoch_positions,
     ),
 }

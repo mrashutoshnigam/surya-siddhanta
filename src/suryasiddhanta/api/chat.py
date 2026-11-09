@@ -11,7 +11,7 @@ import logging
 import threading
 import uuid
 from collections import OrderedDict
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Dict
 
 from fastapi import APIRouter, HTTPException
@@ -77,11 +77,22 @@ def chat(body: ChatIn) -> Dict[str, Any]:
     agent resolves relative dates and default places from them.
     """
     session_id = body.session_id or str(uuid.uuid4())
-    session = _session(session_id)
     context = ChatContext.create(
         client_now=body.client_now, utc_offset=body.utc_offset,
         place=body.place, latitude=body.latitude, longitude=body.longitude,
     )
+    scene = None
+    if body.explorer is not None:
+        from .explorer_chat import scene_context
+        from .explorer_core import EphemerisUnavailable
+        try:
+            scene = scene_context(body.explorer)
+        except EphemerisUnavailable as error:
+            raise HTTPException(503, str(error)) from error
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from error
+        context = replace(context, explorer=scene)
+    session = _session(session_id)
     if not session.lock.acquire(timeout=120):
         raise HTTPException(status_code=409, detail="This session is still answering")
     try:
@@ -94,12 +105,17 @@ def chat(body: ChatIn) -> Dict[str, Any]:
     finally:
         session.lock.release()
 
-    return {
+    result = {
         "session_id": session_id,
         "reply": reply,
         "tool_uses": tool_uses,
         "sources": sources,
     }
+    if scene is not None:
+        from .explorer_chat import demonstrations, scene_sources
+        result["demonstrations"] = demonstrations(body.message)
+        result["sources"] += scene_sources(scene)
+    return result
 
 
 @router.post("/{session_id}/reset")

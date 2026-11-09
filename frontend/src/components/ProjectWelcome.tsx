@@ -101,12 +101,12 @@ function IntroductionDialog({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
-/** First home-page visit only; explicitly reopening never resets the preference. */
+/** Auto-open on the first home-page visit; allow manual access on every page. */
 export function ProjectWelcome({ isHome }: { isHome: boolean }) {
   const [dismissed, setDismissed] = useState(wasDismissed);
   const [manualOpen, setManualOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const open = isHome && (manualOpen || !dismissed);
+  const open = manualOpen || (isHome && !dismissed);
 
   function dismiss() {
     try {
@@ -121,7 +121,7 @@ export function ProjectWelcome({ isHome }: { isHome: boolean }) {
 
   return (
     <>
-      {isHome && <button ref={triggerRef} className="project-about" type="button" onClick={() => setManualOpen(true)}>About this project</button>}
+      <button ref={triggerRef} className="project-about" type="button" onClick={() => setManualOpen(true)}>About this project</button>
       {open && <IntroductionDialog onDismiss={dismiss} />}
     </>
   );

@@ -82,7 +82,7 @@ export function Chapter3() {
     <div className="book-page">
       <PageHeader
         title="Chapter 3 — Of Direction, Place and Time"
-        subtitle="The verses of the chapter that compute something, each with its own reckoning for a date you choose."
+        subtitle="See how a gnomon's shadow gives direction, latitude and time. Choose a date, then adjust the examples to explore the geometry."
       />
 
       <div className="book-datebar">
@@ -93,8 +93,7 @@ export function Chapter3() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -133,10 +132,9 @@ export function Chapter3() {
               );
             })}
             <p className="ss-note">
-              Verses 46-51 (the rising sign, or lagna, and the time of night from it) are not
-              laid out here: the library&apos;s lagna is not yet corrected, so showing it would
-              show a wrong figure. Verses 24-37 and 45 are narrative or have no calculation in
-              the library.
+              Verses 24-37, 45 and 46-51 have no cards here. The last group covers the
+              rising sign (lagna) and how to find the time of night from it. A lagna
+              calculation is available elsewhere in the app.
             </p>
           </div>
         </div>

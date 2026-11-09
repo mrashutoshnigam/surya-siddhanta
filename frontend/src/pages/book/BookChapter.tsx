@@ -66,12 +66,13 @@ export function BookChapter() {
         title={entry ? `Chapter ${entry.number} — ${entry.title}` : "No such chapter"}
         subtitle={
           entry
-            ? "This chapter is not yet laid out verse by verse."
+            ? "Verse cards for this chapter are not available yet."
             : "The book has fourteen chapters."
         }
       />
       <p className="ss-note">
-        The book has fourteen chapters, /book/1 to /book/14, each laid out verse by verse.
+        Choose one of the fourteen chapters in the sidebar to read the available
+        verses and work through their calculations.
       </p>
     </div>
   );

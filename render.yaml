@@ -1,0 +1,38 @@
+# Render Blueprint for the single-image UI deployment (Dockerfile.ui).
+#
+# Render builds the image from this repo, injects PORT (10000), terminates TLS
+# at its own edge and forwards plain http to that port. The entrypoint sees
+# RENDER=true and skips the in-container 443 listener accordingly.
+#
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repo.
+
+services:
+  - type: web
+    name: surya-siddhanta
+    runtime: docker
+    dockerfilePath: ./Dockerfile.ui
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      # Render terminates TLS at its edge. The entrypoint already infers this
+      # from RENDER=true; pinned here so it does not rest on that alone.
+      - key: ENABLE_TLS
+        value: "0"
+      # Chat provider keys, prompted for in the dashboard on first deploy and
+      # never committed. One is enough: OpenRouter is used when its key is
+      # set, else DeepSeek. Leave the other blank.
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      # Optional: pin the provider (openrouter | deepseek | custom) or the
+      # model (an OpenRouter slug such as deepseek/deepseek-v4-flash).
+      - key: SS_LLM_PROVIDER
+        sync: false
+      - key: SS_LLM_MODEL
+        sync: false
+      # Render already redirects http to https at its edge; this is a second
+      # line of defence and is loop-safe because it keys on X-Forwarded-Proto.
+      - key: FORCE_HTTPS
+        value: "1"

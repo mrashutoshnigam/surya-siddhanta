@@ -84,7 +84,7 @@ export function Chapter14() {
     <div className="book-page">
       <PageHeader
         title="Chapter 14 — Of the Different Modes of Reckoning Time"
-        subtitle="The nine modes of time, the solar year, the Fathers' day and Jupiter's cycle, for a date you choose."
+        subtitle="Compare the text's nine ways of reckoning time, from civil days to Brahma's day. Choose a date to explore the solar year, the Fathers' day and Jupiter's cycle, or convert between time units."
       />
 
       <div className="book-datebar">
@@ -135,8 +135,7 @@ export function Chapter14() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -175,10 +174,11 @@ export function Chapter14() {
               );
             })}
             <p className="ss-note">
-              Not laid out: v.3, which only lists what solar time governs; v.22-27, the closing
-              narrative of the Sun&apos;s departure and Maya&apos;s instruction of the sages; and
-              v.28-30, which are Burgess&apos;s appendix, not the text. The solar year is that of
-              the date&apos;s Gregorian year, and the punyakala uses the Sun&apos;s mean disk.
+              Verse 3 lists the uses of solar time, and verses 22-27 close the account
+              with the Sun&apos;s departure and Maya&apos;s instruction of the sages.
+              These passages have no cards here. Verses 28-30 belong to Burgess&apos;s
+              appendix. The solar-year results use your date&apos;s Gregorian year;
+              the punyakala calculation uses the Sun&apos;s mean disk.
             </p>
           </div>
         </div>

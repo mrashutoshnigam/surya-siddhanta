@@ -205,27 +205,27 @@ def _card_duration(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "iv.1-2": (
         "1-2", "The diameters of the Sun and Moon",
-        "The true diameters in yojanas, and the apparent ones, the Moon's corrected for her distance.",
+        "Compare the bodies' true diameters in yojanas with their apparent angular diameters, including the Moon's distance correction.",
         True, _card_diameters,
     ),
     "iv.4-5": (
         "4-5", "The earth's shadow",
-        "The earth's diameter less the part lost to the Sun's size, in arcminutes at the Moon.",
+        "Calculate the Earth's shadow at the Moon by subtracting the reduction due to the Sun's size from the Earth's diameter, then expressing it in arcminutes.",
         True, _card_shadow,
     ),
     "iv.7-8": (
         "7-8", "The moment of opposition",
-        "The full moon nearest the date: the Sun and Moon opposite, and where the node stands.",
+        "Find the full moon nearest your chosen date, when the Sun and Moon are opposite, and locate the Moon's node.",
         True, _card_opposition,
     ),
     "iv.10-11": (
         "10-11", "The amount obscured",
-        "Half the sum of the disks, less the Moon's latitude: total, partial, or no eclipse.",
+        "Subtract the Moon's latitude from half the sum of the disks to determine whether the eclipse is total, partial or absent.",
         True, _card_obscuration,
     ),
     "iv.12-13": (
         "12-13", "The half-duration and half-totality",
-        "The square roots of the half-sum and half-difference squared, less latitude squared, over the daily motion.",
+        "Calculate the eclipse durations from the half-sum and half-difference of the disks: square each, subtract the squared latitude, take the square root, then divide by the relative daily motion.",
         True, _card_duration,
     ),
 }

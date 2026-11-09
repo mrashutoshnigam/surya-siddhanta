@@ -411,57 +411,57 @@ def _card_karana(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "ii.15-27": (
         "15-27", "The table of sines",
-        "The 24 tabular sines and versed sines of R = 3438, with their first differences.",
+        "Read the 24 tabular sines and versed sines for R = 3438, and compare their first differences.",
         False, _card_sine_table,
     ),
     "ii.31-33": (
         "31-33", "Interpolating a sine or an arc",
-        "Between two tabular sines: the quotient, the remainder and the proportional part.",
+        "Find a sine between two table entries using the quotient, remainder and proportional part.",
         False, _card_interpolation,
     ),
     "ii.34-38": (
         "34-38", "The epicycles",
-        "The sizes of the manda and sighra epicycles, and how they pulsate with the anomaly.",
+        "See how the sizes of the manda and sighra epicycles change with the anomaly.",
         False, _card_epicycles,
     ),
     "ii.29-30": (
         "29-30", "Bhuja and koti of the anomaly",
-        "The anomaly split by quadrant into its base (bhuja) and perpendicular (koti).",
+        "Resolve the anomaly into its base (bhuja) and perpendicular (koti), according to its quadrant.",
         True, _card_bhuja_koti,
     ),
     "ii.39": (
         "39", "The equation of the apsis",
-        "The manda correction: the epicycle's sine applied to the mean place.",
+        "Follow the manda correction from the epicycle's sine to the corrected mean position.",
         True, _card_manda,
     ),
     "ii.40-42": (
         "40-42", "The equation of the conjunction",
-        "The sighra correction, from the koti- and bhuja-phala and their hypotenuse.",
+        "Calculate the sighra correction from the koti-phala, bhuja-phala and their hypotenuse.",
         True, _card_sighra,
     ),
     "ii.43-45": (
         "43-45", "The true place",
-        "Half sighra, half manda, whole manda, whole sighra: the true longitude in four steps.",
+        "Follow the four corrections to true longitude: half sighra, half manda, whole manda, then whole sighra.",
         True, _card_true_place,
     ),
     "ii.60-63": (
         "60-63", "The day-radius and the length of the day",
-        "From the Sun's declination: the day-radius, and the lengths of day and night.",
+        "Use the Sun's declination to calculate the day-radius and the lengths of day and night.",
         True, _card_day_length,
     ),
     "ii.65": (
         "65", "The yoga",
-        "The sum of the Sun's and Moon's longitudes, divided by 13°20′.",
+        "Find the yoga by adding the Sun's and Moon's longitudes and dividing by 13°20′.",
         True, _card_yoga,
     ),
     "ii.66": (
         "66", "The lunar day",
-        "The Moon's elongation from the Sun, divided by 12°.",
+        "Find the tithi by dividing the Moon's elongation from the Sun by 12°.",
         True, _card_tithi,
     ),
     "ii.67-69": (
         "67-69", "The karana",
-        "Half a lunar day: four fixed karanas and seven recurring ones.",
+        "Identify the karana, or half-tithi, within the sequence of four fixed and seven recurring karanas.",
         True, _card_karana,
     ),
 }

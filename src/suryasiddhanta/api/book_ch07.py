@@ -231,27 +231,27 @@ def _card_classification(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "vii.1": (
         "1", "Who meets whom",
-        "Star-planets may fight or meet each other; with the Moon they meet; with the Sun they are lost.",
+        "The text distinguishes encounters between star-planets, meetings with the Moon and disappearance in the Sun's glare.",
         False, _card_who,
     ),
     "vii.2-3": (
         "2-3", "Is the conjunction past or to come",
-        "From the longitudes and the direction of motion of the two bodies.",
+        "Use the two bodies' longitudes and directions of motion to determine whether they are approaching conjunction.",
         True, _card_direction,
     ),
     "vii.4-6": (
         "4-6", "Fixing the time of the conjunction",
-        "The gap over the difference of daily motions, subtracted or added, repeated until the bodies are equal.",
+        "Divide the longitude gap by the difference in daily motions to estimate the time to conjunction. Repeat the calculation until the longitudes agree.",
         True, _card_correction,
     ),
     "vii.12": (
         "12", "The latitudes at the conjunction",
-        "The two latitudes: their difference when alike in direction, their sum when not.",
+        "Find the separation in latitude: subtract when both latitudes have the same direction, or add when their directions differ.",
         True, _card_latitudes,
     ),
     "vii.19-22": (
         "19-22", "Encounter or conjunction",
-        "Within a degree the star-planets are in encounter; the northern one is the victor.",
+        "The text places star-planets in encounter when they are within a degree. This model names the northern planet as victor.",
         True, _card_classification,
     ),
 }

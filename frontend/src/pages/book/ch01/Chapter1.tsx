@@ -141,7 +141,7 @@ export function Chapter1() {
     <div className="book-page">
       <PageHeader
         title="Chapter 1 — Of the Mean Motions of the Planets"
-        subtitle="The verses of the chapter that compute something, each with its own reckoning for a date you choose."
+        subtitle="Start with the text's units of time, then follow the calculation from elapsed days to the planets' mean positions. Choose a date to work through the examples."
       />
 
       <div className="book-datebar">
@@ -152,8 +152,7 @@ export function Chapter1() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 

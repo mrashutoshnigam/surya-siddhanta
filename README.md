@@ -4,8 +4,9 @@ A Python implementation of the astronomical algorithms of the *Surya Siddhanta*
 (Burgess 1860 translation), all fourteen chapters, with a React web interface and
 the code that regenerates the paper *Surya Siddhanta vs. DE440*.
 
-No ephemeris library is used: every number comes from the text's own formulas
-(`numpy` is the only runtime dependency of the library).
+The historical calculation library uses the text's own formulas (`numpy` is its
+only runtime dependency). The Universe Explorer also offers an independent modern
+view using Skyfield and verified JPL DE440 data.
 
 ## Layout
 
@@ -36,13 +37,28 @@ Julian Days are reckoned in Ujjain mean time and longitudes are sidereal, as in 
 ## Web interface
 
 ```bash
-pip install -e ".[api]"
+pip install -e ".[api,astronomy]"
+python docker/fetch_ephemeris.py                 # verified DE440 for the modern view
 uvicorn suryasiddhanta.api.main:app --reload    # backend on :8000
 cd frontend && npm ci && npm run dev             # frontend on :5173
 ```
 
-The chat page needs a `DEEPSEEK_API_KEY` environment variable. Verse lookup reads
-the corpus from `SS_CORPUS_JSON_PATH` / `SS_CORPUS_DB_PATH`.
+Open `/universe` for the planet explorer. See [the explorer guide](docs/universe-explorer.md)
+for its controls, historical and modern models, and verification commands.
+
+Chat needs `OPENROUTER_API_KEY` or `DEEPSEEK_API_KEY`. Verse lookup uses the bundled
+`src/suryasiddhanta/corpus/data/corpus.json`; `SS_CORPUS_JSON_PATH` /
+`SS_CORPUS_DB_PATH` optionally select an external corpus.
+
+Build and run the combined React/FastAPI Docker image with:
+
+```bash
+docker compose -f docker-compose.ui.yml up --build
+```
+
+The image includes the corpus, verified DE440 kernel, planet textures, logo and
+project PDFs. The footer's “About this project” button opens the introduction on
+every page; the introduction opens automatically on the first home-page visit.
 
 ## Reproducing the paper
 

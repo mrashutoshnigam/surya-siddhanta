@@ -326,42 +326,42 @@ def _card_colours(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "vi.2": (
         "1-2", "The circles of the figure",
-        "A deflection circle of 49 digits, the aggregate circle of half the sum, and the two bodies.",
+        "Start with the 49-digit deflection circle, the aggregate circle with radius equal to half the sum of the measures, and the two bodies' disks.",
         True, _card_circles,
     ),
     "vi.4-9": (
         "4-9", "Contact, separation and the deflection",
-        "Which limb the eclipse begins on, and the valana laid off at contact and separation.",
+        "Find the limb where the eclipse begins, then lay out the valana at contact and separation.",
         True, _card_directions,
     ),
     "vi.10-11": (
         "10-11", "The latitude and what it covers",
-        "The latitude laid off from the middle, and the part of the disk inside the eclipser's circle.",
+        "Mark the latitude from the centre and find how much of the disk lies inside the eclipsing circle.",
         True, _card_obscuration,
     ),
     "vi.13": (
         "13", "What can be seen",
-        "A twelfth of the Moon is seen eclipsed; three minutes of the Sun are not.",
+        "Compare the text's visibility thresholds: an eclipse covering a twelfth of the Moon is visible, while three arcminutes of the Sun remain unseen.",
         True, _card_visibility,
     ),
     "vi.14-16": (
         "14-16", "The path of the eclipser",
-        "The arc through contact, middle and separation. The library draws it as a straight chord.",
+        "Trace the path through contact, mid-eclipse and separation. The model uses a straight chord in place of the text's arc.",
         True, _card_path,
     ),
     "vi.17-19": (
         "17-19", "The stick for a given time",
-        "Half the sum less the amount obscured, laid from the centre to the path.",
+        "Subtract the obscured amount from half the sum of the measures to find the distance from the centre to the path.",
         True, _card_stick,
     ),
     "vi.20-22": (
         "20-22", "Immersion and emergence",
-        "A stick of half the difference of the measures, laid toward contact and separation.",
+        "Lay a stick measuring half the difference of the measures toward contact and separation.",
         True, _card_immersion,
     ),
     "vi.23": (
         "23", "The colours",
-        "The eclipsed disk is dusky, black, dark copper or tawny by the phase.",
+        "Compare the text's descriptions of the eclipsed disk's colour at different phases: dusky, black, dark copper or tawny.",
         True, _card_colours,
     ),
 }

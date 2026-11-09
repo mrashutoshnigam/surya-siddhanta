@@ -27,6 +27,7 @@ const LearningLab = lazy(() =>
 const LearningPaths = lazy(() => import("./pages/learn/LearningPaths").then(m => ({ default: m.LearningPaths })));
 const RahuLesson = lazy(() => import("./pages/learn/RahuLesson").then(m => ({ default: m.RahuLesson })));
 const ResearchExplorer = lazy(() => import("./pages/research/ResearchExplorer").then(m => ({ default: m.ResearchExplorer })));
+const UniverseExplorer = lazy(() => import("./pages/universe/UniverseExplorer").then(m => ({ default: m.UniverseExplorer })));
 
 export function App() {
   return (
@@ -34,6 +35,7 @@ export function App() {
       <Route element={<Layout />}>
         <Route index element={<Navigate to="/positions" replace />} />
         <Route path="/positions" element={<PlanetPositions />} />
+        <Route path="/universe" element={<Suspense fallback={<p role="status">Opening the Universe Explorer…</p>}><UniverseExplorer /></Suspense>} />
         <Route path="/learn" element={<Suspense fallback={<p role="status">Loading the learning lab…</p>}><LearningPaths /></Suspense>} />
         <Route path="/learn/mars" element={<Suspense fallback={<p role="status">Loading lesson…</p>}><LearningLab key="Mars" body="Mars" /></Suspense>} />
         <Route path="/learn/sun" element={<Suspense fallback={<p role="status">Loading lesson…</p>}><LearningLab key="Sun" body="Sun" /></Suspense>} />

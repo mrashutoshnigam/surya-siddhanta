@@ -56,6 +56,7 @@ export interface ChatRequest {
   place?: string;
   latitude?: number;
   longitude?: number;
+  explorer?: { model: "historical" | "modern"; instant: string; body: string; beginner: boolean };
 }
 
 /** A tool call the agent made during the turn, with a preview of its result. */
@@ -68,7 +69,8 @@ export interface ToolUse {
 /** A retrieved record the answer may cite: a verse, or a commentary page. */
 export interface ChatSource {
   id: string;
-  kind: "verse" | "commentary";
+  kind: "verse" | "commentary" | "reference";
+  url?: string;
   chapter: number | null;
   verse: number | null;
   page: number | null;
@@ -81,6 +83,7 @@ export interface ChatResponse {
   reply: string;
   tool_uses: ToolUse[];
   sources: ChatSource[];
+  demonstrations?: { id: "spin" | "moon" | "retrograde" | "models"; label: string }[];
 }
 
 export const api = {

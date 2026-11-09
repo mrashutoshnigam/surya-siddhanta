@@ -79,7 +79,7 @@ export function Chapter5() {
     <div className="book-page">
       <PageHeader
         title="Chapter 5 — Of Parallax in a Solar Eclipse"
-        subtitle="The verses of the chapter that compute something, for the new moon nearest a date you choose, seen from a place you choose."
+        subtitle="See how the observer's location changes a solar-eclipse calculation. Choose a date and place to follow the parallax corrections for the nearest new moon."
       />
 
       <div className="book-datebar">
@@ -94,8 +94,7 @@ export function Chapter5() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -134,9 +133,10 @@ export function Chapter5() {
               );
             })}
             <p className="ss-note">
-              Not laid out here: verses 2 and 14 (absent from the corpus) and verse 18. The
-              library does not repeat the calculation until the parallax settles (v.9), and
-              takes mean diameters, so figures differ slightly from the book's worked method.
+              Verses 2 and 14 are missing from the available verse text; verse 18 also has
+              no card here. The calculation uses mean diameters and does not repeat
+              the parallax correction until it settles (v.9), so results can differ
+              slightly from the book's worked method.
             </p>
           </div>
         </div>

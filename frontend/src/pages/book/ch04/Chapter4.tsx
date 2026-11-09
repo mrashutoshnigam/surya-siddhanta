@@ -69,7 +69,7 @@ export function Chapter4() {
     <div className="book-page">
       <PageHeader
         title="Chapter 4 — Of Eclipses, and especially of Lunar Eclipses"
-        subtitle="The verses of the chapter that compute something, for the full moon nearest a date you choose."
+        subtitle="Work through the lunar-eclipse calculation for the full moon nearest your chosen date, from the sizes of the disks to the amount obscured and the duration."
       />
 
       <div className="book-datebar">
@@ -80,8 +80,7 @@ export function Chapter4() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -120,10 +119,10 @@ export function Chapter4() {
               );
             })}
             <p className="ss-note">
-              Not laid out here: the contrary correction of the node (v.8), the repeated
-              calculation of the duration (v.15), and verses 17-26 (immersion and emergence,
-              the amount obscured at a given time, the deflection and the measure in digits).
-              The library has no calculation for them yet.
+              These cards leave out the contrary correction of the node (v.8), repeated
+              calculation of the duration (v.15), and verses 17-26 on immersion,
+              emergence, obscuration at a given time, deflection and measurement in
+              digits. Those procedures are not implemented here.
             </p>
           </div>
         </div>

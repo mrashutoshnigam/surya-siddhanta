@@ -72,7 +72,7 @@ export function Chapter9() {
     <div className="book-page">
       <PageHeader
         title="Chapter 9 — Of Heliacal Risings and Settings"
-        subtitle="When a planet is lost in the Sun's rays and when it is seen again, for a planet and a date you choose."
+        subtitle="Choose a planet and a date to explore when it disappears into the Sun's glare and becomes visible again under the model's visibility rules."
       />
 
       <div className="book-datebar">
@@ -105,8 +105,7 @@ export function Chapter9() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -145,10 +144,10 @@ export function Chapter9() {
               );
             })}
             <p className="ss-note">
-              Not laid out: v.4-5 and v.11 (the interval and the daily motions turned into
-              degrees of time by the ascensional equivalents) and v.16-17 (the visibility
-              degrees turned back to the ecliptic). The library has no function for them and
-              applies the limits to the ecliptic elongation instead.
+              The calculations here apply the visibility limits directly to ecliptic
+              elongation. They omit the conversions through ascensional equivalents
+              described in verses 4-5, 11 and 16-17, which express the intervals and
+              motions in degrees of time before converting back to the ecliptic.
             </p>
           </div>
         </div>

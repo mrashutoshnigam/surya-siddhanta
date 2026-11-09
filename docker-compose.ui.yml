@@ -1,0 +1,37 @@
+# Single-image UI deployment: one service, two published ports, nothing else
+# reachable. The FastAPI backend lives inside this same container on
+# 127.0.0.1:8000 and is never published. The verse corpus is baked into the
+# image, so there is nothing to mount for citations to work.
+#
+#   docker compose -f docker-compose.ui.yml up --build
+
+services:
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    image: suryasiddhanta-ui:latest
+    ports:
+      - "${HTTP_HOST_PORT:-80}:80"
+      - "${HTTPS_HOST_PORT:-443}:443"
+    environment:
+      # The chatbot page needs one of these keys; every other route works
+      # without them. OpenRouter is used when its key is set, else DeepSeek.
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      # Optional: openrouter | deepseek | custom, plus model / endpoint overrides.
+      SS_LLM_PROVIDER: ${SS_LLM_PROVIDER:-}
+      SS_LLM_MODEL: ${SS_LLM_MODEL:-}
+      SS_LLM_BASE_URL: ${SS_LLM_BASE_URL:-}
+      SS_LLM_API_KEY: ${SS_LLM_API_KEY:-}
+      # 1 to 301-redirect :80 to :443.
+      FORCE_HTTPS: ${FORCE_HTTPS:-0}
+      TLS_CN: ${TLS_CN:-localhost}
+    volumes:
+      # Drop server.crt / server.key here to replace the self-signed pair the
+      # entrypoint generates on first start.
+      - ./certs:/etc/nginx/certs
+      # To override the baked-in corpus with a fresher ss_corpus export, mount
+      # the file itself -- mounting the directory would hide it:
+      # - /path/to/corpus.json:/data/corpus/corpus.json:ro
+    restart: unless-stopped

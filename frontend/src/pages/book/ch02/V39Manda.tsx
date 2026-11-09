@@ -34,7 +34,10 @@ export function V39Manda({ card }: { card: MandaCard }) {
         ]}
       />
       <p className="verse-note">
-        Shown here applied once, whole, to the mean place, as the true place does for the Sun and Moon. For the star-planets the true place (ii.43-45) applies half of it first, then the whole on the mean place.
+        This card applies the full manda correction once to the mean position,
+        as the true-position calculation does for the Sun and Moon. For the
+        star-planets, the sequence in ii.43-45 first applies half the correction,
+        then later applies the full correction to the mean position.
       </p>
     </>
   );

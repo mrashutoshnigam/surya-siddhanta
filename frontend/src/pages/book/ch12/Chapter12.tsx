@@ -76,7 +76,7 @@ export function Chapter12() {
     <div className="book-page">
       <PageHeader
         title="Chapter 12 — Cosmogony, Geography, and Dimensions of the Creation"
-        subtitle="The earth, the sphere and the orbits: fixed dimensions, with the place and date you choose moving only what they must."
+        subtitle="Explore the text's dimensions of the Earth, celestial sphere and planetary orbits. Most figures are fixed; the cards show where your chosen date or place affects the result."
       />
 
       <div className="book-datebar">
@@ -88,8 +88,7 @@ export function Chapter12() {
       <ErrorBox error={error} />
       {corpusError != null && (
         <p className="ss-note">
-          The verse corpus is not reachable, so the cards below show their calculations
-          without the text.
+          The verse text could not be loaded. You can still use the calculations below.
         </p>
       )}
 
@@ -128,10 +127,10 @@ export function Chapter12() {
               );
             })}
             <p className="ss-note">
-              Not laid out: the creation, the elements, the seven patalas and Maya&apos;s nine
-              questions (descriptive, nothing to compute; the Cosmography page lists them), and
-              the verses after v.90 that describe rather than measure. Orbits are reckoned per
-              kalpa, not per mahayuga.
+              The Cosmography page lists the accounts of creation, the elements, the
+              seven patalas and Maya&apos;s nine questions. Those passages, along with
+              the descriptive verses after v.90, have no calculation cards here.
+              The orbital figures use revolution counts per kalpa, not per mahayuga.
             </p>
           </div>
         </div>

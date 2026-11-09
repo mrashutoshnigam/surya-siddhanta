@@ -1,6 +1,7 @@
 """Check the teaching artifact against its research source, not rounded UI labels."""
 import csv
 import hashlib
+import importlib.util
 import json
 import math
 from pathlib import Path
@@ -9,7 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_mars_learning_data_preserves_research_evidence():
-    result = json.loads((ROOT / "frontend/src/pages/learn/mars-evaluation.json").read_text(encoding="utf-8"))
+    spec = importlib.util.spec_from_file_location("lab_export", ROOT / "docs/evaluation/export_learning_lab.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    result = module.build()
     source = ROOT / "docs/evaluation/residuals_deltat.csv"
     with source.open(newline="", encoding="utf-8") as stream:
         rows = [r for r in csv.DictReader(stream) if r["body"] == "Mars"]
@@ -26,3 +30,5 @@ def test_mars_learning_data_preserves_research_evidence():
         assert min(b["min"] for b in window["bins"]) == min(values)
         assert max(b["max"] for b in window["bins"]) == max(values)
         assert sum(b["n"] for b in window["bins"]) == len(values)
+    saved = json.loads((ROOT / "frontend/src/pages/learn/mars-evaluation.json").read_text(encoding="utf-8"))
+    assert saved == result

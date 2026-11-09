@@ -163,22 +163,22 @@ def _card_figure(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "x.1": (
         "1", "When the Moon is seen",
-        "She is seen in the west, or lost in the east, at twelve degrees of time from the Sun.",
+        "The text uses twelve degrees of time from the Sun as the Moon's visibility threshold: appearance in the west or disappearance in the east.",
         True, _card_visibility,
     ),
     "x.2-5": (
         "2-5", "Moonrise and moonset",
-        "When the Moon next rises and sets at the place, from the library.",
+        "Find the Moon's next rising and setting at your chosen place using the app's calculation model.",
         True, _card_rise_set,
     ),
     "x.9": (
         "9", "The illuminated part",
-        "The elongation in minutes over nine hundred gives the lit digits of the twelve-digit disc.",
+        "Divide the elongation in arcminutes by 900 to find the illuminated width in digits of the twelve-digit disk.",
         True, _card_illumination,
     ),
     "x.10-14": (
         "10-14", "The figure of the Moon",
-        "The lit part of the disc and the tilt of the cusps, as the observer would see them.",
+        "See the illuminated part of the Moon's disk and the tilt of its cusps for your chosen observer.",
         True, _card_figure,
     ),
 }

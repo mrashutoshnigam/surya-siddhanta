@@ -321,37 +321,37 @@ def _card_contacts(ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "v.1": (
         "1", "Where there is no parallax",
-        "None in longitude when the Sun is at the meridian ecliptic-point; none in latitude when latitude equals its declination.",
+        "Longitude parallax vanishes when the Sun is at the meridian ecliptic-point. Latitude parallax vanishes when the observer's latitude equals that point's declination.",
         True, _card_no_parallax,
     ),
     "v.3-4": (
         "3-4", "The lagna and the meridian point",
-        "The orient ecliptic-point and its udaya, the meridian ecliptic-point, and the meridian zenith-distance.",
+        "Locate the orient and meridian ecliptic-points, then calculate the udaya and meridian zenith distance.",
         True, _card_lagna,
     ),
     "v.5-7": (
         "5-7", "The ecliptic zenith-distance",
-        "The drkksepa and drggati from the meridian-sine and the udaya, against the library's exact nonagesimal.",
+        "Calculate drkksepa and drggati from the meridian-sine and udaya, then compare them with the model's exact nonagesimal values.",
         True, _card_drkksepa,
     ),
     "v.8-9": (
         "8-9", "Parallax in longitude (lambana)",
-        "The sine of the interval over the divisor: lambana in nadis, with the rule for applying it.",
+        "Divide the sine of the interval by the divisor to find lambana in nadis, then follow the rule for applying it.",
         True, _card_lambana,
     ),
     "v.10-12": (
         "10-12", "Parallax in latitude (nati)",
-        "The drkksepa sine times 49', its direction, and its sum or difference with the Moon's latitude.",
+        "Multiply the drkksepa sine by 49′ to find the latitude correction. Its direction determines whether it is added to or subtracted from the Moon's latitude.",
         True, _card_nati,
     ),
     "v.13": (
         "13", "The eclipse as seen from here",
-        "Half-duration, amount obscured and type, recomputed with both parallaxes.",
+        "Recalculate the half-duration, amount obscured and eclipse type after applying both parallax corrections.",
         True, _card_result,
     ),
     "v.15-17": (
         "15-17", "The parallax at contact and separation",
-        "How the parallax changes between middle and ends alters each half-duration.",
+        "Compare parallax at mid-eclipse, contact and separation to see how it changes each half-duration.",
         True, _card_contacts,
     ),
 }

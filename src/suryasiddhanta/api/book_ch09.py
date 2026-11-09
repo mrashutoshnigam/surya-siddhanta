@@ -5,7 +5,7 @@ does each computational verse of *Of Heliacal Risings and Settings* yield?
 
 The chapter works in "degrees of time" (kalamsas), the distance from the Sun
 measured in oblique ascension. The library applies the same thresholds to the
-plain ecliptic elongation instead, a documented deviation, so every
+plain ecliptic elongation instead, a deviation CLAUDE.md records, so every
 card that uses a threshold says so. The hand method of v.4-5 and v.11 (the
 ascensional equivalents of the interval) is therefore not laid out; v.10 is
 laid out with the elongation standing in for the kalamsas.
@@ -212,27 +212,27 @@ def _card_stars(_ctx: _Ctx) -> Dict[str, Any]:
 _CARDS: Dict[str, Tuple[str, str, str, bool, Callable[[_Ctx], Dict[str, Any]]]] = {
     "ix.2-3": (
         "2-3", "Which way the planet is heading",
-        "Whether it is about to set or rise, and in the west or the east, from where it stands against the Sun.",
+        "Use the planet's position relative to the Sun to determine whether it is approaching rising or setting, and on which side of the sky.",
         True, _card_direction,
     ),
     "ix.6-9": (
         "6-9", "The limits of visibility",
-        "Each planet is lost when nearer the Sun than its limit, and seen again beyond it.",
+        "Compare the planet's separation from the Sun with its visibility limit. In this model it disappears inside that limit and becomes visible beyond it.",
         True, _card_thresholds,
     ),
     "ix.10-11": (
         "10-11", "The time to the next event",
-        "The shortfall from the limit over the daily motions gives the days to the setting or rising.",
+        "Estimate the days to rising or setting from the gap to the visibility limit and the daily motions.",
         True, _card_next_event,
     ),
     "ix.6-11": (
         "6-11", "Risings and settings ahead",
-        "Every rising and setting the library finds in the months after the date.",
+        "Browse the risings and settings the model finds in the months after your chosen date.",
         True, _card_events,
     ),
     "ix.12-18": (
         "12-18", "The fixed stars",
-        "The stars' own limits of visibility, and the stars the Sun's rays never reach.",
+        "Compare the stars' visibility limits and identify those the text describes as beyond the reach of the Sun's rays.",
         False, _card_stars,
     ),
 }
