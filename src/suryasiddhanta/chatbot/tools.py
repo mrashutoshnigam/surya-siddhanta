@@ -3,7 +3,7 @@ chatbot/tools.py
 ================
 Tool definitions for the Surya Siddhanta AI assistant.
 
-Covers all 13 implemented chapters (ch01–ch13):
+Covers all 14 chapters (ch01–ch14):
   Ch.1  Mean motions, ahargana, time units
   Ch.2  True places, sine table, ayanamsha
   Ch.3  Direction/place/time, gnomon, lagna
@@ -17,6 +17,7 @@ Covers all 13 implemented chapters (ch01–ch13):
   Ch.11 Patas — Vyatipata and Vaidhrita
   Ch.12 Cosmography — earth, orbits, cosmic time, creation
   Ch.13 Instruments — armillary sphere, clepsydra, time from instruments
+  Ch.14 Reckoning of time — manas, sankrantis, Fathers' day, Jovian years
 """
 
 from __future__ import annotations
@@ -118,25 +119,80 @@ def compute_all_planets(
         return json.dumps({"error": str(e)})
 
 
+#: Bisection steps and half-width (days) for finding a tithi's edges; the
+#: Moon gains 11-15 degrees a day on the Sun, so a tithi is 0.8-1.1 days long
+#: and two days either side always brackets its start and end.
+_TITHI_EDGE_STEPS = 22
+_TITHI_EDGE_WINDOW_DAYS = 2.0
+
+
+def _tithi_edges(year: int, month: int, lib_day: float, tithi_num: int) -> tuple:
+    """
+    Library JDs at which the tithi containing ``lib_day`` begins and ends.
+
+    The elongation (Moon - Sun) rises monotonically, so each edge is the
+    bisected instant where it crosses a multiple of 12 degrees. ``lib_day``
+    is a library day (Ujjain mean time), as ``_lib_day`` returns.
+
+    Returns:
+        (start_jd, end_jd) in library JD.
+    """
+    from suryasiddhanta.ch01_mean_motions import julian_day
+    from suryasiddhanta.ch02_true_places import compute
+
+    def elongation(d: float) -> float:
+        """Moon - Sun sidereal longitude at library day ``d``, 0-360."""
+        return (compute("Moon", year, month, d).true_longitude
+                - compute("Sun", year, month, d).true_longitude) % 360.0
+
+    now = elongation(lib_day)
+
+    def cross(target_offset: float, lo: float, hi: float) -> float:
+        """Library day in [lo, hi] where the elongation has moved ``target_offset`` from now."""
+        for _ in range(_TITHI_EDGE_STEPS):
+            mid = (lo + hi) / 2.0
+            moved = (elongation(mid) - now + 180.0) % 360.0 - 180.0
+            if moved < target_offset:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2.0
+
+    start = cross((tithi_num - 1) * 12.0 - now, lib_day - _TITHI_EDGE_WINDOW_DAYS, lib_day)
+    end = cross(tithi_num * 12.0 - now, lib_day, lib_day + _TITHI_EDGE_WINDOW_DAYS)
+    return julian_day(year, month, start), julian_day(year, month, end)
+
+
 def compute_panchanga(
     year: int,
     month: int = 1,
     day: float = 1.0,
     utc_offset: float = DEFAULT_UTC_OFFSET,
+    hour: float = 0.0,
 ) -> str:
-    """Compute the Panchanga (tithi, vara, nakshatra, yoga, karana) for a date (Ch.1-3)."""
+    """
+    Compute the Panchanga (tithi, vara, nakshatra, yoga, karana) for a moment (Ch.1-3).
+
+    The moment is ``day`` plus ``hour`` o'clock in ``utc_offset``; a whole
+    ``day`` with no hour is local midnight. The result names the instant it
+    used (``at``) and gives the running tithi's name, paksha and start/end
+    times, so a caller never has to guess them.
+    """
     try:
         from suryasiddhanta.ch01_mean_motions import (
-            julian_day, tithi_from_elongation, vara, nakshatra_from_longitude,
-            masa_from_sun_longitude, ritu_from_sun_longitude, samvatsara,
+            TITHI_NAMES, julian_day, tithi_from_elongation, vara,
+            nakshatra_from_longitude, masa_from_sun_longitude,
+            ritu_from_sun_longitude, samvatsara,
         )
         from suryasiddhanta.ch02_true_places import compute
 
-        jd = julian_day(year, month, _lib_day(day, utc_offset))
-        sun = compute("Sun", year, month, _lib_day(day, utc_offset))
-        moon = compute("Moon", year, month, _lib_day(day, utc_offset))
+        moment = _lib_day(float(day) + float(hour) / 24.0, utc_offset)
+        jd = julian_day(year, month, moment)
+        sun = compute("Sun", year, month, moment)
+        moon = compute("Moon", year, month, moment)
 
         tithi_num, tithi_frac = tithi_from_elongation(moon.true_longitude, sun.true_longitude)
+        tithi_start, tithi_end = _tithi_edges(year, month, moment, tithi_num)
         # The weekday turns at local midnight (SS i.66), so it is read off
         # the civil date as given, not the instant shifted to Ujjain time.
         vara_num, vara_name = vara(julian_day(year, month, float(day)))
@@ -155,7 +211,14 @@ def compute_panchanga(
 
         result = {
             "date": f"{year}-{month:02d}-{int(day):02d}",
-            "tithi": {"number": tithi_num, "fraction": round(tithi_frac, 3)},
+            "at": _jd_datetime(jd, utc_offset),
+            "tithi": {
+                "number": tithi_num, "name": TITHI_NAMES[tithi_num - 1],
+                "paksha": "Shukla" if tithi_num <= 15 else "Krishna",
+                "fraction": round(tithi_frac, 3),
+                "starts": _jd_datetime(tithi_start, utc_offset),
+                "ends": _jd_datetime(tithi_end, utc_offset),
+            },
             "vara": {"number": vara_num, "name": vara_name},
             # nakshatra_from_longitude returns a 0-based index; report it
             # 1-based like tithi/yoga/karana beside it.
@@ -169,8 +232,11 @@ def compute_panchanga(
             "moon_longitude": round(moon.true_longitude, 3),
             "ayanamsha": round(sun.ayanamsha, 3),
             "summary": (
-                f"Panchanga for {year}-{month:02d}-{int(day):02d}: "
-                f"Tithi #{tithi_num}, Vara {vara_name}, "
+                f"Panchanga at {_jd_datetime(jd, utc_offset)}: "
+                f"Tithi #{tithi_num} {TITHI_NAMES[tithi_num - 1]} "
+                f"({'Shukla' if tithi_num <= 15 else 'Krishna'} paksha, "
+                f"{_jd_datetime(tithi_start, utc_offset)} to {_jd_datetime(tithi_end, utc_offset)}), "
+                f"Vara {vara_name}, "
                 f"Nakshatra {nak_name} (pada {nak_pada}), "
                 f"Masa {masa_name}, Ritu {ritu_name}, "
                 f"Samvatsara {samv_name}."
@@ -956,8 +1022,10 @@ def compute_moonrise_moonset(
 def _jd_datetime(jd: float, utc_offset: float = DEFAULT_UTC_OFFSET) -> str:
     """Format a library JD as 'YYYY-MM-DD HH:MM (UTC+05:30)' in ``utc_offset``."""
     y, m, d, hours = clock_from_jd(jd, float(utc_offset))
-    return (f"{y}-{m:02d}-{d:02d} {int(hours):02d}:{int(hours % 1 * 60):02d}"
-            f" ({_zone(utc_offset)})")
+    # Floor to the minute, with a hair of slack so 11:30 does not print as
+    # 11:29 from float error in the JD round trip.
+    minutes = min(int(hours % 1 * 60 + 0.01), 59)
+    return f"{y}-{m:02d}-{d:02d} {int(hours):02d}:{minutes:02d} ({_zone(utc_offset)})"
 
 
 def find_patas(
@@ -1683,10 +1751,372 @@ def list_yogataras() -> str:
         return json.dumps({"error": str(e)})
 
 
+# ── Clock ────────────────────────────────────────────────────────
+
+def get_current_datetime(utc_offset: float = DEFAULT_UTC_OFFSET) -> str:
+    """The current date and time in a zone, with its library JD (server clock).
+
+    The React chat already sends the user's own moment in each turn; this is
+    for clients that do not, such as an MCP client."""
+    try:
+        from datetime import timedelta, timezone
+        from suryasiddhanta.ch01_mean_motions import jd_from_clock
+
+        now = datetime.now(timezone(timedelta(hours=float(utc_offset))))
+        hour = now.hour + now.minute / 60.0 + now.second / 3600.0
+        jd = jd_from_clock(now.year, now.month, now.day, hour, float(utc_offset))
+        return json.dumps({
+            "date": now.strftime("%Y-%m-%d"),
+            "time": now.strftime("%H:%M:%S"),
+            "weekday": now.strftime("%A"),
+            "utc_offset": float(utc_offset),
+            "zone": _zone(utc_offset),
+            "year": now.year, "month": now.month, "day": now.day,
+            "day_with_fraction": now.day + hour / 24.0,
+            "jd": jd,
+            "summary": f"Now {now:%A %Y-%m-%d %H:%M} ({_zone(utc_offset)}); library JD {jd:.5f}.",
+        }, indent=2)
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+# ── Gaps found by the tool-coverage audit ───────────────────────
+
+def find_new_full_moon(
+    year: int,
+    month: int = 1,
+    day: float = 1.0,
+    kind: str = "both",
+    count: int = 1,
+    utc_offset: float = DEFAULT_UTC_OFFSET,
+) -> str:
+    """The next new moons (amavasya) and/or full moons (purnima) from a date (Ch.4, Ch.5)."""
+    try:
+        from suryasiddhanta.ch01_mean_motions import from_julian_day, julian_day
+        from suryasiddhanta.ch04_lunar_eclipses import find_full_moon
+        from suryasiddhanta.ch05_solar_eclipses import find_new_moon
+
+        kinds = {"new": [("new", find_new_moon)], "full": [("full", find_full_moon)],
+                 "both": [("new", find_new_moon), ("full", find_full_moon)]}
+        if kind not in kinds:
+            raise ValueError("kind must be 'new', 'full' or 'both'")
+        start = julian_day(int(year), int(month), _lib_day(day, utc_offset))
+        events = []
+        for label, finder in kinds[kind]:
+            probe, found = start, []
+            while len(found) < max(1, min(int(count), 24)):
+                y, m, d, frac = from_julian_day(probe)
+                jd = julian_day(y, m, finder(y, m, d + frac))
+                if jd >= start and all(abs(jd - f) > 1.0 for f in found):
+                    found.append(jd)
+                    probe = jd + 14.0
+                else:
+                    probe += 7.0
+            events += [{"kind": label, "jd": jd, "local": _jd_datetime(jd, utc_offset)}
+                       for jd in found]
+        events.sort(key=lambda e: e["jd"])
+        return json.dumps({
+            "from": f"{year}-{int(month):02d}-{int(day):02d}",
+            "events": events,
+            "summary": "; ".join(f"{e['kind']} moon {e['local']}" for e in events),
+        }, indent=2)
+    except Exception as e:
+        return json.dumps({"error": str(e), "year": year})
+
+
+def compute_latitude_from_shadow(
+    shadow_length: float,
+    year: int,
+    month: int,
+    day: float,
+    shadow_direction: str = "north",
+    gnomon_length: float = 12.0,
+    utc_offset: float = DEFAULT_UTC_OFFSET,
+) -> str:
+    """The observer's latitude from the gnomon's noon shadow on a date (Ch.3)."""
+    try:
+        from suryasiddhanta.ch02_true_places import compute
+        from suryasiddhanta.ch03_direction_place_time import (
+            latitude_from_noon_shadow, solar_altitude_from_shadow,
+        )
+
+        # Declination comes from the Sun's sayana place: the text adds the
+        # ayanamsha before taking the declination (iii.9-12), as
+        # compute_gnomon_shadow does.
+        sun = compute("Sun", int(year), int(month), _lib_day(day, utc_offset) + 0.5)
+        lat = latitude_from_noon_shadow(float(shadow_length), sun.tropical_longitude,
+                                        float(gnomon_length), shadow_direction=shadow_direction)
+        altitude = solar_altitude_from_shadow(float(shadow_length), float(gnomon_length))
+        return json.dumps({
+            "latitude": round(lat, 4),
+            "sun_noon_altitude": round(altitude, 4),
+            "sun_sidereal_longitude": round(sun.true_longitude, 4),
+            "sun_tropical_longitude": round(sun.tropical_longitude, 4),
+            "inputs": {"shadow_length": shadow_length, "gnomon_length": gnomon_length,
+                       "shadow_direction": shadow_direction},
+            "summary": (f"A noon shadow of {shadow_length} on a {gnomon_length}-digit "
+                        f"gnomon pointing {shadow_direction} gives latitude {lat:.2f}°."),
+        }, indent=2)
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+def identify_star(longitude: float, latitude: float = 0.0, tolerance: float = 5.0) -> str:
+    """The junction star(s) near an ecliptic position and the nakshatra containing it (Ch.8)."""
+    try:
+        from suryasiddhanta.ch08_stars import identify_star as _identify, nakshatra_of, nearest_star
+
+        lon, lat = float(longitude) % 360.0, float(latitude)
+        near = _identify(lon, lat, float(tolerance))
+        best, separation = nearest_star(lon, lat)
+        segment = nakshatra_of(lon)
+        return json.dumps({
+            "longitude": lon,
+            "latitude": lat,
+            "nakshatra_segment": segment.name,
+            "nearest_yogatara": {"name": best.name, "separation_deg": round(separation, 3)},
+            "within_tolerance": [s.name for s in near],
+            "summary": (f"Longitude {lon:.2f}° lies in {segment.name}; nearest junction "
+                        f"star {best.name} at {separation:.2f}°."),
+        }, indent=2)
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+# ── Ch.14 Reckoning of time ──────────────────────────────────────
+
+def _moment_jd(year: int, month: int, day: float, hour: float, utc_offset: float) -> float:
+    """Library JD of a civil date and clock hour read in ``utc_offset``."""
+    from suryasiddhanta.ch01_mean_motions import julian_day
+    return julian_day(int(year), int(month), _lib_day(day, utc_offset)) + float(hour) / 24.0
+
+
+def _with_local(row: Dict[str, Any], utc_offset: float, keys: tuple = ("jd",)) -> Dict[str, Any]:
+    """Copy of ``row`` with a ``<key>_local`` clock string beside each JD key present."""
+    out = dict(row)
+    for key in keys:
+        if out.get(key) is not None:
+            name = "local" if key == "jd" else f"{key.removesuffix('_jd')}_local"
+            out[name] = _jd_datetime(out[key], utc_offset)
+    return out
+
+
+def _sign_index(sign: Any) -> int:
+    """Index 0-11 of a sign given by index, Sanskrit name or English name."""
+    from suryasiddhanta.ch01_mean_motions import RASHIS
+    english = ("aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
+               "scorpio", "sagittarius", "capricorn", "aquarius", "pisces")
+    if isinstance(sign, (int, float)) or str(sign).strip().isdigit():
+        index = int(sign)
+        if 0 <= index <= 11:
+            return index
+        raise ValueError(f"Sign index {sign} is outside 0-11 (0 = Mesha/Aries)")
+    text = str(sign).strip().lower()
+    for i, name in enumerate(RASHIS):
+        if text in (name.lower(), english[i]):
+            return i
+    raise ValueError(f"Unknown sign {sign!r}. Known: {', '.join(RASHIS)} or English names")
+
+
+def reckon_time(
+    year: int,
+    month: int = 1,
+    day: float = 1.0,
+    hour: float = 0.0,
+    utc_offset: float = DEFAULT_UTC_OFFSET,
+) -> str:
+    """One moment expressed in all nine modes (manas) of reckoning time (Ch.14 v.1-2)."""
+    try:
+        from suryasiddhanta import ch14_reckoning_time as ch14
+
+        jd = _moment_jd(year, month, day, hour, utc_offset)
+        panorama = ch14.reckon(jd).to_dict()
+        return json.dumps({
+            "moment": _jd_datetime(jd, utc_offset),
+            "readings": panorama["readings"],
+            "details": panorama["details"],
+            "month_asterisms": ch14.month_asterisms(),
+            "summary": "; ".join(f"{r['key']}: {r['description']}" for r in panorama["readings"]),
+        }, indent=2, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e), "year": year})
+
+
+def convert_time_measure(value: float, from_mana: str, to_mana: str) -> str:
+    """Convert an amount between two of the nine manas, e.g. solar years to civil days (Ch.14)."""
+    try:
+        from suryasiddhanta import ch14_reckoning_time as ch14
+
+        result = ch14.convert(float(value), from_mana, to_mana)
+        src, dst = ch14.mana(from_mana), ch14.mana(to_mana)
+        return json.dumps({
+            "value": float(value),
+            "from": src.to_dict(),
+            "to": dst.to_dict(),
+            "result": result,
+            "summary": f"{value} {src.unit} ({src.key}) = {result:,.6g} {dst.unit} ({dst.key})",
+        }, indent=2, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e), "known_manas": _known_manas()})
+
+
+def _known_manas() -> list:
+    """The nine mana keys, for error messages."""
+    try:
+        from suryasiddhanta import ch14_reckoning_time as ch14
+        return [m.key for m in ch14.manas()]
+    except Exception:
+        return []
+
+
+def compute_solar_year(year: int, utc_offset: float = DEFAULT_UTC_OFFSET) -> str:
+    """Sankrantis, ayanas, visuvats, shadasitimukhas and ritus of a solar year (Ch.14 v.3-11)."""
+    try:
+        from suryasiddhanta import ch14_reckoning_time as ch14
+
+        sy = ch14.solar_year(int(year)).to_dict()
+        return json.dumps({
+            "year": int(year),
+            "note": "The solar year runs from the Sun's entry into Mesha (Aries) "
+                    "in this Gregorian year to the next; Makara entry falls in "
+                    "January of the following year.",
+            "year_days": sy["year_days"],
+            "sankrantis": [_with_local(e, utc_offset) for e in sy["sankrantis"]],
+            "ayanas": {k: _with_local(v, utc_offset) for k, v in sy["ayanas"].items()},
+            "visuvats": {k: _with_local(v, utc_offset) for k, v in sy["visuvats"].items()},
+            "shadasitimukhas": [_with_local(m, utc_offset) for m in sy["shadasitimukhas"]],
+            "ritus": [_with_local(r, utc_offset, ("start_jd", "end_jd")) for r in sy["ritus"]],
+            "zone": _zone(utc_offset),
+        }, indent=2, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e), "year": year})
+
+
+def compute_sankranti_punyakala(
+    year: int,
+    sign: Any,
+    utc_offset: float = DEFAULT_UTC_OFFSET,
+) -> str:
+    """The Sun's entry into a sign falling in a Gregorian year, with its punyakala (Ch.14 v.11)."""
+    try:
+        from suryasiddhanta import ch14_reckoning_time as ch14
+
+        index = _sign_index(sign)
+        # The solar year of `year` starts in April, so an entry falling in
+        # January-March of `year` belongs to the previous solar year.
+        candidates = [e for y in (int(year) - 1, int(year))
+                      for e in ch14.sankrantis(y) if e.sign_index == index]
+        event = next((e for e in candidates
+                      if clock_from_jd(e.jd, float(utc_offset))[0] == int(year)), None)
+        if event is None:
+            return json.dumps({"error": f"No entry into sign {sign} falls in {year}"})
+        each_side = event.punyakala_each_side_nadis / 60.0  # 60 nadis to a day
+        return json.dumps({
+            **_with_local(event.to_dict(), utc_offset),
+            "punyakala_begin": _jd_datetime(event.jd - each_side, utc_offset),
+            "punyakala_end": _jd_datetime(event.jd + each_side, utc_offset),
+            "summary": (
+                f"Sun enters {event.sign} at {_jd_datetime(event.jd, utc_offset)}; "
+                f"punyakala {event.punyakala_each_side_nadis:.1f} nadis either side "
+                f"({_jd_datetime(event.jd - each_side, utc_offset)} to "
+                f"{_jd_datetime(event.jd + each_side, utc_offset)})."
+            ),
+        }, indent=2, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e), "year": year, "sign": sign})
+
+
+def compute_pitrya_clock(
+    year: int,
+    month: int = 1,
+    day: float = 1.0,
+    hour: float = 0.0,
+    utc_offset: float = DEFAULT_UTC_OFFSET,
+) -> str:
+    """Where a moment falls in the day of the Fathers: new moon is their noon (Ch.14 v.14)."""
+    try:
+        from suryasiddhanta import ch14_reckoning_time as ch14
+
+        jd = _moment_jd(year, month, day, hour, utc_offset)
+        clock = _with_local(ch14.pitrya_clock(jd).to_dict(), utc_offset,
+                            ("jd", "next_noon_jd", "next_midnight_jd"))
+        clock["summary"] = (
+            f"Hour {clock['hour']:.2f} of the Fathers' day ({clock['phase']}), "
+            f"tithi {clock['tithi']} {clock['paksha']}; their next noon (new moon) "
+            f"{clock['next_noon_local']}, next midnight (full moon) {clock['next_midnight_local']}."
+        )
+        return json.dumps(clock, indent=2, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e), "year": year})
+
+
+def compute_barhaspatya_year(
+    year: int,
+    month: int = 1,
+    day: float = 1.0,
+    method: str = "mean",
+    utc_offset: float = DEFAULT_UTC_OFFSET,
+) -> str:
+    """The Jovian twelve-year name a date falls in, mean or heliacal method (Ch.14 v.17)."""
+    try:
+        from suryasiddhanta import ch14_reckoning_time as ch14
+
+        jd = _moment_jd(year, month, day, 0.0, utc_offset)
+        result = _with_local(ch14.barhaspatya_year(jd, method).to_dict(), utc_offset)
+        result["summary"] = (
+            f"Jovian year {result['name']} (Jupiter in {result['asterism']}, "
+            f"{method} method, source: {result['source']}); sixty-year name "
+            f"{result['sixty_year_name']}. {result['note']}"
+        ).strip()
+        return json.dumps(result, indent=2, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e), "year": year})
+
+
 # ── Corpus (book text) tools ─────────────────────────────────────
 # Wired to suryasiddhanta.corpus.retrieve -- the model must call these
 # before quoting or citing verse text; it must never recall verse text
 # from memory (see retrieve.py's module docstring for why).
+
+#: Text fields of a corpus record that can run to tens of KB (a verse's
+#: translation carries Burgess's notes, and a few records are whole appendices).
+_CLIPPED_FIELDS = ("sanskrit_devanagari", "sanskrit_iast", "translation_en",
+                   "translation_hi", "commentary_en", "commentary_hi")
+#: Characters of each text field kept per record, by tool. The model's
+#: per-result budget is ~12 KB (agent.MAX_TOOL_RESULT_CHARS), so a list of
+#: records has to be clipped record by record: cutting the whole JSON would
+#: keep a few records whole and silently drop the rest.
+_SEARCH_FIELD_CHARS = 600
+_RANGE_FIELD_CHARS = 600
+_SINGLE_FIELD_CHARS = 4000
+#: Bookkeeping fields left out of list results (search hits, verse ranges):
+#: the model cites by id, so these only spend its budget.
+_LIST_DROPPED_FIELDS = ("mcp_tools", "chapter_name_iast", "flags")
+
+
+def _clip_record(record: Dict[str, Any], limit: int, drop: tuple = ()) -> Dict[str, Any]:
+    """
+    A corpus record with every long text field cut to `limit` characters
+    (commentary fields to half that, since they are the optional extra).
+
+    Fields named in `drop` and empty fields are left out. A cut field ends with a marker giving its full
+    length, and the record gets a ``clipped`` list naming the cut fields, so
+    the model knows the text is partial and can ask for one verse in full.
+    """
+    out: Dict[str, Any] = {}
+    clipped = []
+    for key, value in record.items():
+        if key in drop or value in ("", None, [], {}):
+            continue
+        cap = limit // 2 if key.startswith("commentary") else limit
+        if key in _CLIPPED_FIELDS and isinstance(value, str) and len(value) > cap:
+            value = f"{value[:cap].rstrip()} ... [clipped, {len(value):,} characters]"
+            clipped.append(key)
+        out[key] = value
+    if clipped:
+        out["clipped"] = clipped
+    return out
+
 
 def get_verse(chapter: int, verse: int) -> str:
     """Return one verse (translation + commentary) by chapter and number."""
@@ -1695,30 +2125,35 @@ def get_verse(chapter: int, verse: int) -> str:
         result = _get_verse(chapter, verse)
         if result is None:
             return json.dumps({"error": f"No verse found at {chapter}.{verse}"})
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return json.dumps(_clip_record(result, _SINGLE_FIELD_CHARS), indent=2, ensure_ascii=False)
     except Exception as e:
         return json.dumps({"error": str(e)})
 
 
 def get_verses(chapter: int, start: Optional[int] = None, end: Optional[int] = None) -> str:
-    """Return a chapter, or a verse range within it."""
+    """Return a chapter, or a verse range within it (each record's text clipped)."""
     try:
         from suryasiddhanta.corpus.retrieve import get_verses as _get_verses
-        result = _get_verses(chapter, start, end)
-        return json.dumps({"verses": result, "count": len(result)}, indent=2, ensure_ascii=False)
+        result = [_clip_record(v, _RANGE_FIELD_CHARS, _LIST_DROPPED_FIELDS)
+                  for v in _get_verses(chapter, start, end)]
+        return json.dumps({"verses": result, "count": len(result)},
+                          ensure_ascii=False, separators=(",", ":"))
     except Exception as e:
         return json.dumps({"error": str(e)})
 
 
-def search_corpus(query: str, limit: int = 8, include_commentary: bool = True) -> str:
+def search_corpus(query: str, limit: int = 8, include_commentary: bool = False) -> str:
     """Full-text search across verse text, commentary and topic labels.
 
     Call this before quoting book text or answering "what does the text say" --
-    never recall verse text from memory."""
+    never recall verse text from memory. Each hit's text is clipped; call
+    get_verse for one in full."""
     try:
         from suryasiddhanta.corpus.retrieve import search as _search
-        result = _search(query, limit, include_commentary)
-        return json.dumps({"results": result, "count": len(result)}, indent=2, ensure_ascii=False)
+        result = [_clip_record(r, _SEARCH_FIELD_CHARS, _LIST_DROPPED_FIELDS)
+                  for r in _search(query, limit, include_commentary)]
+        return json.dumps({"results": result, "count": len(result)},
+                          ensure_ascii=False, separators=(",", ":"))
     except Exception as e:
         return json.dumps({"error": str(e)})
 
@@ -1732,6 +2167,91 @@ def chapter_index() -> str:
         return json.dumps({"error": str(e)})
 
 
+#: Characters of each commentary record returned by search_bhashya; a page
+#: runs to ~3 KB and five of them would crowd out the rest of the turn.
+_BHASHYA_TEXT_CHARS = 1500
+
+
+def search_bhashya(
+    query: str,
+    language: Optional[str] = None,
+    chapter: Optional[int] = None,
+    limit: int = 5,
+) -> str:
+    """Search the Srivastava Vigyan Bhashya, a modern Hindi commentary (not the text itself).
+
+    English pages are a machine translation and the Hindi is OCR, so quote
+    hits as "the commentary explains", never as scripture, and take no
+    numbers from them."""
+    try:
+        from suryasiddhanta.corpus import bhashya
+
+        if not bhashya.available():
+            return json.dumps({"error": "The Vigyan Bhashya files are not available on this server",
+                               "results": [], "count": 0})
+        hits = bhashya.search(query, language=language, chapter=chapter,
+                              limit=max(1, min(int(limit), 10)))
+        results = [{
+            "id": h["id"], "kind": h["kind"], "language": h["language"],
+            "chapter": h["chapter"], "page": h["page"], "heading": h["heading"],
+            "snippet": h["snippet"],
+            "text": h["text"] if len(h["text"]) <= _BHASHYA_TEXT_CHARS
+            else h["text"][:_BHASHYA_TEXT_CHARS] + " ...",
+            "source": h["source"],
+        } for h in hits]
+        return json.dumps({
+            "results": results, "count": len(results),
+            "note": "Modern commentary (machine-translated / OCR). Cite as commentary; "
+                    "never quote as the text and never take numbers from it.",
+        }, indent=2, ensure_ascii=False)
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+#: Corpus topic labels (``corpus/config/mcp_tool_map.json``, attached to each
+#: verse as ``mcp_tools``) to the dispatcher's real tool names. The corpus
+#: pipeline names a topic, not a function, so without this map
+#: ``tools_for_query`` handed the model names it could not call.
+TOPIC_TO_TOOLS: Dict[str, tuple] = {
+    "ahargana": ("compute_ahargana", "compute_ahargana_verse_route"),
+    "mean_longitude": ("compute_planet_position", "compute_all_planets"),
+    "true_longitude": ("compute_planet_position", "compute_all_planets"),
+    "sine_table": ("compute_sine_table",),
+    "declination": ("compute_planet_position", "compute_gnomon_shadow"),
+    "shadow_gnomon": ("compute_gnomon_shadow", "compute_latitude_from_shadow"),
+    "ascensional_difference": ("compute_day_length", "compute_lagna"),
+    "precession": ("compute_ayanamsha",),
+    "lunar_eclipse": ("compute_lunar_eclipse",),
+    "solar_eclipse": ("compute_solar_eclipse",),
+    "eclipse_projection": ("compute_eclipse_diagram",),
+    "conjunction": ("find_conjunctions", "find_star_conjunction"),
+    "nakshatra_position": ("get_nakshatra_info", "compute_star_position", "identify_star"),
+    "heliacal_rising": ("compute_heliacal_rising", "compute_heliacal_setting"),
+    "moon_phase": ("compute_moon_phase", "compute_horn_angle"),
+    "time_conversion": ("convert_time_measure", "reckon_time", "get_cosmic_time"),
+    "cosmography": ("get_cosmology", "get_earth_dimensions", "get_planetary_orbits"),
+}
+
+
+def suggested_tools(labels, top_n: int = 4) -> list:
+    """
+    Real tool names for corpus topic labels, in rank order, de-duplicated.
+
+    A label that is already a dispatcher name passes through; an unknown
+    label is dropped rather than offered to the model.
+    """
+    # Each label's first (primary) tool before any label's alternates, so one
+    # broad label cannot fill every slot.
+    choices = [TOPIC_TO_TOOLS.get(label, (label,) if label in TOOL_FUNCTIONS else ())
+               for label in dict.fromkeys(labels)]
+    names: list = []
+    for depth in range(max((len(c) for c in choices), default=0)):
+        for options in choices:
+            if depth < len(options) and options[depth] not in names:
+                names.append(options[depth])
+    return names[:top_n]
+
+
 def tools_for_query(query: str, limit: int = 5, top_n: int = 4) -> str:
     """Which calculation tools the relevant verses point to for a question.
 
@@ -1739,7 +2259,9 @@ def tools_for_query(query: str, limit: int = 5, top_n: int = 4) -> str:
     cite the verse that authorises the method instead of inventing one."""
     try:
         from suryasiddhanta.corpus.retrieve import tools_for_query as _tools_for_query
-        return json.dumps({"tools": _tools_for_query(query, limit, top_n)}, indent=2)
+        labels = _tools_for_query(query, limit, len(TOPIC_TO_TOOLS))
+        return json.dumps({"tools": suggested_tools(labels, top_n), "topics": labels[:top_n]},
+                          indent=2)
     except Exception as e:
         return json.dumps({"error": str(e)})
 
@@ -1784,7 +2306,10 @@ TOOL_DEFINITIONS = [
         "name": "compute_panchanga",
         "description": (
             "Compute the Panchanga (tithi, vara, nakshatra, yoga, karana, masa, ritu, samvatsara) "
-            "for a given date. Use for any Hindu calendar / almanac questions."
+            "for a moment. Use for any Hindu calendar / almanac questions. The result's 'at' "
+            "is the instant used, and the tithi carries its name, paksha and start/end times: "
+            "quote those, never estimate them. A whole 'day' with no 'hour' is local midnight, "
+            "so for 'now' or 'today' pass the current clock hour from the [Context] block."
         ),
         "input_schema": {
             "type": "object",
@@ -1793,6 +2318,7 @@ TOOL_DEFINITIONS = [
                 "year": {"type": "integer"},
                 "month": {"type": "integer", "default": 1},
                 "day": {"type": "number", "default": 1},
+                "hour": {"type": "number", "default": 0, "description": "Clock hour 0-24 in utc_offset (11.5 = 11:30); 0 is local midnight"},
             },
             "required": ["year"],
         },
@@ -2463,6 +2989,190 @@ TOOL_DEFINITIONS = [
         },
     },
     {
+        "name": "get_current_datetime",
+        "description": (
+            "The current date, time and weekday in a zone (server clock), with "
+            "the year/month/day to pass to other tools. Use when the turn has "
+            "no [Context] block giving the user's time."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone in hours from UTC (5.5 = IST, 0 = UT)"},
+            },
+        },
+    },
+    {
+        "name": "find_new_full_moon",
+        "description": (
+            "Find the next new moon(s) (amavasya, Sun-Moon conjunction) and/or "
+            "full moon(s) (purnima, opposition) on or after a date (Ch.4-5). "
+            "Use for 'when is the next amavasya / purnima / full moon'."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "year": {"type": "integer"},
+                "month": {"type": "integer", "default": 1},
+                "day": {"type": "number", "default": 1},
+                "kind": {"type": "string", "enum": ["new", "full", "both"], "default": "both"},
+                "count": {"type": "integer", "default": 1, "description": "How many of each kind (max 24)"},
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone of the clock time in hours from UTC (5.5 = IST, 0 = UT); event times come back in the same zone"},
+            },
+            "required": ["year"],
+        },
+    },
+    {
+        "name": "compute_latitude_from_shadow",
+        "description": (
+            "Find the observer's latitude from the length and direction of the "
+            "gnomon's noon shadow on a given date (Ch.3, the inverse of "
+            "compute_gnomon_shadow)."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "shadow_length": {"type": "number", "description": "Noon shadow length in the gnomon's units"},
+                "year": {"type": "integer"},
+                "month": {"type": "integer"},
+                "day": {"type": "number"},
+                "shadow_direction": {"type": "string", "enum": ["north", "south"], "default": "north"},
+                "gnomon_length": {"type": "number", "default": 12},
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone of the date in hours from UTC (5.5 = IST)"},
+            },
+            "required": ["shadow_length", "year", "month", "day"],
+        },
+    },
+    {
+        "name": "identify_star",
+        "description": (
+            "Which junction star (yogatara) lies nearest a sidereal ecliptic "
+            "position, which ones are within a tolerance, and which nakshatra "
+            "segment contains the longitude (Ch.8)."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "longitude": {"type": "number", "description": "Sidereal ecliptic longitude, degrees"},
+                "latitude": {"type": "number", "default": 0, "description": "Ecliptic latitude, degrees"},
+                "tolerance": {"type": "number", "default": 5, "description": "Search radius, degrees"},
+            },
+            "required": ["longitude"],
+        },
+    },
+    {
+        "name": "reckon_time",
+        "description": (
+            "Express one moment in all nine modes (manas) of reckoning time: "
+            "Brahma's, the gods', the Fathers', Prajapati's, Jupiter's, solar, "
+            "civil, lunar and sidereal (Ch.14 v.1-2), with the manvantara, "
+            "Kali year, solar month and tithi."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "year": {"type": "integer"},
+                "month": {"type": "integer", "default": 1},
+                "day": {"type": "number", "default": 1},
+                "hour": {"type": "number", "default": 0, "description": "Clock hour in utc_offset"},
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone of the clock time in hours from UTC (5.5 = IST, 0 = UT); event times come back in the same zone"},
+            },
+            "required": ["year"],
+        },
+    },
+    {
+        "name": "convert_time_measure",
+        "description": (
+            "Convert an amount of time between two of the nine manas (Ch.14), "
+            "e.g. 1 daiva (a year of the gods) in savana (civil) days. Keys: "
+            "brahma, daiva, pitrya, prajapatya, barhaspatya, saura, savana, "
+            "candra, naksatra."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "value": {"type": "number"},
+                "from_mana": {"type": "string"},
+                "to_mana": {"type": "string"},
+            },
+            "required": ["value", "from_mana", "to_mana"],
+        },
+    },
+    {
+        "name": "compute_solar_year",
+        "description": (
+            "The structure of a solar year (Ch.14 v.3-11): the twelve sankrantis "
+            "(Sun's sign entries) with their punyakala, the two ayanas "
+            "(Cancer/Capricorn entries), the two visuvats (Aries/Libra), the "
+            "four shadasitimukhas and the six ritus. `year` is the Gregorian "
+            "year of the Aries entry (mid-April)."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "year": {"type": "integer"},
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone of the clock time in hours from UTC (5.5 = IST, 0 = UT); event times come back in the same zone"},
+            },
+            "required": ["year"],
+        },
+    },
+    {
+        "name": "compute_sankranti_punyakala",
+        "description": (
+            "When the Sun enters one sign in a given Gregorian year (e.g. Makara "
+            "Sankranti in January) and the auspicious punyakala window around "
+            "it (Ch.14 v.11). Use for 'when is Makara/Mesha sankranti'."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "year": {"type": "integer", "description": "Gregorian year in which the entry falls"},
+                "sign": {"type": "string", "description": "Sanskrit (Mesha..Meena) or English (Aries..Pisces) sign name, or index 0-11"},
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone of the clock time in hours from UTC (5.5 = IST, 0 = UT); event times come back in the same zone"},
+            },
+            "required": ["year", "sign"],
+        },
+    },
+    {
+        "name": "compute_pitrya_clock",
+        "description": (
+            "Where a moment falls in the day of the Fathers (pitrya), whose day "
+            "is a lunar month: new moon is their noon, full moon their midnight "
+            "(Ch.14 v.14)."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "year": {"type": "integer"},
+                "month": {"type": "integer", "default": 1},
+                "day": {"type": "number", "default": 1},
+                "hour": {"type": "number", "default": 0, "description": "Clock hour in utc_offset"},
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone of the clock time in hours from UTC (5.5 = IST, 0 = UT); event times come back in the same zone"},
+            },
+            "required": ["year"],
+        },
+    },
+    {
+        "name": "compute_barhaspatya_year",
+        "description": (
+            "The year of Jupiter's twelve-year cycle (named after the months) a "
+            "date falls in, plus the sixty-year samvatsara name (Ch.14 v.17). "
+            "method 'mean' is fast (default); 'heliacal' is slower. Both are "
+            "commentary readings, not rules the verse gives."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "year": {"type": "integer"},
+                "month": {"type": "integer", "default": 1},
+                "day": {"type": "number", "default": 1},
+                "method": {"type": "string", "enum": ["mean", "heliacal"], "default": "mean"},
+                "utc_offset": {"type": "number", "default": 5.5, "description": "Zone of the clock time in hours from UTC (5.5 = IST, 0 = UT); event times come back in the same zone"},
+            },
+            "required": ["year"],
+        },
+    },
+    {
         "name": "get_verse",
         "description": (
             "Return one verse (translation + commentary) of the Surya Siddhanta "
@@ -2480,7 +3190,11 @@ TOOL_DEFINITIONS = [
     },
     {
         "name": "get_verses",
-        "description": "Return a whole chapter, or a verse range within it, of the Surya Siddhanta text.",
+        "description": (
+            "Return a chapter, or a verse range within it, of the Surya Siddhanta "
+            "text. Each verse's text is clipped, so keep the range to ten verses "
+            "or fewer and use get_verse for one verse in full."
+        ),
         "input_schema": {
             "type": "object",
             "properties": {
@@ -2504,8 +3218,8 @@ TOOL_DEFINITIONS = [
                 "query": {"type": "string"},
                 "limit": {"type": "integer", "default": 8},
                 "include_commentary": {
-                    "type": "boolean", "default": True,
-                    "description": "Set false to restrict to scripture only, not editorial commentary.",
+                    "type": "boolean", "default": False,
+                    "description": "Set true to add Burgess's editorial commentary to each hit (off by default; it is long). Hit text is clipped; call get_verse for one in full.",
                 },
             },
             "required": ["query"],
@@ -2517,6 +3231,27 @@ TOOL_DEFINITIONS = [
         "input_schema": {
             "type": "object",
             "properties": {},
+        },
+    },
+    {
+        "name": "search_bhashya",
+        "description": (
+            "Search the Srivastava 'Vigyan Bhashya', a modern Hindi commentary on "
+            "the Surya Siddhanta: English machine-translated pages or the Hindi "
+            "OCR. Use for how the method is explained or worked through, or for "
+            "Hindi questions. It is commentary, not the text: cite it as 'the "
+            "commentary explains' with its id (SB.en.p165), never as a verse, "
+            "and never take numbers from it."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string"},
+                "language": {"type": "string", "enum": ["en", "hi"], "description": "en = English pages, hi = Hindi OCR; omitted = Hindi when the query is in Devanagari"},
+                "chapter": {"type": "integer", "description": "Restrict to one chapter 1-14"},
+                "limit": {"type": "integer", "default": 5},
+            },
+            "required": ["query"],
         },
     },
     {
@@ -2537,6 +3272,49 @@ TOOL_DEFINITIONS = [
         },
     },
 ]
+
+
+#: Descriptions for parameters that recur across tools and were left bare
+#: in their schemas. A weak tool-router fills arguments far more reliably
+#: when every parameter says what it takes; explicit descriptions win.
+_PARAM_HINTS: Dict[str, str] = {
+    "planet": "Sun, Moon, Mars, Mercury, Jupiter, Venus or Saturn",
+    "planet1": "First body: Sun, Moon, Mars, Mercury, Jupiter, Venus or Saturn",
+    "planet2": "Second body: Sun, Moon, Mars, Mercury, Jupiter, Venus or Saturn",
+    "star_name": "Yogatara / nakshatra name, e.g. Ashvini, Krittika, Rohini, Revati",
+    "year": "CE year (negative = BCE); a year the user implies relatively comes from the [Context] block",
+    "month": "Month 1-12",
+    "day": "Day of month; a fraction is the clock time in utc_offset (0.5 = noon)",
+    "hour": "Clock hour 0-24 in utc_offset",
+    "latitude": "Degrees, north positive; default to the [Context] place",
+    "longitude": "Degrees, east positive; default to the [Context] place",
+    "months": "Length of the search window in months from the start",
+    "start_month": "Month 1-12 to start searching from",
+    "days": "Length of the search window in days from the start",
+    "eclipse_type": "'lunar' or 'solar'",
+    "chapter": "Chapter number 1-14",
+    "verse": "Verse number within the chapter",
+    "query": "The user's question or its key terms",
+    "limit": "Maximum results",
+    "value": "The amount to convert",
+    "from_mana": "Mana key to convert from",
+    "to_mana": "Mana key to convert to",
+    "kind": "'new', 'full' or 'both'",
+    "method": "'mean' (fast, default) or 'heliacal' (slow)",
+    "shadow_direction": "'north' or 'south': where the noon shadow points",
+    "gnomon_length": "Gnomon height; 12 digits (angulas) in the text",
+}
+
+
+def _fill_param_hints(definitions: list) -> None:
+    """Give every bare schema property a description from _PARAM_HINTS."""
+    for definition in definitions:
+        for name, prop in definition["input_schema"].get("properties", {}).items():
+            if "description" not in prop and name in _PARAM_HINTS:
+                prop["description"] = _PARAM_HINTS[name]
+
+
+_fill_param_hints(TOOL_DEFINITIONS)
 
 
 # ── Tool dispatcher ─────────────────────────────────────────────
@@ -2580,11 +3358,22 @@ TOOL_FUNCTIONS: Dict[str, Any] = {
     "explain_algorithm": explain_algorithm,
     "list_nakshatras": list_nakshatras,
     "list_yogataras": list_yogataras,
+    "get_current_datetime": get_current_datetime,
+    "find_new_full_moon": find_new_full_moon,
+    "compute_latitude_from_shadow": compute_latitude_from_shadow,
+    "identify_star": identify_star,
+    "reckon_time": reckon_time,
+    "convert_time_measure": convert_time_measure,
+    "compute_solar_year": compute_solar_year,
+    "compute_sankranti_punyakala": compute_sankranti_punyakala,
+    "compute_pitrya_clock": compute_pitrya_clock,
+    "compute_barhaspatya_year": compute_barhaspatya_year,
     "get_verse": get_verse,
     "get_verses": get_verses,
     "search_corpus": search_corpus,
     "chapter_index": chapter_index,
     "tools_for_query": tools_for_query,
+    "search_bhashya": search_bhashya,
 }
 
 

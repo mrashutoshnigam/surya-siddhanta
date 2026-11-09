@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { bookDateFromSearch } from "../dates";
 import { api } from "../../../api";
 import { DateInput, todayValue } from "../../../components/Inputs";
 import type { DateValue } from "../../../components/Inputs";
@@ -26,12 +28,17 @@ import type { Chapter1Payload, VerseRecord } from "./types";
  * sliders move away from.
  */
 export function Chapter1() {
-  const [date, setDate] = useState<DateValue>(todayValue());
+  const location = useLocation();
+  const [date, setDate] = useState<DateValue>(() => bookDateFromSearch(location.search, todayValue()));
   const [payload, setPayload] = useState<Chapter1Payload | null>(null);
   const [verses, setVerses] = useState<Map<number, VerseRecord>>(new Map());
   const [corpusError, setCorpusError] = useState<unknown>(null);
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (payload && location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+  }, [Boolean(payload), location.hash]);
 
   // The calculations: refetched whenever the date changes.
   useEffect(() => {

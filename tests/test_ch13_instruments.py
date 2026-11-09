@@ -120,7 +120,7 @@ def test_star_declination_follows_the_polar_rule_of_ii_58(jd_2024):
 def test_fixed_stars_match_burgess_viii_10_12_and_20_21():
     """
     The seven fixed stars are taken from Burgess's text of viii.10-12 and
-    20-21, carried in corpus record SS.8.24. Expected: the polar
+    20-21, carried under their actual verse numbers. Expected: the polar
     coordinates the verses state, Apamvatsa and Apas reckoned north of
     Citra's 2 deg south, and every entry marked verified against the corpus.
     """
@@ -134,7 +134,7 @@ def test_fixed_stars_match_burgess_viii_10_12_and_20_21():
         star = ch13.fixed_star(name)
         assert (star["polar_longitude"], star["polar_latitude"]) == (lon, lat)
         assert star["verified_against_corpus"] is True
-        assert star["corpus_record"] == "SS.8.24"
+        assert star["corpus_record"] == star["verse"]
 
 
 def test_unknown_star_raises_key_error():
@@ -464,14 +464,14 @@ def test_catalog_loads_the_instruments_and_their_verses():
     The catalog holds the descriptive half of the chapter. Expected: eleven
     instruments each citing a Ch.13 verse, the clepsydra vessel of the
     commentary, the Seven Sages without coordinates, and the note that
-    verse 6 is absent from the corpus.
+    all 25 verses are available in the corpus.
     """
     catalog = ch13.load_catalog()
     assert len(catalog["instruments"]) == 11
     assert all(i["verse"].startswith("SS.13.") for i in catalog["instruments"])
     assert catalog["clepsydra_vessel"]["height_angulas"] == 6
     assert "polar_longitude" not in catalog["seven_sages"]
-    assert "6" in catalog["missing_verses_note"]
+    assert "All 25 verses" in catalog["missing_verses_note"]
     assert ch13.get_instrument("ghati")["computable"] is True
     with pytest.raises(KeyError):
         ch13.get_instrument("astrolabe")

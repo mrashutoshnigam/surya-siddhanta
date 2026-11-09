@@ -37,8 +37,8 @@ as it is.
 
 The seven fixed stars of v.8-9 that are not junction stars — Agastya,
 Mrgavyadha, Agni, Brahmahrdaya, Prajapati, Apamvatsa, Apas — come from
-viii.10-12 and 20-21, whose Burgess text survives in the corpus under the
-misaligned record SS.8.24. They live in `data/instruments_catalog.json`.
+viii.10-12 and 20-21, indexed under their numbered verses in the corpus.
+They live in `data/instruments_catalog.json`.
 
 Reference: SS Ch.13; Burgess (1860) pp.297-310
 """

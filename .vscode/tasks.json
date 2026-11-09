@@ -1,0 +1,178 @@
+{
+    "version": "2.0.0",
+    "options": {
+        "env": {
+            "PYTHONPATH": "${workspaceFolder}/src",
+            "DEEPSEEK_API_KEY": "${env:DEEPSEEK_API_KEY}",
+            "OPENROUTER_API_KEY": "${env:OPENROUTER_API_KEY}"
+        },
+        "cwd": "${workspaceFolder}"
+    },
+    "tasks": [
+        {
+            "label": "Install Package (editable, dev + plot + api)",
+            "detail": "pip install -e .[dev,plot,api] into the conda env you name at the prompt.",
+            "type": "process",
+            "command": "${userHome}\\miniconda3\\envs\\${input:condaEnv}\\python.exe",
+            "args": [
+                "-m",
+                "pip",
+                "install",
+                "-e",
+                ".[dev,plot,api]"
+            ],
+            "problemMatcher": [],
+            "group": "none"
+        },
+        {
+            "label": "Run All Tests",
+            "type": "process",
+            "command": "${userHome}\\miniconda3\\envs\\${input:condaEnv}\\python.exe",
+            "args": [
+                "-m",
+                "pytest",
+                "tests",
+                "-v"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Run Tests with Coverage",
+            "type": "process",
+            "command": "${userHome}\\miniconda3\\envs\\${input:condaEnv}\\python.exe",
+            "args": [
+                "-m",
+                "pytest",
+                "tests",
+                "--cov=suryasiddhanta",
+                "--cov-report=term-missing"
+            ],
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "Install Frontend Dependencies",
+            "type": "shell",
+            "command": "npm install",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "problemMatcher": [],
+            "group": "none"
+        },
+        {
+            "label": "Run FastAPI Backend (port 8000)",
+            "detail": "Start the API, or reuse the healthy API already listening on port 8000.",
+            "type": "process",
+            "command": "${userHome}\\miniconda3\\envs\\${input:condaEnv}\\python.exe",
+            "args": [
+                "-u",
+                "${workspaceFolder}/.vscode/run_service.py",
+                "api"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "uvicorn",
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(\\d+):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "message": 4
+                },
+                "background": {
+                    "activeBegins": true,
+                    "beginsPattern": "Will watch for changes|Started server process",
+                    "endsPattern": "Application startup complete"
+                }
+            },
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Run React Frontend (port 5173)",
+            "detail": "Start Vite, or reuse the healthy frontend already listening on port 5173.",
+            "type": "process",
+            "command": "${userHome}\\miniconda3\\envs\\${input:condaEnv}\\python.exe",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "vite",
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(\\d+):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "message": 4
+                },
+                "background": {
+                    "activeBegins": true,
+                    "beginsPattern": "VITE",
+                    "endsPattern": "ready in|Local:"
+                }
+            },
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "reveal": "always"
+            },
+            "args": [
+                "-u",
+                "${workspaceFolder}/.vscode/run_service.py",
+                "frontend"
+            ]
+        },
+        {
+            "label": "Run React App (API + frontend)",
+            "detail": "Starts the FastAPI backend and the Vite dev server together; open http://localhost:5173.",
+            "dependsOn": [
+                "Run FastAPI Backend (port 8000)",
+                "Run React Frontend (port 5173)"
+            ],
+            "dependsOrder": "parallel",
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "label": "Build React Frontend (typecheck + bundle)",
+            "type": "shell",
+            "command": "npm run build",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Build Distribution (wheel + sdist)",
+            "detail": "python -m build in the conda env you name at the prompt (needs the 'build' package there).",
+            "type": "process",
+            "command": "${userHome}\\miniconda3\\envs\\${input:condaEnv}\\python.exe",
+            "args": [
+                "-m",
+                "build"
+            ],
+            "problemMatcher": [],
+            "group": "build"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "condaEnv",
+            "type": "promptString",
+            "description": "Conda environment to run in (looked up under ~/miniconda3/envs)",
+            "default": "surya"
+        }
+    ]
+}

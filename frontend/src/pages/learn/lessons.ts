@@ -1,0 +1,10 @@
+export type LessonBody = "Sun" | "Moon" | "Mars" | "Mercury" | "Venus" | "Jupiter" | "Saturn";
+export const LESSONS: { body: LessonBody; script: string; title: string; goal: string; activity: string; ready: boolean }[] = [
+ {body:"Sun",script:"सूर्य",title:"Start with mean and true motion",goal:"Distinguish a uniform mean position from the manda-corrected Sun, then connect tropical longitude to day length at Ujjain.",activity:"Move the date by 90 days. Compare the correction and the lengths of day and night.",ready:true},
+ {body:"Moon",script:"चन्द्र",title:"Connect lunar motion to the calendar",goal:"Follow the Moon’s correction, then read Sun–Moon separation as a tithi.",activity:"Advance one day at a time and observe how the elongation and tithi change.",ready:true},
+ {body:"Mars",script:"मङ्गल",title:"Follow the five-position correction",goal:"Trace half and whole corrections and explain why whole manda returns to the original mean.",activity:"Select the fourth position and compare it with the original mean, then check your prediction.",ready:true},
+ {body:"Mercury",script:"बुध",title:"Compare Mercury and Venus",goal:"Inspect the five-position sequence for the inner planets using the same date.",activity:"Compare the final correction and Sun separation for Mercury and Venus.",ready:true},
+ {body:"Venus",script:"शुक्र",title:"Explore the second inner planet",goal:"Compare Venus’s corrected longitude with Mercury and the Sun.",activity:"Change the date and see whether the final position is ahead of or behind the mean.",ready:true},
+ {body:"Jupiter",script:"बृहस्पति",title:"Compare the outer planets",goal:"Trace Jupiter’s corrections and compare the same calculation with Saturn.",activity:"Move through 90 days and compare Jupiter and Saturn on the same date.",ready:true},
+ {body:"Saturn",script:"शनि",title:"Investigate slower mean motion",goal:"Connect Saturn’s slower mean motion to its correction sequence.",activity:"Compare the change in mean longitude with Jupiter over the same date interval.",ready:true},
+];

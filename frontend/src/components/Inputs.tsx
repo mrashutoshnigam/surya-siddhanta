@@ -17,6 +17,7 @@ export function DateInput({
   minYear = -3000,
   maxYear = 4000,
   withZone = false,
+  dayStep = 0.01,
 }: {
   value: DateValue;
   onChange: (v: DateValue) => void;
@@ -24,6 +25,8 @@ export function DateInput({
   maxYear?: number;
   /** Show a time-zone field: for pages where the time of day matters. */
   withZone?: boolean;
+  /** Whole-day lessons can opt into integer stepping without changing other pages. */
+  dayStep?: number;
 }) {
   return (
     <div className="field-row">
@@ -54,7 +57,7 @@ export function DateInput({
           value={value.day}
           min={1}
           max={31}
-          step={0.01}
+          step={dayStep}
           onChange={(e) => onChange({ ...value, day: Number(e.target.value) })}
         />
       </label>

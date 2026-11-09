@@ -422,14 +422,14 @@ def test_instruments_catalog():
     """
     POST /calc/instruments/catalog returns the descriptive half of Ch.13.
     Expected: eleven instruments, and the seven fixed stars verified
-    against corpus record SS.8.24.
+    against their numbered verses in Chapter 8.
     """
     r = client.post("/calc/instruments/catalog", json={})
     assert r.status_code == 200
     body = r.json()
     assert len(body["instruments"]) == 11
     assert len(body["fixed_stars"]) == 7
-    assert all(s["corpus_record"] == "SS.8.24" for s in body["fixed_stars"])
+    assert all(s["corpus_record"] == s["verse"] for s in body["fixed_stars"])
 
 
 def test_utc_offset_moves_the_instant():

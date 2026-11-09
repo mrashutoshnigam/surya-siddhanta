@@ -1,10 +1,15 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { GlossaryPanel } from "../glossary/GlossaryPanel";
 import { GlossaryProvider } from "../glossary/GlossaryProvider";
 import { BOOK_CHAPTERS } from "../pages/book/BookChapter";
 import { ThemeToggle } from "./ThemeToggle";
+import { ProjectWelcome } from "./ProjectWelcome";
 
 const NAV = [
+  {
+    group: "Learn",
+    items: [{ to: "/learn", label: "Learning Paths" }, { to: "/research", label: "Research Explorer" }],
+  },
   {
     group: "Explorer",
     items: [
@@ -33,14 +38,18 @@ const NAV = [
 ];
 
 export function Layout() {
+  const pathname = useLocation().pathname;
+  const isLearning = pathname === "/learn" || pathname.startsWith("/learn/");
+  const isResearch = pathname === "/research";
   return (
     <GlossaryProvider>
-      <div className="app-shell">
+      <div className={"app-shell" + (isLearning ? " learning-shell" : isResearch ? " research-shell" : "")}>
         <nav className="sidebar">
+          {(isLearning || isResearch) && <a className="lab-skip" href="#learning-content">Skip to the {isResearch ? "research" : "experiment"} ↓</a>}
           <div className="brand">Surya Siddhanta</div>
           <p className="brand-caption">
             Planetary positions, eclipses, conjunctions, stars &amp; the almanac — computed from Surya
-            Siddhanta algorithms (Ch.1–13).
+            Siddhanta algorithms (Ch.1–14).
           </p>
           {NAV.map((section) => (
             <div key={section.group} className="nav-group">
@@ -84,16 +93,17 @@ export function Layout() {
 
           <div className="sidebar-footer">suryasiddhanta · default location Ujjain</div>
         </nav>
-        <main className="content">
+        <main className="content" id="learning-content">
           <ThemeToggle />
           <Outlet />
           <footer className="legal-band">
+            <ProjectWelcome isHome={pathname === "/" || pathname === "/positions"} />
             <span>Ashutosh Nigam</span>
             <span className="legal-sep">·</span>
             <span className="legal-roll">Roll No: M25AI2006</span>
             <span className="legal-sep">·</span>
             <span>
-              Computed from the Surya Siddhanta (Burgess, 1860) — no external ephemeris
+              {isLearning || isResearch ? "SS calculations · separate saved DE440 comparison" : "Computed from the Surya Siddhanta (Burgess, 1860) — no external ephemeris"}
             </span>
           </footer>
         </main>

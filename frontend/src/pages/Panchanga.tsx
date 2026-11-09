@@ -4,7 +4,7 @@ import { DateInput, DateValue, todayValue } from "../components/Inputs";
 import { ErrorBox, KVTable, PageHeader } from "../components/Tables";
 
 interface PanchangaResult {
-  tithi: { number: number; fraction: number };
+  tithi: { number: number; name: string; paksha: string; fraction: number };
   vara: { number: number; name: string };
   nakshatra: { number: number; name: string; pada: number };
   yoga: { number: number };
@@ -42,7 +42,7 @@ export function Panchanga() {
         <KVTable
           title={`Panchanga — ${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`}
           rows={[
-            ["Tithi", `#${result.tithi.number} (${(result.tithi.fraction * 100).toFixed(1)}% elapsed)`],
+            ["Tithi", `${result.tithi.name} (${result.tithi.paksha} paksha) — #${result.tithi.number} (${(result.tithi.fraction * 100).toFixed(1)}% elapsed)`],
             ["Vara", result.vara.name],
             ["Nakshatra", `${result.nakshatra.name} (pada ${result.nakshatra.pada})`],
             ["Yoga", `#${result.yoga.number}`],

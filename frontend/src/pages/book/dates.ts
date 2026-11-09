@@ -5,6 +5,19 @@ export interface DayDate {
   day: number;
 }
 
+/** Preserve a lesson's date when opening its source calculation. */
+export function bookDateFromSearch(search: string, fallback: DayDate): DayDate {
+  const params = new URLSearchParams(search);
+  if (!["year", "month", "day"].every(key => params.has(key))) return fallback;
+  const year = Number(params.get("year"));
+  const month = Number(params.get("month"));
+  const day = Number(params.get("day"));
+  if (![year, month, day].every(Number.isInteger) || year < 1599 || year > 2601) return fallback;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() + 1 !== month || date.getUTCDate() !== day) return fallback;
+  return { year, month, day };
+}
+
 /**
  * "2024-02-11, 08:23 Ujjain mean time" from a fractional day; the time of day
  * is the fraction. Book payloads reckon in Ujjain mean time (UTC+5:03), as the

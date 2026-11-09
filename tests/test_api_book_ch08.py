@@ -148,16 +148,12 @@ def test_conjunction_card_equals_planet_star_conjunction(client: TestClient):
 
 
 def test_corpus_records_are_named_for_the_cards_that_have_text(client: TestClient):
-    """Ch.8's corpus numbering is out of step, so each card names its own records.
-
-    Expected: the two table cards point at records 1-4 and 5; the applied
-    cards point at none.
-    """
+    """Every card can display its source verses from the repaired corpus."""
     cards = _body(client, BASE)["cards"]
     assert cards["viii.1-4"]["text_verses"] == "1-4"
-    assert cards["viii.5-9"]["text_verses"] == "5-5"
-    assert cards["viii.1-9"]["text_verses"] is None
-    assert cards["viii.14-15"]["text_verses"] is None
+    assert cards["viii.5-9"]["text_verses"] == "5-9"
+    assert cards["viii.1-9"]["text_verses"] == "1-9"
+    assert cards["viii.14-15"]["text_verses"] == "14-15"
 
 
 def test_out_of_range_inputs_are_rejected(client: TestClient):

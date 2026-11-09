@@ -24,8 +24,8 @@ const PLANETS = ["Mars", "Mercury", "Jupiter", "Venus", "Saturn"];
 /**
  * Chapter 8 of the book: the polar longitudes derived from the verses'
  * shares, the latitudes, and one chosen star placed on a date. The
- * corpus numbers this chapter out of step with the verses, so each card
- * names the records that hold its text (or none).
+ * corpus follows the source verse numbers, so each card names the records
+ * that hold its text.
  */
 export function Chapter8() {
   const [star, setStar] = useState("Rohini");

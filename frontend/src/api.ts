@@ -45,6 +45,44 @@ export interface DateLocationInput extends DateInput {
 export const DEFAULT_LAT = 23.18;
 export const DEFAULT_LON = 75.78;
 
+/** One chat turn plus where and when the user is asking from. */
+export interface ChatRequest {
+  message: string;
+  session_id?: string;
+  /** The browser's current moment, ISO 8601. */
+  client_now?: string;
+  /** The browser's zone, hours from UTC. */
+  utc_offset?: number;
+  place?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+/** A tool call the agent made during the turn, with a preview of its result. */
+export interface ToolUse {
+  tool: string;
+  input: Record<string, unknown>;
+  result: string;
+}
+
+/** A retrieved record the answer may cite: a verse, or a commentary page. */
+export interface ChatSource {
+  id: string;
+  kind: "verse" | "commentary";
+  chapter: number | null;
+  verse: number | null;
+  page: number | null;
+  label: string;
+  snippet: string;
+}
+
+export interface ChatResponse {
+  session_id: string;
+  reply: string;
+  tool_uses: ToolUse[];
+  sources: ChatSource[];
+}
+
 export const api = {
   planetPosition: (body: DateInput & { planet: string }) => post("/calc/planet-position", body),
   allPlanets: (body: DateInput & { planets?: string[] }) => post("/calc/all-planets", body),
@@ -120,7 +158,7 @@ export const api = {
 
   glossary: () => get<GlossaryDoc>("/glossary"),
 
-  chat: (body: { message: string; session_id?: string }) => post("/chat", body),
+  chat: (body: ChatRequest) => post<ChatResponse>("/chat", body),
   chatReset: (sessionId: string) => post(`/chat/${sessionId}/reset`, {}),
 };
 

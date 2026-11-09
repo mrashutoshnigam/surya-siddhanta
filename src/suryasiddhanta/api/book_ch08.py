@@ -10,11 +10,10 @@ minutes of the bhogas that went before; v.2-5 give the shares. Each bhoga is
 minutes. Four asterisms are placed by position instead (v.4), and Abhijit
 too. The result is checked against the library's catalog.
 
-The corpus export numbers Ch.8 out of step with the verses (its ids after 8.5
-carry commentary), so each card says which corpus records hold its text, or
-none.
+The corpus follows Burgess's verse numbering, so each card names the range
+of source verses displayed alongside its calculations.
 
-Reference: SS Ch.8 v.1-28; Burgess (1860) pp.236-252
+Reference: SS Ch.8 v.1-21; Burgess (1935 reprint) pp.202-254
 """
 from __future__ import annotations
 
@@ -208,17 +207,17 @@ _CARDS: Dict[str, Tuple[str, str, str, bool, Optional[str], Callable[[_Ctx], Dic
     "viii.5-9": (
         "5-9", "The latitudes (viksepa)",
         "The latitude of each junction-star, north or south of its point of declination.",
-        False, "5-5", _card_latitudes,
+        False, "5-9", _card_latitudes,
     ),
     "viii.1-9": (
         "1-9", "Where the star stands",
         "The chosen star's sidereal and tropical place, its equatorial coordinates, and its rising and setting.",
-        True, None, _card_position,
+        True, "1-9", _card_position,
     ),
     "viii.14-15": (
         "14-15", "A planet meets a star",
         "The method of conjunction taught in Chapter 7, applied to a planet and a junction-star.",
-        True, None, _card_conjunctions,
+        True, "14-15", _card_conjunctions,
     ),
 }
 

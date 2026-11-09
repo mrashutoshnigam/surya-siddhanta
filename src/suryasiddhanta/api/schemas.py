@@ -166,8 +166,18 @@ class InstrumentsCatalogIn(BaseModel):
 
 
 class ChatIn(BaseModel):
-    message: str
+    """A chat turn plus where and when the user is asking from.
+
+    The context fields let the model resolve "today", "at 6 pm" or "here"
+    into tool arguments. All are optional: the server clock, IST and
+    Ujjain fill the gaps."""
+    message: str = Field(min_length=1, max_length=8000)
     session_id: Optional[str] = None
+    client_now: Optional[str] = Field(None, description="ISO 8601 moment with offset")
+    utc_offset: Optional[float] = Field(None, ge=-12.0, le=14.0)
+    place: Optional[str] = Field(None, max_length=120)
+    latitude: Optional[float] = Field(None, ge=-90.0, le=90.0)
+    longitude: Optional[float] = Field(None, ge=-180.0, le=180.0)
 
 
 class Ch01In(BaseModel):

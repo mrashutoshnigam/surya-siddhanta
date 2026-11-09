@@ -42,6 +42,25 @@ app.include_router(book_ch14.router)
 app.include_router(glossary.router)
 
 
+@app.get("/")
+def root():
+    """Service index for the bare backend URL.
+
+    The API only mounts ``/api/*`` routes plus ``/docs``; it has no HTML UI of
+    its own (the React frontend at :5173 proxies ``/api`` here). Hitting
+    ``http://127.0.0.1:8000/`` directly therefore used to 404, which read like a
+    crash. This returns a small discovery payload pointing at the real surfaces.
+    """
+    return {
+        "service": "Surya Siddhanta API",
+        "docs": "/docs",
+        "openapi": "/openapi.json",
+        "health": "/health",
+        "frontend": "http://localhost:5173",
+        "note": "REST routes live under /api/* and /book/*; the web UI is the React app on :5173.",
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
