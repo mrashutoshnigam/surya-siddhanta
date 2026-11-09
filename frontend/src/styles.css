@@ -562,12 +562,31 @@ a { color: var(--primary-text); text-decoration: none; }
   padding: 76px 20px 20px; border-bottom: 1px solid var(--hairline);
 }
 .chat-panel-header h2 { margin: 0 auto 0 0; font-size: 17px; font-weight: 600; }
-.chat-panel-terms, .chat-retry {
+.chat-retry {
   border: 1px solid var(--hairline); background: var(--canvas); color: var(--primary-text);
   border-radius: var(--r-pill); padding: 7px 12px; font: inherit; font-size: 13px; cursor: pointer;
 }
-.chat-panel-terms:hover, .chat-retry:hover { background: var(--surface-strong); }
-.chat-content { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 16px; gap: 12px; }
+.chat-retry:hover { background: var(--surface-strong); }
+.assistant-launcher {
+  position: fixed; right: 20px; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 55;
+  display: grid; place-items: center; width: 48px; height: 48px;
+  border: 1px solid var(--hairline); border-radius: var(--r-full);
+  background: var(--primary); color: var(--on-primary); box-shadow: var(--shadow); cursor: pointer;
+}
+.assistant-launcher:hover { background: var(--primary-active); }
+.assistant-launcher:focus-visible { outline: 2px solid var(--primary-text); outline-offset: 3px; }
+.assistant-launcher[hidden] { display: none; }
+.side-panel-tabs { display: flex; flex-shrink: 0; padding: 0 20px; border-bottom: 1px solid var(--hairline); }
+.side-panel-tabs [role="tab"] {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 12px; border: 0; border-bottom: 2px solid transparent;
+  background: transparent; color: var(--body); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.side-panel-tabs [role="tab"]:hover { background: var(--surface-soft); color: var(--ink); }
+.side-panel-tabs [aria-selected="true"], .side-panel-tabs [aria-selected="true"]:hover { color: var(--primary-text); border-bottom-color: var(--primary-text); }
+.side-panel-view { display: flex; flex: 1; min-width: 0; min-height: 0; }
+.side-panel-view[hidden] { display: none; }
+.chat-content { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; padding: 16px; gap: 12px; }
 .chat-intro { margin: 0; color: var(--body); font-size: 13px; line-height: 1.5; }
 .chat-empty { color: var(--body); font-size: 14px; line-height: 1.7; }
 .chat-content .chat-place { margin: 0; flex-shrink: 0; max-height: 28dvh; overflow-y: auto; }
@@ -971,44 +990,10 @@ a { color: var(--primary-text); text-decoration: none; }
 
 /* --- Glossary panel --------------------------------------------------- */
 
-/* Docked beside the page at 1784px and up (sidebar 264 + content 1200 +
-   panel 320), so .content keeps its full width; below that the panel is
-   an overlay drawer and never takes part in the page's layout. */
-.glossary-panel {
-  width: 320px;
-  display: flex;
-  flex-direction: column;
-  background: var(--canvas);
-  border-left: 1px solid var(--hairline);
-}
-.glossary-panel.is-docked {
-  flex-shrink: 0;
-  margin-left: auto;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-.glossary-panel.is-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 70;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
-  animation: glossary-slide-in 0.18s ease-out;
-}
+.glossary-content { display: flex; flex: 1; min-width: 0; min-height: 0; flex-direction: column; }
 @keyframes glossary-slide-in {
   from { transform: translateX(100%); }
   to { transform: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .glossary-panel.is-drawer { animation: none; }
-}
-.glossary-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 65;
-  background: rgba(10, 11, 13, 0.4);
 }
 
 .glossary-head {
@@ -1018,8 +1003,6 @@ a { color: var(--primary-text); text-decoration: none; }
   gap: 12px;
   padding: 24px 20px 12px;
 }
-/* Clears the fixed theme toggle, which sits over the docked column. */
-.glossary-panel.is-docked .glossary-head { padding-top: 76px; }
 .glossary-head h2 {
   margin: 0;
   font-size: 16px;
@@ -1106,43 +1089,6 @@ a { color: var(--primary-text); text-decoration: none; }
   font-size: 13px;
   line-height: 1.4;
   color: var(--body);
-}
-
-/* The closed panel: a tab on the right edge that opens it. */
-.glossary-tab {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  z-index: 55;
-  transform: translateY(-50%);
-  writing-mode: vertical-rl;
-  padding: 16px 8px;
-  border: 1px solid var(--hairline);
-  border-right: none;
-  border-radius: var(--r-md) 0 0 var(--r-md);
-  background: var(--canvas);
-  color: var(--ink);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-}
-.glossary-tab .glossary-count { margin: 8px 0 0; padding: 8px 2px; }
-
-@media (max-width: 767px) {
-  .glossary-panel.is-drawer { width: 100%; border-left: none; }
-  .glossary-tab {
-    top: auto;
-    bottom: 16px;
-    right: 16px;
-    transform: none;
-    writing-mode: horizontal-tb;
-    padding: 10px 16px;
-    border-right: 1px solid var(--hairline);
-    border-radius: var(--r-pill);
-  }
-  .glossary-tab .glossary-count { margin: 0 0 0 6px; padding: 2px 8px; }
 }
 
 /* --- Glossary term popup ---------------------------------------------- */

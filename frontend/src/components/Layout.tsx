@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { GlossaryPanel } from "../glossary/GlossaryPanel";
 import { GlossaryProvider } from "../glossary/GlossaryProvider";
 import { BOOK_CHAPTERS } from "../pages/book/BookChapter";
 import { ThemeToggle } from "./ThemeToggle";
 import { ProjectWelcome } from "./ProjectWelcome";
-import { ChatPanel } from "./ChatPanel";
+import { ChatPanel, PanelTab } from "./ChatPanel";
 
 const NAV = [
   {
@@ -43,24 +42,45 @@ export function Layout() {
   const isResearch = pathname === "/research";
   const isUniverse = pathname === "/universe";
   const [universeMenuOpen, setUniverseMenuOpen] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
-  const [glossaryRequest, setGlossaryRequest] = useState(0);
+  const [panelOpen, setPanelOpen] = useState(() => {
+    if (!window.matchMedia("(min-width: 1884px)").matches) return false;
+    try { return localStorage.getItem("ss.glossary.open") !== "0"; } catch { return true; }
+  });
+  const [panelTab, setPanelTab] = useState<PanelTab>("terms");
   const chatTriggerRef = useRef<HTMLButtonElement>(null);
+  const panelTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   // Keep old /chat bookmarks useful without maintaining a second conversation.
   useEffect(() => {
     if (!location.state?.openChat) return;
-    setChatOpen(true);
+    setPanelTab("chat");
+    setPanelOpen(true);
     navigate(location.pathname + location.search + location.hash, { replace: true, state: null });
   }, [location, navigate]);
 
-  function closeChat() {
-    setChatOpen(false);
-    requestAnimationFrame(() => chatTriggerRef.current?.focus({ preventScroll: true }));
+  function rememberPanel(open: boolean) {
+    if (!window.matchMedia("(min-width: 1884px)").matches) return;
+    try { localStorage.setItem("ss.glossary.open", open ? "1" : "0"); } catch { /* Storage is optional. */ }
+  }
+
+  function openChat(trigger: HTMLButtonElement) {
+    panelTriggerRef.current = trigger;
+    setPanelTab("chat");
+    setPanelOpen(true);
+    rememberPanel(true);
+  }
+
+  function closePanel() {
+    setPanelOpen(false);
+    rememberPanel(false);
+    requestAnimationFrame(() => {
+      const trigger = panelTriggerRef.current;
+      (trigger?.isConnected ? trigger : chatTriggerRef.current)?.focus({ preventScroll: true });
+    });
   }
   return (
     <GlossaryProvider>
-      <div className={"app-shell" + (chatOpen ? " chat-open" : "") + (isLearning ? " learning-shell" : isResearch ? " research-shell" : isUniverse ? " universe-shell" : "")}>
+      <div className={"app-shell" + (panelOpen ? " chat-open" : "") + (isLearning ? " learning-shell" : isResearch ? " research-shell" : isUniverse ? " universe-shell" : "")}>
         <nav className={"sidebar" + (universeMenuOpen ? " universe-menu-open" : "")}>
           {(isLearning || isResearch || isUniverse) && <a className="lab-skip" href="#learning-content">Skip to the {isUniverse ? "universe" : isResearch ? "research" : "experiment"} ↓</a>}
           <div className="brand">Surya Siddhanta</div>
@@ -89,10 +109,10 @@ export function Layout() {
             <button
               ref={chatTriggerRef}
               type="button"
-              className={"nav-link chat-nav-trigger" + (chatOpen ? " active" : "")}
-              aria-expanded={chatOpen}
+              className={"nav-link chat-nav-trigger" + (panelOpen ? " active" : "")}
+              aria-expanded={panelOpen}
               aria-controls="chat-panel"
-              onClick={() => chatOpen ? closeChat() : setChatOpen(true)}
+              onClick={event => panelOpen && panelTab === "chat" ? closePanel() : openChat(event.currentTarget)}
             >
               Surya Siddhanta AI
             </button>
@@ -141,13 +161,9 @@ export function Layout() {
             </span>
           </footer>
         </main>
-        {/* Outside <main>: the panel never reflows the page, and the page
-            scan (which watches main.content) never sees the panel. */}
-        <GlossaryPanel suppressed={chatOpen} openRequest={glossaryRequest} onShowChat={() => setChatOpen(true)} />
-        <ChatPanel open={chatOpen} onClose={closeChat} onShowTerms={() => {
-          setChatOpen(false);
-          setGlossaryRequest(request => request + 1);
-        }} />
+        {/* Keep both tabs outside <main> so the glossary's page scan never
+            includes the assistant panel's own text. */}
+        <ChatPanel open={panelOpen} tab={panelTab} onClose={closePanel} onOpen={openChat} onTabChange={setPanelTab} />
       </div>
     </GlossaryProvider>
   );

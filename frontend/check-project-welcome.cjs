@@ -81,7 +81,7 @@ async function checkResourceLinks(dialog) {
         await direct.waitForURL('**/positions');
         const firstVisit = direct.getByRole('dialog', { name: 'Computational Implementation of the Surya Siddhanta' });
         if (await firstVisit.count()) await firstVisit.getByRole('button', { name: 'Close project introduction' }).click();
-        await direct.getByRole('dialog', { name: 'Surya Siddhanta AI', exact: true }).getByRole('button', { name: 'Close chat', exact: true }).click();
+        await direct.getByRole('dialog', { name: 'Surya Siddhanta AI', exact: true }).getByRole('button', { name: 'Close panel', exact: true }).click();
       }
       for (const text of ['Ashutosh Nigam', 'Roll No: M25AI2006', 'Indian Institute of Technology Jodhpur']) {
         assert((await footer.innerText()).includes(text), `Footer missing ${text} on ${route}`);
