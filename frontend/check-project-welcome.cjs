@@ -4,6 +4,23 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs/promises');
 
+const resources = [
+  ['GitHub repository', 'https://github.com/mrashutoshnigam/surya-siddhanta'],
+  ['Project report', 'https://github.com/mrashutoshnigam/surya-siddhanta/blob/main/docs/Project_Report_Ashutosh_Nigam.pdf'],
+  ['Computational edition paper', 'https://github.com/mrashutoshnigam/surya-siddhanta/blob/main/docs/paper/computational-edition/running-the-text-surya-siddhanta-computational-edition.pdf'],
+  ['JPL DE440 comparison paper', 'https://github.com/mrashutoshnigam/surya-siddhanta/blob/main/docs/evaluation/paper/surya-siddhanta-vs-de440.pdf'],
+  ['Python library (PyPI)', 'https://pypi.org/project/surya-siddhanta/'],
+];
+
+async function checkResourceLinks(dialog) {
+  assert.equal(await dialog.getByRole('link').count(), resources.length);
+  for (const [title, href] of resources) {
+    const link = dialog.getByRole('link').filter({ hasText: title });
+    assert.equal(await link.getAttribute('href'), href);
+    assert.equal(await link.getAttribute('target'), '_blank');
+  }
+}
+
 (async () => {
   const browser = await chromium.launch({ channel: 'msedge', headless: true });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -17,15 +34,8 @@ const fs = require('node:fs/promises');
     for (const text of ['Ashutosh Nigam', 'M25AI2006', 'M.Tech.', 'Indian Institute of Technology Jodhpur', 'Department of Computer Science and Engineering']) {
       assert((await dialog.innerText()).includes(text));
     }
-    assert.equal(await dialog.getByRole('link').count(), 5);
+    await checkResourceLinks(dialog);
     assert(await dialog.getByRole('img', { name: 'IIT Jodhpur logo' }).evaluate(img => img.complete && img.naturalWidth > 0));
-    for (const title of ['Project report', 'Computational edition paper', 'JPL DE440 comparison paper']) {
-      const href = await dialog.getByRole('link', { name: new RegExp(title) }).getAttribute('href');
-      const url = new URL(href);
-      assert.equal(url.origin, 'https://github.com');
-      assert(url.pathname.startsWith('/mrashutoshnigam/Surya_Siddhanta/blob/'));
-      assert(url.pathname.endsWith('.pdf'));
-    }
     // Keyboard focus stays inside the modal, including backward traversal.
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press('Tab');
@@ -44,6 +54,7 @@ const fs = require('node:fs/promises');
     assert.equal(await dialog.count(), 0, 'dismissal survives reload');
     await page.getByRole('button', { name: 'About this project', exact: true }).click();
     await dialog.waitFor();
+    await checkResourceLinks(dialog);
     await dialog.getByRole('button', { name: 'Explore the project' }).click();
     await dialog.waitFor({ state: 'detached' });
     assert(await page.getByRole('button', { name: 'About this project', exact: true }).evaluate(button => button === document.activeElement));
@@ -65,7 +76,7 @@ const fs = require('node:fs/promises');
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     assert(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth + 1));
     await page.screenshot({ path: path.join(output, 'mobile.png') });
-    await dialog.getByRole('link', { name: /Docker Hub/ }).scrollIntoViewIfNeeded();
+    await dialog.getByRole('link', { name: /Python library/ }).scrollIntoViewIfNeeded();
     await dialog.getByRole('button', { name: 'Explore the project' }).click();
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.getByRole('button', { name: 'Dark', exact: true }).click();

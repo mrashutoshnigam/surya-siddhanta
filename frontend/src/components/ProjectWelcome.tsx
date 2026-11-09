@@ -2,14 +2,13 @@ import { useEffect, useRef, useState } from "react";
 
 const STORAGE_KEY = "ss.project-introduction.dismissed";
 const REPOSITORY = "https://github.com/mrashutoshnigam/surya-siddhanta";
-// Papers remain in the original project repository.
-const DOCUMENTS = "https://github.com/mrashutoshnigam/Surya_Siddhanta/blob/15b4c951bebf6c08805c5ce91950f4ed8ed35bd9/frontend/public/project-documents";
+const DOCUMENTS = `${REPOSITORY}/blob/main/docs`;
 const RESOURCES = [
   { title: "GitHub repository", detail: "Source code & documentation", href: REPOSITORY },
-  { title: "Project report", detail: "M.Tech. project report · PDF", href: `${DOCUMENTS}/MTP2_Project_Report_Ashutosh_Nigam.pdf` },
-  { title: "Computational edition paper", detail: "Running the Text · All fourteen chapters", href: `${DOCUMENTS}/running-the-text-surya-siddhanta-computational-edition.pdf` },
-  { title: "JPL DE440 comparison paper", detail: "Planetary accuracy · 1550–2649 CE", href: `${DOCUMENTS}/surya-siddhanta-vs-de440.pdf` },
-  { title: "Docker Hub", detail: "Published application image", href: "https://hub.docker.com/repository/docker/mrashutoshnigam/surya-siddhanta/general" },
+  { title: "Project report", detail: "M.Tech. project report · PDF", href: `${DOCUMENTS}/Project_Report_Ashutosh_Nigam.pdf` },
+  { title: "Computational edition paper", detail: "Running the Text · All fourteen chapters", href: `${DOCUMENTS}/paper/computational-edition/running-the-text-surya-siddhanta-computational-edition.pdf` },
+  { title: "JPL DE440 comparison paper", detail: "Planetary accuracy · 1550–2649 CE", href: `${DOCUMENTS}/evaluation/paper/surya-siddhanta-vs-de440.pdf` },
+  { title: "Python library (PyPI)", detail: "Install the surya-siddhanta package", href: "https://pypi.org/project/surya-siddhanta/" },
 ];
 
 function wasDismissed() {
@@ -79,7 +78,7 @@ function IntroductionDialog({ onDismiss }: { onDismiss: () => void }) {
           <aside className="project-resources" aria-labelledby="project-resources-title">
             <p className="project-eyebrow">Explore the work</p>
             <h3 id="project-resources-title">Code, research & resources</h3>
-            <p className="project-resources-intro">Read the report and papers, explore the implementation, or run the published image.</p>
+            <p className="project-resources-intro">Read the report and papers, explore the implementation, or install the Python library.</p>
             <ul>
               {RESOURCES.map(resource => (
                 <li key={resource.title}>
