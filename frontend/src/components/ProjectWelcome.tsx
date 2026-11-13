@@ -6,6 +6,7 @@ const DOCUMENTS = `${REPOSITORY}/blob/main/docs`;
 const RESOURCES = [
   { title: "GitHub repository", detail: "Source code & documentation", href: REPOSITORY },
   { title: "Project report", detail: "M.Tech. project report · PDF", href: `${DOCUMENTS}/Project_Report_Surya_Siddhanta_Computation_Library.pdf` },
+  { title: "Project Presentation", detail: "M.Tech. Project Presentation · PDF", href: `${DOCUMENTS}/presentation/Surya_Siddhanta_MTP2_Presentation.pdf` },
   { title: "Computational edition paper", detail: "Running the Text · All fourteen chapters", href: `${DOCUMENTS}/paper/computational-edition/running-the-text-surya-siddhanta-computational-edition.pdf` },
   { title: "JPL DE440 comparison paper", detail: "Planetary accuracy · 1550–2649 CE", href: `${DOCUMENTS}/paper/evaluation-de440/surya-siddhanta-vs-de440.pdf` },
   { title: "Python library (PyPI)", detail: "Install the surya-siddhanta package", href: "https://pypi.org/project/surya-siddhanta/" },
