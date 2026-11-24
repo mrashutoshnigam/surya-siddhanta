@@ -1,0 +1,1327 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\textbf{Computational Implementation of the Surya Siddhanta Across
+Fourteen Chapters}
+
+\emph{A Project Report submitted by}
+
+\textbf{Ashutosh Nigam}
+
+\textbf{M25AI2006}
+
+\emph{in partial fulfillment of the requirements for the award of the
+degree of}
+
+\textbf{M.Tech.}
+
+\includegraphics[width=1.73056in,height=1.73056in]{./media/image1.png}
+
+\textbf{Indian Institute of Technology Jodhpur}
+
+\textbf{Department of Computer Science and Engineering}
+
+\emph{November 2026}
+
+\textbf{Declaration}
+
+I hereby declare that the work presented in this Project Report titled
+\textbf{Computational Implementation of the Surya Siddhanta Across
+Fourteen Chapters} submitted to the Indian Institute of Technology
+Jodhpur in partial fulfillment of the requirements for the award of the
+degree of \textbf{M.Tech.}, is a Bonafide record of the research work
+carried out under the supervision of \textbf{Dr. Dinesh Mohan Joshi}.
+The contents of this Project Report in full or in parts, have not been
+submitted to, and will not be submitted by me to, any other Institute or
+University in India or abroad for the award of any degree or diploma.
+
+\textbf{Signature}
+
+Ashutosh Nigam
+
+M25AI2006
+
+\textbf{Certificate}
+
+This is to certify that the Project Report titled \textbf{Computational
+Implementation of the Surya Siddhanta Across Fourteen Chapters},
+submitted by \textbf{Ashutosh Nigam (M25AI2006)} to the Indian Institute
+of Technology Jodhpur for the award of the degree of \textbf{M.Tech.},
+is a bonafide record of the research work done by him/her under my
+supervision. To the best of my knowledge, the contents of this report,
+in full or in parts, have not been submitted to any other Institute or
+University for the award of any degree or diploma.
+
+\textbf{Signature}
+
+Dr. Dinesh Mohan Joshi
+
+\textbf{Abstract}
+
+This project converts the computable procedures of the Sūrya Siddhānta
+into a Python library and makes them available through calculation,
+reading and conversational interfaces. The completed calculation layer
+contains one module for each of the text's fourteen chapters. Its scope
+includes mean motions, the sine table, true planetary positions, place
+and time, lunar and solar eclipses, eclipse projection, conjunctions,
+fixed stars, heliacal phenomena, the lunar crescent, pātas, cosmography,
+astronomical instruments and the reckoning of time.
+
+The implementation follows Burgess's English translation and uses worked
+examples from Mahavir Prasad Srivastava's Hindi \emph{Vigyan Bhashya} as
+checks. Tests based on verses and examples exposed errors that routine
+execution missed, especially in the interpretation of inner-planet
+motion, the sign of the \emph{manda} anomaly and the Ujjain time base. A
+separate DE440 comparison measures the longitude path against a modern
+reference under specified conventions. It is treated as an evaluation of
+this implementation, not a proof of historical practice. The report
+examines the software alongside the evidence for its behavior and its
+remaining limits. The completed React application includes learning
+paths for the Sun, Moon, five planets and Rahu, alongside a Research
+Explorer. The lessons connect a date to correction stages and source
+references. The explorer lets readers inspect the saved eight-body DE440
+comparison across time windows and time treatments, and download the
+evidence. These additions improve access to the implemented model; no
+measured improvement in student learning is claimed.
+
+\textbf{Contents}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+page
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Abstract & i \\
+Table of Contents & ii \\
+1. Introduction & \\
+2. Literature Survey & \\
+3. Problem Definition And Objectives & \\
+4. Methodology & \\
+5. Results And Findings & \\
+6. Summary And Future Plan Of Work & \\
+References & \\
+\end{longtable}
+
+\textbf{1. Introduction}
+
+The \emph{Sūrya Siddhānta} gives a connected set of rules for
+astronomical calculation. Its fourteen chapters begin with measures of
+time and mean planetary motions, then proceed through true positions,
+local geometry, eclipses, conjunctions, stars, visibility, the lunar
+crescent, instruments and calendar reckoning. A verbal account can leave
+the meaning of a quantity or the clock used in a calculation unresolved.
+A working program requires an explicit choice for each ambiguity, and
+those choices appear in its output.
+
+The software is both an astronomical calculator and a record of
+interpretation. A function that returns a longitude has to identify the
+epoch and the meaning of longitude; a function that returns an eclipse
+must also identify the observer. The same principle applies to
+explanations generated from the corpus. They should point back to a
+chapter and verse so a reader can inspect the adopted rule. The path
+from source to function to test leads to the application that presents
+the result.
+
+The work has two audiences. A programmer needs a stable function and a
+defined input convention. A reader of the Sanskrit astronomical
+tradition needs to know whether an output follows a verse, a
+translator's commentary or a software convention. The same result can
+serve both audiences only if it includes the calculation's provenance.
+For this reason, the project uses descriptive names for chapter modules,
+records verse references in code and keeps the corpus browser close to
+the calculation routes. The interfaces follow those design decisions and
+remain connected to the text.
+
+\textbf{1.1 Abbreviations and terms}
+
+The abbreviation SS refers to the Sūrya Siddhānta. JD is Julian Day, a
+continuous numerical date representation. Ahargaṇa is the elapsed day
+count used by the text. Jyā is the tabulated sine. Manda and śīghra name
+the two principal corrections to mean planetary position. DE440 is the
+Jet Propulsion Laboratory's modern planetary and lunar ephemeris used as
+a reference in a separate study. MCP is the Model Context Protocol
+through which an external model client can call the project's tools.
+
+\textbf{2. Literature Survey}
+
+\textbf{2.1 Source texts and editorial approach}
+
+The principal source of rules and constants is Ebenezer Burgess's 1860
+English translation of the \emph{Sūrya Siddhānta}. The project also uses
+worked examples in Mahavir Prasad Srivastava's Hindi \emph{Sūrya
+Siddhānta: Vigyan Bhashya}. Those examples give intermediate values for
+specific dates and places, which are useful for checking signs, units
+and the order of operations. The Hindi material has been consulted
+through OCR, so a doubtful digit must be checked against the page image.
+OCR can confuse the period typeface's nine and six; a disagreement is
+not automatically a software defect.
+
+The code identifies where a procedure follows the verse and where
+commentary supplies an otherwise missing step. This distinction matters
+for the instruments in Chapter 13 and other passages whose descriptions
+do not give a complete numerical algorithm. The project implements a
+defensible reading of the computable core, not a critical edition of the
+Sanskrit text and not every historical practitioner's method.
+
+Burgess's translation is not treated as a ready-made computer program. A
+verse may prescribe a relation but leave the starting value, order of
+correction or instrument construction implicit. Burgess's notes
+sometimes supply a method; where the project follows that
+reconstruction, it records the source. The second text supplies worked
+arithmetic, but does not justify removing a difference between the verse
+and commentary. This separation helps explain a mismatch without
+changing a historically motivated function merely to agree with one
+printed table. It also shows later readers where an interpretation can
+be revised.
+
+Source attribution is especially important where a printed translation,
+its notes and a later commentary offer different amounts of detail. The
+project's implementation manuscript classifies disagreements with worked
+examples as a software defect, an intentional deviation, a source
+problem or a rule not yet implemented. This scheme prevents the
+historical rule from being changed simply to make every test match a
+printed number. It also prevents the opposite mistake of dismissing
+every mismatch as a misprint. Each classification needs evidence: a page
+image for a suspected OCR error, a verse reference for a rule, and an
+intermediate trace for a calculation.
+
+\textbf{3. Problem Definition And Objectives}
+
+\textbf{3.1 Project objectives}
+
+This project aims to implement those procedures in a traceable form and
+test them against both the text and numerical examples. The calculation
+library is central to this work. The browser applications and
+conversational assistant are access layers: they let a user ask for a
+position, inspect a verse or explore a diagram, while chapter functions
+perform the calculations. A source passage, intermediate value and
+automated check make the answer easier to question and correct.
+
+The implementation, interfaces and evaluation described in this report
+were carried out within the current project batch. The project brings
+together the Sūrya Siddhānta calculation library, its applications and
+its numerical evaluation. Its objectives are to implement the text's
+computable procedures in reusable software, allow readers to inspect the
+adopted rules and intermediate values, and evaluate the resulting
+longitude calculations against a stated modern reference. The report
+presents the full scope and completed deliverables together.
+
+\textbf{3.2 Project scope and completed work}
+
+The calculation library covers the computable core of all fourteen
+chapters. The repository includes a chapter module for each chapter, a
+per-planet interface, panchanga functions, REST routes, browser
+interfaces, a tool-using chatbot and an MCP server. Verse-anchored
+tests, worked-example checks and a DE440 longitude comparison address
+distinct questions: whether a rule was transcribed consistently, whether
+it reproduces a printed example and how the implementation compares with
+modern positions. These checks answer different questions and should not
+be combined into a single claim of accuracy.
+
+The completed computational work follows the chapter structure. Chapters
+1--3 cover mean motions, true positions, direction, place and time.
+Chapters 4--6 cover eclipses and their projected geometry. Chapters
+7--11 address conjunctions, stars, heliacal phenomena, the Moon and
+pātas. Chapters 12--14 cover cosmography, instruments and time
+reckoning. The applications let a user browse verses, run a calculation
+through a web route, or call a tool through the chatbot or MCP server.
+The adopted constants are explicit and are not silently combined with a
+modern ephemeris.
+
+The completed deliverables also include eight guided learning paths, a
+Research Explorer and a bundled Burgess corpus containing all 500
+numbered verses across fourteen chapters. The true-place module
+implements the manda/śīghra correction sequence, and the chatbot's tool
+registry spans the chapter modules. Tests and research manuscripts
+document the computational edition and its numerical evaluation. The
+report states the remaining algorithmic gaps, OCR noise and questions
+requiring independent review as limitations of the delivered work.
+
+\textbf{4. Methodology}
+
+\textbf{4.1 Time and coordinate conventions}
+
+Julian Day is the shared numerical date representation throughout the
+library. The historical day count is anchored to the Kali epoch at the
+meridian through Ujjain. The project distinguishes dates interpreted in
+Ujjain local mean time from dates interpreted in Universal Time. Passing
+the former to a sidereal-time routine as if it were the latter rotates
+local sky geometry by about 76 degrees. Ascendants, parallax, rising and
+setting and the armillary sphere all depend on this convention. An
+internally consistent function can still return a wrong result when the
+caller supplies the wrong clock.
+
+The text's longitudes are sidereal. The implementation uses its own
+ayaṇāṁśa to obtain a tropical value when a comparison requires one.
+Location-dependent functions accept latitude and longitude, but the
+reference meridian in the historical model is not Greenwich. Each
+numerical example should state its date, local clock and longitude
+convention.
+
+The time convention affects tests as well as user input. A modern
+interface may receive a civil clock time with a UTC offset, whereas the
+chapter functions reckon from the historical meridian. The chatbot tools
+convert at this boundary and label the resulting zone. This keeps each
+chapter function from having to infer whether a fractional day means
+local civil time, Ujjain mean time or Universal Time. The DE440
+evaluation has a separate reference clock, Terrestrial Time, and
+therefore computes a conversion involving the Ujjain longitude and ΔT.
+Reporting these clocks explicitly prevents a time shift from being
+mistaken for a flaw in planetary theory.
+
+The historical longitude is measured from a sidereal reference. A modern
+DE440 position begins as a vector in a different frame and becomes a
+longitude only after a stated transformation. The project's evaluation
+rotates geometric geocentric vectors to the mean ecliptic and equinox of
+date, then compares circular angles. The ayaṇāṁśa used for the
+historical longitude is itself a model with a back-and-forth
+trepidation. A residual consequently contains both planetary-model
+difference and the chosen precession model. Reporting the raw sidereal
+value separately from the converted tropical value makes this
+distinction visible to users of the Python API and web tools.
+
+\textbf{4.2 Calculation architecture}
+
+The Python package has modules ch01\_mean\_motions.py through
+ch14\_reckoning\_time.py. A module corresponds to a chapter and exposes
+its quantities to other modules. Later computations call earlier
+positional and calendrical functions instead of copying formulas. The
+dependencies can be followed directly: a mean longitude from Chapter 1
+enters a true longitude from Chapter 2, which can then enter an eclipse,
+conjunction, visibility calculation or panchanga element.
+
+The planets package regroups chapter functions under Sun, Moon, Mars,
+Mercury, Jupiter, Venus, Saturn, Rahu and Ketu. It is a convenience
+interface, not a second planetary model. Ketu is placed opposite Rahu as
+an interface convention because the text does not compute it
+independently. The package metadata requires Python 3.9 or later and
+NumPy as the core runtime dependency. Plotting, web services and model
+access add separate dependencies at the application layer.
+
+The FastAPI application includes calculation routers and book routers
+for individual chapters. This closely follows the package structure, so
+a user-visible result can be traced to a chapter function. The chatbot
+tool registry also calls those functions and supplies schemas for the
+model. The MCP server generates its tool list from that same registry.
+This shared path limits duplicated astronomical logic, although
+interface formatting and input conversion still require their own tests.
+The project's architecture document and api/main.py show the current
+composition; older README diagrams omit some later modules and should
+not be used as the sole architecture source.
+
+The chapter modules return structured results where a calculation has
+several intermediate parts. A planetary-position result, for example,
+can contain mean longitude, true longitude, \emph{manda} and
+\emph{śīghra} contributions, \emph{ayaṇāṁśa}, sign and \emph{nakṣatra}.
+The chatbot tool serializes selected fields to JSON, adding
+human-readable context while preserving the numeric values. The API
+schemas and React client provide a typed boundary for transporting these
+results. This helps verification: a failing total can be traced to an
+intermediate term without reimplementing the whole chapter to find the
+difference.
+
+\textbf{4.3 Chapter-wise algorithm implementation}
+
+\textbf{4.3.1 Chapter 1 mean motions}
+
+Chapter 1 establishes measures of time, the elapsed day count
+(\emph{ahargaṇa}) and mean revolutions over a \emph{mahāyuga}. The
+implementation converts dates to Julian Day, computes the elapsed count
+and obtains a body's mean longitude from its revolution constant and
+elapsed fraction of the cycle. It also supplies calendar quantities
+reused by the panchanga and later chapters. Even a small difference in
+these rates accumulates across centuries.
+
+The inner planets require a careful reading of the revolution table.
+Mercury's and Venus's listed revolutions describe their
+\emph{śīghroccas}, while the mean planetary place is linked to the mean
+Sun. Treating those entries as ordinary mean planetary motion makes the
+later \emph{śīghra} anomaly collapse. The code now represents the
+distinction explicitly, and a test based on the planets' limited
+elongation from the Sun guards it. Here, a domain property catches an
+error that syntax and type checks cannot.
+
+Mean longitude is a cyclical quantity, so the elapsed count and
+revolution count have to be interpreted together and reduced to a
+circle. The code has separate constants for the seven classical bodies,
+the lunar node and apogee. The node moves retrograde and therefore needs
+a sign convention distinct from ordinary prograde motion. The project's
+evaluation paper tabulates the adopted revolution counts and their
+implied rates, which makes secular drift measurable. The comparisons
+with modern rates evaluate the chosen constants; they do not supply
+inputs to the historical calculation. Chapter 1 tests also cover
+calendar and unit quantities that later chapters reuse.
+
+The epoch itself is a mathematical input, not merely a date printed in a
+preface. Chapter 1's elapsed-day count determines the phase of every
+mean motion. A one-day mistake in the count has a different angular
+effect for the Moon, Sun and slower planets. The code therefore includes
+date conversion functions and tests for epoch and calendar behavior. The
+project's later local-time correction showed that a correct day count
+can still be misused when a modern clock function interprets it on
+another meridian. Tests of mean motion and place-dependent calculations
+therefore need to check this boundary together.
+
+\textbf{4.3.2 Chapter 2 true positions}
+
+Chapter 2 supplies the 24-entry \emph{jyā} table at radius 3438 and the
+corrections that move a body from mean to true position. The
+implementation interpolates tabulated sines and applies the \emph{manda}
+and \emph{śīghra} corrections in the prescribed half and full sequence.
+The \emph{manda} anomaly is measured with the sign convention of the
+text. Reversing it changes the equation of centre's sign and can make a
+computed solar position several degrees wrong while the calculation
+still runs normally.
+
+The routines use modern inverse trigonometric and square-root
+operations, so the project implements the text's model with explicit
+numerical conventions. It does not reproduce every rounding step of
+historical hand arithmetic. The longitude path is particularly important
+because the same positions feed later eclipse, conjunction and calendar
+calculations, and because it is the part evaluated against DE440.
+
+For the five star-planets, the \emph{śīghra} correction uses a second
+moving reference. The Sun supplies that reference for Mars, Jupiter and
+Saturn, while Mercury and Venus have their own \emph{śīghrocca} motion.
+The project's true\_longitude\_full path applies the corrections in
+sequence instead of adding two independent fixed offsets. The sequence
+matters because a later correction uses a position already modified by
+an earlier step. The table of \emph{jyā} values supplies the historical
+trigonometric base, but interpolation and inverse operations are
+numerical choices in the implementation. A comparison with a modern
+longitude therefore measures the complete adopted path.
+
+The code also computes the Moon and node from their own mean motions.
+Rahu is an ascending lunar node and is represented by retrograde mean
+longitude; the text supplies no corresponding periodic equation. The API
+therefore should not describe Rahu's value as an observed point in the
+same sense as a planet's true place. Ketu is derived at the interface as
+the opposite point. These distinctions matter when evaluating the node
+against a modern osculating reference: a difference can reflect the
+historical mean-node model and the reference definition, as well as
+numerical implementation.
+
+\textbf{4.3.3 Chapter 3 direction place and time}
+
+Chapter 3 turns a celestial position into local quantities for an
+observer. The implemented functions cover direction, gnomon shadows,
+rising and setting and the \emph{lagna}. These calculations combine
+position with latitude, longitude and the local clock. Tests of these
+calculations must therefore check more than a body's longitude. The same
+value of JD interpreted on different meridians changes sidereal time and
+hence the relation between the ecliptic and the horizon.
+
+Correcting the Ujjain time base was one of the project's most
+consequential fixes. Before it, code for later parallax and instrument
+calculations could appear self-consistent while using a sky rotated
+relative to the observer. A horizon, equator and ecliptic diagram
+clarifies why a planetary longitude alone cannot determine a local rise
+time or ascendant.
+
+The gnomon calculation connects a measured shadow with solar altitude.
+The \emph{lagna} locates the ecliptic point at the horizon, and rising
+or setting computations locate the horizon crossing of an object. These
+are related through the observer's local frame but are not
+interchangeable outputs. The tests for this module use known geometric
+relations and chapter examples. The current project guide contains a
+stale Chapter 3 sample calling functions that do not exist;
+ch03\_direction\_place\_time.py is the source for the current public
+functions. A computational edition needs to distinguish documentation
+from verified code.
+
+The chapter's local calculations connect an abstract celestial
+coordinate to an observable direction. A longitude identifies a point on
+the ecliptic, but a horizon crossing also depends on obliquity, local
+sidereal time and latitude. The project uses the text's obliquity
+convention in its historical computations. The implementation manuscript
+reports that mixing the two clocks changed local geometry so strongly
+that a solar-eclipse parallax example exposed the error. This example
+shows why tests of astronomical software should include the reference
+frame and time base, not merely a date string and an expected angle.
+
+\textbf{4.3.4 Chapters 4 and 5 eclipses}
+
+Chapter 4 derives lunar eclipse circumstances from the Moon, Sun and
+shadow. Chapter 5 treats solar eclipses, which need observer-dependent
+corrections because the Moon's apparent position changes with location.
+The implementation includes solar parallax terms \emph{lambana} and
+\emph{nati}. It distinguishes a geocentric computation from one that
+uses the observer's place. A result should be reported with the chosen
+place and date convention, because an eclipse visible at one location
+need not have the same circumstances at another.
+
+The implementation has known limits. Full three-pass \emph{asakṛt}
+iteration from a worked commentary example is absent, and some
+disc-diameter helpers retain fixed mean values. These details can affect
+contact estimates. The chapter implementation is therefore a useful
+executable reading of the adopted procedures, while any claim about
+event-timing accuracy would require a separate, dedicated evaluation.
+
+Eclipse calculations bring several scales together: the difference
+between solar and lunar longitude, the node's place, apparent diameters
+and, for a solar eclipse, local parallax. A small mistake in one
+quantity can shift a contact or change whether a local eclipse is
+predicted. Chapter 4 and Chapter 5 keep lunar and solar eclipse paths
+separate because Earth's shadow and the observer's topocentric Moon are
+different geometries. The worked-example suite checks intermediate
+quantities such as lambana and nati against printed values. The
+limitations above restrict what agreement at one example date can
+establish.
+
+The lunar and solar cases also differ in how parallax enters. For a
+lunar eclipse, the Earth's shadow and Moon are central to the geometry.
+For a solar eclipse, the apparent Moon depends on the observer's
+position on Earth, so a local result needs latitude and longitude. The
+project's route and interface layers expose both kinds of result. Its
+own evaluation paper confines its DE440 statistics to planetary
+longitudes and explicitly excludes eclipse timing. A degree-scale
+longitude comparison over ten-day samples cannot validate minute-scale
+ingress and egress predictions, so this boundary needs to remain clear.
+
+\textbf{4.3.5 Chapter 6 eclipse projection}
+
+Chapter 6 converts eclipse quantities into a projected geometry with
+contact points and diagram data. Separating the projection from the
+event calculation helps with both testing and explanation. A numerical
+calculation can be checked before it is rendered, while a figure can
+make the geometry easier to understand. The project provides plotting
+support as an optional part of the software; users of the core numerical
+library do not need it for planetary longitudes.
+
+To interpret an eclipse figure, a reader needs its lines and discs
+identified, its date and observer specified, and a statement of whether
+it shows a historical-model prediction or a modern reference. A diagram
+records the geometry the program drew and must be read with the adopted
+eclipse assumptions. The chapter is a distinct computational layer that
+turns earlier angular quantities into an observable configuration.
+
+The projection module is particularly useful for explaining an eclipse
+result to a reader who does not know the traditional terms. Contact
+points, discs and relative paths provide a geometric check on signs and
+directions: a numerical magnitude alone may hide a reversed axis or
+misplaced shadow. The module can return diagram data separately from
+plotting, so the core calculation can be tested without a graphics
+backend. A projection figure can show the chapter result with a caption
+naming the calculation and its assumptions.
+
+The projection output can also help validate the calculation. The
+relative path of the eclipsing discs should agree in direction with the
+signs of the computed latitude and contact offsets. If a plotted path
+moves the wrong way, the defect may be in coordinate conversion or
+plotting rather than the event search. Separating numerical geometry
+from optional Matplotlib drawing lets tests focus on the underlying
+values. In an academic presentation, a projection figure can accompany a
+small table of the same contact quantities, letting the reader compare
+the diagram with numbers.
+
+\textbf{4.3.6 Chapters 7 and 8 conjunctions and stars}
+
+Chapter 7 searches for conjunctions between planets and between a planet
+and a junction star. Chapter 8 contains star and \emph{nakṣatra} data,
+including functions that connect a longitude to an asterism and
+calculate star rise or set. A conjunction is an event defined through
+changing relative position, so the implementation must search over time
+rather than calculate only a single date's value. The catalogue layer
+provides named objects and their coordinates for these searches.
+
+The coordinates of the junction stars are an interpretive issue. Chapter
+8 uses an ecliptic reading of the catalogue, while Chapter 13 uses a
+polar-coordinate rule to place stellar hoops on the armillary sphere.
+The two readings give different declinations for some stars. The project
+preserves the distinction instead of forcing every use of the catalogue
+through one unexamined coordinate interpretation.
+
+Chapter 8's catalogue also links computational values to textual names.
+The \emph{nakṣatra} lookup divides the circle into asterisms and
+portions, while the fixed-star functions use catalogue coordinates. The
+computational-edition study derives the listed \emph{dhruvaka} values
+from the shares given in the verses and records the small effect of
+catalogue rounding. In Chapter 13, a different construction is needed
+for stellar hoops. Running these readings side by side allows a
+comparison for a particular star and date without implying that the
+historical coordinate question has been settled.
+
+The nakshatra\_catalog.json data and star functions give the catalogue a
+defined software representation. A verse-based star entry can be
+inspected through the corpus browser while its coordinates enter a
+calculation. The computational-edition manuscript notes that the
+\emph{dhruvaka} values for twenty-seven stars follow a rule based on
+each star's share and the accumulated minutes of preceding asterisms. An
+apparent small discrepancy for Revatī is explained by rounding in the
+stored catalogue. This example shows how a tabulated historical value, a
+derivation and a machine representation can agree only to a stated
+precision.
+
+\textbf{4.3.7 Chapters 9 and 10 visibility and the Moon}
+
+Chapter 9 treats heliacal rising and setting: the return of a planet or
+star to visibility after it has been close to the Sun. This is not the
+same event as a geometric conjunction. The library therefore provides
+dedicated functions for finding the next heliacal event. Chapter 10
+addresses the Moon's elongation, illuminated fraction, phase name,
+crescent width, horn angle, moonrise and moonset. The calculations
+combine angular position with local geometry where necessary.
+
+These chapters show how a shared positional core supports questions that
+require additional assumptions. A phase can be inferred from Sun--Moon
+elongation, while a rise or set time needs a place. A claim of naked-eye
+visibility is more demanding than a geometric calculation and should be
+phrased according to the particular rule implemented. The chapter
+modules make these distinctions clear to callers.
+
+The Moon functions produce several kinds of output from the same
+Sun--Moon geometry. Elongation is an angle, illuminated fraction is a
+geometric consequence of phase, and a crescent's width and tilt depend
+on further relations. Moonrise and moonset also require the observer.
+The project's guide gives an end-to-end example for these Chapter 10
+calls, while tests exercise the implementation. For heliacal events, the
+code searches forward from a starting JD rather than requiring the user
+to guess the event date. This design is suitable for an exploratory
+interface, provided that the output is explained as the result of the
+adopted visibility criterion.
+
+The applications make these outputs available in several forms. A
+positions page can show the Sun and Moon on a zodiac wheel; a Moon page
+can show phase and crescent geometry; a star page can use a sky map.
+These visuals explain the same chapter results. They also expose where
+an input is missing. A phase calculation can run for a date alone, while
+moonrise needs a site. The chatbot's context includes a user place and
+UTC offset when available, and its tools are instructed to state what
+location and clock they used.
+
+\textbf{4.3.8 Chapter 11 patas}
+
+Chapter 11 implements Vyatipāta and Vaidhṛta as \emph{pāta} events
+associated with equal declinations. The calculation corrects lunar
+declination for latitude, searches for the event and estimates its
+beginning and end from the relevant motion. This chapter shows why a
+name alone should not define an algorithm. The \emph{pāta} here differs
+from the daily panchanga \emph{nitya-yoga} terms that share the names
+Vyatipāta and Vaidhṛta.
+
+A verse-level check changed an earlier duration computation: the
+denominator is the difference of daily motions required by the passage,
+not simply the rate at which two already-computed declinations separate.
+This difference has a material effect on the duration. The current
+module, API routes and user-interface page make the event inspectable
+while tests preserve the adopted interpretation.
+
+The Chapter 11 module is exposed through find\_patas and
+compute\_pata\_details chatbot tools, calculation routes and a Patas
+page. These interfaces allow checks that all outputs share the same
+meaning. The event has a true instant and an interval; the interval
+depends on the rate specified in the verse, so a mistaken denominator
+changes duration even if the central instant looks plausible. The
+chapter's separate name and tests also help prevent confusion with
+panchanga \emph{yoga}, where a similarly named daily category is
+computed from the sum of solar and lunar longitudes.
+
+The \emph{pāta} calculation shows how a derived event can magnify a
+small definitional mistake. The centre of the event is found by a
+condition on declinations, but the start and end depend on how quickly
+the relevant quantities change. A rate based on the wrong motion makes
+an interval too short even if the central condition is still reached.
+The implementation changelog records the verse-based correction and the
+corresponding API and UI exposure. Its tests can separately check the
+declination relation at the true instant and the interval arithmetic.
+Checking these separately makes the numerical result easier to audit.
+
+\textbf{4.3.9 Chapter 12 cosmography}
+
+Chapter 12 treats the Earth's globe, distances in the text's cosmic
+model and cycles of time. The software derives planetary orbit distances
+from the Moon's stated 324,000 yojanas and the assumption that each body
+covers the same linear distance in a yuga. It also implements the
+Earth's circumference, a latitude-adjusted circumference and a longitude
+difference correction needed elsewhere in the book. These are
+computations within the \emph{Sūrya Siddhānta}'s model. They should not
+be described as modern measured distances.
+
+The module also represents descriptive material through a verse-tagged
+catalogue. Separating numerical derivations from descriptive entries
+lets an interface present the source without implying that every
+cosmographic statement is a contemporary astronomical measurement. The
+chapter shows how the project handles material that is partly procedural
+and partly explanatory.
+
+The cosmography calculation reproduces stated orbit values from a common
+linear-distance assumption and the Chapter 1 revolution counts. The
+stated Moon orbit, shared rule and derived orbit values can be compared
+directly with units. The project changelog notes that the derived values
+reproduce the text's figures closely and connect the Sun orbit to a
+constant already used in the lunar-eclipse module. That connection is an
+internal consistency check on the edition. It does not turn the yojana
+values into empirical modern distances.
+
+Chapter 12 also includes material that a web page can display without
+turning it into a numeric calculation: creation order, cosmic time
+divisions and other descriptive entries. The data catalogue tags these
+entries by verse. The numerical functions cover Earth dimensions, orbit
+derivation and time regents. In the project changelog, the derived orbit
+values agree with the stated values to within about 1.3 yojanas, a
+precise internal check for the implemented rule. The figure is a result
+of arithmetic and rounding in the historical model; it should not be
+confused with uncertainty in modern physical distances.
+
+\textbf{4.3.10 Chapter 13 instruments}
+
+Chapter 13 describes instruments rather than only a sequence of
+planetary formulas. The implementation represents the \emph{gola-yantra}
+as a parametric armillary sphere in an equatorial frame. Hoops for the
+equator, ecliptic, horizon, colures, solar paths and stars can be passed
+to a renderer. The React interface contains an interactive
+three-dimensional representation, while the underlying module stores the
+astronomical geometry independently of the graphics library.
+
+The chapter also implements the clepsydra and time finding from the
+gnomon, wheel, arc and staff. Some of these procedures are supplied by
+Burgess's commentary rather than fully by the verses. The output
+therefore identifies its source category. This allows a user to
+distinguish an operation directly warranted by the text from a useful
+reconstruction that completes an underspecified description.
+
+The armillary model stores a hoop by its plane and offset, so a renderer
+can construct a sphere without recomputing astronomy. It changes with
+place and moment: horizon orientation and the ecliptic point on it are
+local, while some reference circles remain fixed in the model frame. The
+interactive page makes this movement visible. The instruments section
+also shows why source labelling matters. Where a verse names a device
+but does not give every step needed to calculate time from it, the
+software may use Burgess's commentary, but the result says so. Stating
+the added rule presents that uncertainty more faithfully than hiding it.
+
+The Chapter 13 model uses an equatorial coordinate frame whose north
+pole and equinox axes are fixed by convention. A hoop is a geometric
+object in that frame, and a page renderer can rotate the view without
+changing the underlying astronomical values. For Ujjain, the
+computational-edition manuscript reports 46 hoops in its model. It also
+states that the eastern-horizon ecliptic point is computed directly
+instead of interpolated between zodiac signs. This matters because
+interpolation could make the interactive sphere look smooth while giving
+a measurably wrong local ascendant. The implementation separates the
+geometry from its display.
+
+\textbf{4.3.11 Chapter 14 reckoning of time}
+
+Chapter 14 returns to calendrical questions. The implementation covers
+measures of time, solar ingress, months and seasons, and named Jovian
+years. These operations draw on earlier solar positions and the
+historical day count, so they inherit the date and meridian conventions
+already discussed. Their outputs often use familiar calendar labels, but
+each label comes from a calculation with a particular rule and epoch.
+
+The chapter also includes alternative ways of naming a Jovian year. The
+verse rule and the mean-longitude method supplied in commentary remain
+distinct where both are exposed. This follows the project's approach of
+preserving competing procedures and their provenance when a single
+answer would hide an interpretive decision.
+
+The code supplies time-unit conversion through a catalogue of
+\emph{mānas} and calculates solar ingress events for a Gregorian year.
+It can also return ayanas, equinox-related crossings and
+\emph{ṣaḍaśītimukha} divisions. The Fathers' day calculation and
+Jupiter's named-year cycle have separate methods. The barhaspatya\_year
+function lets a caller select a method; the result therefore needs to
+identify the method as well as the year name. Chapter 14 handles
+calendrical categories whose definitions depend on the textual source,
+rather than treating a familiar modern calendar label as
+self-explanatory.
+
+The time-reckoning chapter's solar\_year function is organized around
+the Sun's entry into Aries in a Gregorian year. Related functions return
+the ingress events and seasonal divisions, while convert handles
+numerical conversion between measures of time. The \emph{pitrya\_clock}
+function addresses the Fathers' day using the Sun--Moon relation. These
+are distinct routes through the chapter; they should not be summarized
+as a single generic ``calendar converter.'' The named Jovian year also
+needs a method label, because a mean-motion method in Burgess's
+discussion and a method tied to heliacal behavior need not return the
+same label at every date.
+
+\textbf{4.4 Public interfaces}
+
+Programmers can use the chapter modules and Python API directly. The
+Gradio explorer groups results into pages for positions, panchanga,
+eclipses, conjunctions, stars and later chapters. The separate daily
+panchanga application presents a narrower almanac view. Streamlit pages
+cover several calculation groups, and a React frontend calls FastAPI
+routes for both calculations and book browsing. The FastAPI entry point
+includes chapter-specific routers, corpus, glossary and chat routes.
+
+All these interfaces depend on the chapter layer. Reimplementing a
+formula independently for each interface would make disagreements
+difficult to diagnose. A screenshot or sample response establishes what
+a user can inspect when its inputs are identified. Correctness comes
+from tests and source comparison, rather than the appearance of the
+interface.
+
+The React frontend includes dedicated pages for the later chapters,
+including Cosmography and Instruments, which are not mirrored in every
+older interface. Its verse-browser pages call book routes, while
+interactive SVG and three-dimensional components render astronomical
+geometry. The Streamlit and Gradio applications have their own page
+sets. The applications share the same core package, but their available
+capabilities differ and should be described accurately. The REST layer
+makes it convenient to inspect JSON outputs and keeps the user interface
+separate from chapter arithmetic. An architecture figure should place
+the chapter package at the bottom, API and tool layers above it, and
+applications at the top.
+
+The applications support different research tasks. A book page lets a
+reader inspect a verse and nearby text. A calculation page gives a
+result for chosen inputs. A visual component can show a configuration
+that a table alone obscures. The API route can preserve the precise JSON
+for a test or another program. The frontend also provides glossary
+access, so users do not need to know every Sanskrit term before
+exploring a page. The interfaces therefore provide several ways into the
+same computation, but the source code and tests remain the authoritative
+record of what was calculated. Learning paths (/learn) reuse the Chapter
+1 and 2 APIs; /research presents the saved evaluation data.
+
+\textbf{4.5 Corpus retrieval and chatbot}
+
+The chatbot can call calculation tools across all fourteen chapters and
+retrieval tools that return verse-indexed text. The agent prompt directs
+it to call a calculation tool for a number and to retrieve the relevant
+passage before quoting or paraphrasing the book. The retrieval layer
+returns identifiers and source metadata that a generated explanation can
+cite. When the indexed SQLite corpus is unavailable or empty, the
+retrieval code can build a local FTS5 index from a JSON export.
+
+The repository includes a bundled Burgess corpus containing all 500
+numbered verses across fourteen chapters. Chat retrieval, corpus search
+and Verse Explorer use this export by default, while explicit JSON and
+database overrides remain supported. Repaired verse boundaries and
+source locators improve traceability, but untouched OCR can still
+contain transcription noise. Optional Vigyan Bhashya commentary remains
+a separate source. The hosted assistant requires credentials for its
+configured provider: OpenRouter, direct DeepSeek or a custom compatible
+endpoint. The MCP server exposes the same calculation and corpus tool
+registry over standard input and output, with the client providing its
+own model.
+
+The retrieval functions include single-verse lookup, chapter ranges,
+search and chapter index. Search uses identifiers rather than returning
+anonymous text snippets, which gives the chatbot a stable way to cite a
+passage. The agent also distinguishes a Burgess verse from a result
+taken from Srivastava's commentary; it should not attribute a commentary
+explanation to the ancient text. The tool prompt instructs the model to
+take computed numbers from calculation tools, not from its memory or an
+OCR passage. This is an architectural safeguard, though not a guarantee
+of a correct final sentence. A complete demonstration records a
+question, the calculation tool called, the retrieved verse ID and the
+response.
+
+The assistant prompt specifies a bounded tool loop and asks that
+numerical answers come from the registered calculation functions. It can
+retrieve Burgess verse records and, when available, Vigyan Bhashya
+commentary hits, labelling the latter separately. The retrieval layer
+uses an indexed SQLite database when one is supplied and populated;
+otherwise, it builds a local FTS5 index from the bundled JSON export.
+The checked-in Burgess corpus can therefore support citations without a
+runtime dependency on the external OCR pipeline. The explanations the
+assistant can support still depend on commentary availability and the
+quality of the remaining OCR.
+
+\textbf{4.6 Test strategy}
+
+Verification has three layers. Verse-anchored tests ask whether each
+function follows the adopted rule. Worked-example checks ask whether a
+chain of calculations reproduces an example at its printed precision.
+The DE440 comparison asks how far a particular longitude path departs
+from a modern reference under specified conventions. Each layer catches
+a different kind of problem. A code test can pass even when the chosen
+reading of a verse is wrong; a modern comparison can be close by chance;
+a printed example may contain a typographical or OCR error.
+
+The computational-edition manuscript reports 1,256 chapter and
+per-planet interface tests and 257 selected worked-example cases. It
+also states that the audit-case counts refer to an audit branch whose
+cases and exact revision have not yet been archived. These are reported
+project results, not a newly executed count from this checkout. A future
+release can record a fixed code revision and the exact test command
+alongside the audit cases.
+
+The strongest tests combine numerical assertions with source-based
+properties. An elongation bound catches a semantically wrong
+inner-planet formula. A printed eclipse example tests intermediate
+parallax, which can catch a clock shift. Wrapper tests check that the
+per-planet entry points remain aligned with their chapter functions. The
+repository also includes API and chatbot tests, so the interface path
+can be checked independently of the chapter mathematics. A test count
+belongs to a particular date and revision because this repository is
+still being developed. The description of how each class of test relates
+to its sources remains valid even when the count changes.
+
+The test organization follows the chapter structure, with dedicated
+files for Chapters 1--14 and additional files for API, chatbot, corpus
+and per-planet interfaces. The computational-edition manuscript
+separates chapter tests from wrapper tests, and a recent DE440
+revalidation ran a focused Chapter 1--2 suite of 263 tests. Those
+figures refer to particular checks and revisions, so they should not be
+added together as a new total. A unit test should encode a textual or
+geometric expectation, while a worked-example test should preserve the
+printed inputs and output precision.
+
+\textbf{4.7 Learning and research interfaces}
+
+\textbf{4.7.1 Mars Learning Lab}
+
+The /learn/mars route turns the Chapter 2 true-place calculation into a
+guided experiment for Mars. A whole-day input and a slider spanning 90
+days on either side of the chosen date control the existing book API.
+Results are evaluated at midnight in Ujjain mean time and displayed as
+sidereal angular directions from Earth. The drawing shows angles, not
+physical orbital distances.
+
+\includegraphics[width=6.15in,height=3.83261in,alt={Figure 1 Mars Learning Lab showing the final correction stage for 4 November 2026}]{./media/current-report-1.png}
+
+Figure 1 Mars Learning Lab showing the final correction stage for 4
+November 2026
+
+The five selectable positions are the mean place, half sighra, half
+manda, whole manda on the original mean, and whole sighra. The fourth
+step explicitly returns to the original mean, so the sequence should not
+be read as a cumulative sum. At the demonstration date the final
+longitude is 114.3004 degrees. A link opens the source calculation with
+the same date; optional corpus text is distinguished from calculation
+availability.
+
+An understanding check asks whether the final position is ahead of or
+behind the mean along the shortest angular separation. JSON export
+preserves the inputs, time basis, frame and intermediate results. This
+teaching functionality is implemented; its effect on student learning
+remains unmeasured.
+
+\textbf{4.7.2 Learning paths}
+
+The /learn directory contains eight working lessons: Sun, Moon, Mars,
+Mercury, Venus, Jupiter, Saturn and Rahu. Learners can start with the
+Sun, then study the Moon before tracing the planetary corrections. The
+directory supports direct links to any lesson; it does not require a
+prescribed order or claim measured mastery.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Learning path
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Implemented experiment
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Sun & Mean and manda-corrected longitude; tropical Sun, declination and
+day/night length at Ujjain. \\
+Moon & Two correction positions; Sun--Moon elongation, 12-degree tithi
+intervals and waxing/waning paksha. \\
+Mars & The original five-position lesson and its saved research
+panel. \\
+Mercury and Venus & Individual lessons and a same-date comparison of
+every correction stage and Sun separation. \\
+Jupiter and Saturn & Individual lessons and a same-date comparison of
+the five-position sequence. \\
+Rahu & Ascending and descending lunar nodes, regression, longitude
+geometry and an eclipse concept quiz. \\
+\end{longtable}
+
+All seven body lessons share date validation, a direction diagram,
+selectable API-derived stages, chapter references, a prediction check
+and JSON export. Dedicated panels relate the calculation to each topic.
+Sun and Moon have two positions rather than the five used for the
+star-planets. Planet comparisons use one API response so both bodies
+share the input date.
+
+The seasonal panel explicitly changes from sidereal to tropical
+longitude and states that it uses the library\textquotesingle s
+hour-angle day-length method. The Moon panel displays elongation and
+tithi without claiming to render the illuminated disc. Each tithi spans
+12 degrees of longitude separation and need not last one civil day.
+Paired-planet Sun separation is a longitude difference, not an
+observational visibility estimate.
+
+Downloads include the lesson\textquotesingle s additional context:
+day-length values for the Sun, tithi results for the Moon, or comparison
+rows for paired planets. Late responses cannot overwrite a newer date.
+Invalid or failed requests keep exports disabled and label any previous
+result. The numerical lessons remain available if the optional corpus
+fails.
+
+\textbf{4.7.3 Lunar nodes and eclipse geometry}
+
+The Rahu lesson at /learn/rahu draws the ascending lunar node returned
+by Chapter 1 and derives the opposite descending direction by adding 180
+degrees modulo 360. The Sun and Moon positions come from Chapter 2 for
+the same input date. Learners can select either node or the Moon
+direction and observe regression through the node\textquotesingle s
+negative mean motion.
+
+\includegraphics[width=6.15in,height=3.075in,alt={Figure 2 Rahu lesson showing the two lunar nodes and same-date Sun and Moon directions}]{./media/current-report-2.png}
+
+Figure 2 Rahu lesson showing the two lunar nodes and same-date Sun and
+Moon directions
+
+The projection shows ecliptic longitude only, with orbital tilt
+described in text. The lesson explains that solar eclipses require new
+Moon near a node and lunar eclipses require full Moon near a node. Its
+concept check asks why phase alone is insufficient. The export records
+event\_prediction as false. Determining event occurrence, contacts and
+local visibility requires further geometry; links lead to the existing
+eclipse calculators without treating this diagram as an event
+prediction.
+
+The conceptual background is supported by NASA Science, Eclipses and the
+Moon (https://science.nasa.gov/moon/eclipses/) and Moon Phases
+(https://science.nasa.gov/moon/moon-phases/), consulted 4 November 2026.
+Historical node and tithi references remain the
+project\textquotesingle s Chapter 1 verses 43--44 and Chapter 2 verse
+66. Modern explanatory references do not replace the adopted historical
+model.
+
+\textbf{4.7.4 Research Explorer}
+
+The /research route exposes the saved longitude study for the Sun, Moon,
+Mercury, Venus, Mars, Jupiter, Saturn and Rahu across eleven 100-year
+windows from 1550 to 2649 CE. An 8 by 11 RMS matrix allows direct
+selection; native body and window selectors provide the same choice.
+Rahu is identified as the ascending lunar node. The two time treatments
+share a vertical scale within each selected comparison.
+
+\includegraphics[width=6.15in,height=3.42595in,alt={Figure 3 Time-aligned RMS longitude errors from the saved DE440 comparison}]{./media/current-report-3.png}
+
+Figure 3 Time-aligned RMS longitude errors from the saved DE440
+comparison
+
+The naive treatment reads library JD directly as reference TT. The
+time-aligned treatment subtracts 75.7873/360 day for the meridian and
+adds the paper\textquotesingle s approximate Delta-T in days. It changes
+the reference epoch, not the historical formulas. For the Moon in 1550
+to 1649, the saved RMS changes from 3.990 to 1.686 degrees. A lower RMS
+in one window is a diagnostic result, not calibration of the SS model.
+
+The chart preserves the minimum and maximum sampled residual in each
+five-year group and connects the group means. Full-window statistics use
+every original ten-day sample. JSON and CSV downloads include source
+paths and SHA-256 hashes, frame and time conventions, and sample counts.
+The explorer does not need a live JPL request.
+
+\textbf{5. Results And Findings}
+
+\textbf{5.1 Worked-example case studies}
+
+The inner-planet correction shows how a program can run with the wrong
+interpretation. Treating Mercury's and Venus's revolution counts as
+their own mean motion made the \emph{śīghra} anomaly zero and placed
+Mercury 153 degrees from the Sun on one tested date. A bound on
+elongation exposed the mistake. Another check fixed the sign of the
+\emph{manda} anomaly: reversing apsis minus planet changes the
+correction and can shift the Sun's computed place by several degrees.
+
+A Kashi solar-eclipse example exposed the time-base error. With Ujjain
+local time and Universal Time mixed, first-pass longitude parallax came
+out at 3.83 \emph{ghaṭikās}, while Srivastava printed 1.06. A consistent
+clock brought the computed value to 1.16. The remaining difference
+matters because the commentary uses a more complete iteration and a
+different disc-size treatment. These cases justify keeping intermediate
+quantities and source rules visible, instead of judging the software by
+a final answer alone.
+
+Each case study identifies a symptom and its cause. For Mercury and
+Venus, the symptom was an impossible elongation; the cause was confusing
+a \emph{śīghrocca} revolution count with a mean planetary place. For
+\emph{manda}, the symptom was a correction in the wrong direction; the
+cause was reversing the textual anomaly convention. For the Kashi
+eclipse, the symptom was a large parallax discrepancy; the cause was
+mixing clocks. In each case a more precise test was added after the
+reading changed. This makes the implementation a revisable account of
+the text, rather than a collection of isolated outputs.
+
+Another case involves the lunar apparent diameter. An initially
+plausible scaling placed the largest disc at apogee; the verse-based
+calculation scales the mean diameter by the ratio of true to mean daily
+motion. The worked example's intermediate numbers exposed the reversal.
+Chapter 12 provides a different kind of check: orbit values derived from
+the shared-distance rule nearly reproduce the printed values. Chapter 14
+tests can protect named seasons and years against off-by-one shifts.
+Together, these cases show why verification needs more than one metric.
+It uses domain bounds, arithmetic examples and cross-chapter consistency
+where each is appropriate.
+
+\textbf{5.2 DE440 evaluation}
+
+A companion study compares Chapter 1--2 longitudes of the Sun, Moon,
+five visible planets and lunar node with JPL DE440. It samples 40,176
+epochs at ten-day intervals from 1550 to 2649 CE and considers both a
+direct clock comparison and a Ujjain/ΔT-corrected variant. Independent
+revalidation reconstructed all 642,816 stored residual values against
+the local DE440 kernel to within about 0.00000055 degrees. This verifies
+the arithmetic of the stored residuals under the stated frame and time
+conventions. It does not validate every textual choice, later-chapter
+event prediction or historical panchanga practice.
+
+The comparison obtains tropical longitude by adding the
+project\textquotesingle s ayanamsha to its sidereal longitude. A scalar
+precession-corrected residual is a diagnostic on longitude, not a full
+three-dimensional fixed-frame rotation. The text\textquotesingle s
+trepidation model reaches a maximum near 2299 CE and then reverses,
+affecting future extrapolation. The repository\textquotesingle s
+revalidation note records concerns from an earlier manuscript snapshot;
+it must be read in the context of its October 2026 review date and
+revision. The current repository also supplies regenerate\_paper.py and
+REPRODUCE.md. The new explorer does not rerun that pipeline or
+independently reassess its fitted coefficients.
+
+The sampled DE440 interval lies inside the local
+kernel\textquotesingle s coverage. The study uses geometric geocentric
+vectors, converts them to a mean ecliptic and equinox of date, and
+compares wrapped longitude differences. The Moon\textquotesingle s node
+uses a separate reference derived from its orbital angular momentum, so
+its residual differs physically from a planet\textquotesingle s. Future
+epochs test how the adopted constants and trepidation model extrapolate;
+they are not observations already made. The current explorer groups the
+saved decimal-year samples into the same windows as the saved tables,
+with every exported group checked against those tables.
+
+The earlier revalidation identified twelve epochs whose former
+decimal-year labels assigned them to the preceding century. That finding
+shows why residual arithmetic and subsequent grouping need separate
+checks. The current explorer tests verify all 176 body-window-treatment
+groups against the current saved tables, along with source hashes,
+sample coverage and retained extrema. This establishes faithful
+presentation of the supplied evidence, not an independent rerun of the
+kernel or a validation of event timing. Angular elongation errors should
+not be converted directly into claims about eclipse or tithi timing
+without checking actual event crossings.
+
+\textbf{5.3 Interface validation and reproducibility}
+
+The repository verification record dated 8 November 2026 reports that
+PYTHONPATH=src python -m pytest -q passed 1,677 tests after the corpus
+repair. The learning-path validation record dated 4 November reports
+1,653 passing tests, an earlier focused run of 49 tests across
+test\_learning\_lab\_data.py, test\_research\_explorer\_data.py and
+test\_api\_book\_ch02.py, and a successful production frontend build.
+These results come from dated repository records; the tests were not
+rerun while this report was edited.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Check
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Evidence
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Source-data integrity & All 176 body-window-treatment groups match the
+saved tables; each body has 40,176 samples per treatment. \\
+Aggregation and provenance & Source hashes, complete sample counts, RMS,
+signed means and sampled extrema are checked; generated files must match
+fresh exports. \\
+Browser workflows & Real API values, correction stages, whole-day
+stepping, date-preserving links, rapid responses, failure/retry,
+optional corpus, understanding feedback and exports. \\
+Research interaction & 88 matrix cells; all 16 body/treatment
+combinations; JSON and CSV metadata; keyboard selection and mobile
+overflow checks. \\
+Visual review & Light and dark desktop layouts and a 390-pixel mobile
+layout; screenshot evidence retained with the project. \\
+\end{longtable}
+
+The frontend data exporters used for reproducibility are
+docs/evaluation/export\_learning\_lab.py and
+export\_research\_explorer.py. They summarize saved CSVs; they do not
+compute fresh DE440 reference positions. The source-study pipeline
+remains separately documented in docs/evaluation/REPRODUCE.md.
+
+Browser checks in frontend cover all eight lessons and the research
+explorer. They verify API values, lesson evidence exports, node
+geometry, quizzes, date-preserving source links, stale responses, retry
+and mobile layout. The calculation remains usable when corpus text is
+missing. These checks establish the tested software behavior; historical
+authenticity, eclipse timing accuracy and educational effectiveness
+require separate evidence.
+
+\textbf{6. Summary And Future Plan Of Work}
+
+\textbf{6.1 Summary of work completed}
+
+This project delivers a chapter-wise calculation library covering the
+computable core of all fourteen chapters of the Sūrya Siddhānta,
+together with its interfaces, source retrieval and evaluation. Its
+strongest result is its record of how a textual rule becomes a
+calculation: a passage fixes a rule, a function executes it, and a test
+or worked example checks the consequence. This chain has corrected
+plausible but wrong numbers. The interfaces make the work accessible,
+while the DE440 comparison separately measures the adopted longitude
+path against a modern reference. Known limits define what the software
+currently supports. The completed learning paths and Research Explorer
+let a user follow the work directly: choose an input, inspect correction
+stages, follow the source reference and examine the comparison evidence.
+They use the shared calculation library and saved study, with software
+checks and explicit methodological limits.
+
+\textbf{6.2 Limitations and next work}
+
+The library covers the computable core of all fourteen chapters, not
+every verse. Remaining gaps listed in the computational-edition
+manuscript include full eclipse iteration, some disc-diameter and
+visibility rules, parts of the equation of time and descriptive passages
+that are not algorithms. The bundled Burgess corpus has complete
+numbered-verse coverage, while remaining OCR noise and the optional
+external commentary still require review. The interpretation of star
+coordinates and procedures completed from commentary are documented
+choices rather than uniquely settled historical facts. Modern
+trigonometric operations also mean the software does not simulate every
+rounding step of historical hand calculation.
+
+Further work should archive the worked-example audit at a fixed code
+revision, independently rerun and review the current DE440 regeneration
+and fitting pipeline, and extend remaining procedures where a defensible
+rule can be specified. The new teaching and research interfaces make
+these questions visible, but do not resolve them. A learner study
+remains future work. The eight completed learning paths cover the Sun,
+Moon, five planets and Rahu, but the understanding checks alone do not
+establish educational effectiveness.
+
+The text is partly computational, partly descriptive. Completing every
+verse as a function would require inventing a numerical rule for
+passages that do not provide one. The project therefore makes a
+narrower, more testable claim: it covers the computable core across all
+chapters, with listed exceptions. Improvements should proceed through
+explicit source decisions. For example, a full eclipse iteration can be
+added with tests against the commentary's intermediate passes; a revised
+star-coordinate reading can be compared against both current methods;
+and the available DE440 pipeline can be independently rerun to
+regenerate each table from a fixed kernel and code revision. The modular
+structure allows these changes to be reviewed.
+
+The remaining issues can be addressed in specific parts of the project.
+The eclipse iteration belongs in the chapter-specific event functions
+and can be checked against Srivastava's intermediate passes. The bundled
+corpus needs continued OCR review and fixed-version provenance for
+future revisions. The DE440 study needs independent rerunning and review
+of the available regeneration and fitting pipeline, with a fixed code
+and kernel revision, so another researcher can assess its figures and
+fitted results. The star-coordinate alternatives need documented
+comparisons before either is declared definitive. Addressing these
+issues would make the project more useful for scholarly work by allowing
+users to trace more conclusions from a stable source through executable
+code to a repeatable result.
+
+\textbf{References}
+
+{[}1{]} Ebenezer Burgess, ``Translation of the Sūrya-Siddhānta, a
+Text-Book of Hindu Astronomy; with Notes and an Appendix,'' Journal of
+the American Oriental Society 6 (1860): 141--498.
+
+{[}2{]} Mahavir Prasad Srivastava, Sūrya Siddhānta: Vigyan Bhashya, 2
+vols., 2nd ed. (Allahabad: Dr. Ratnakumari Svadhyaya Sansthan,
+1982--83).
+
+{[}3{]} Kim Plofker, Mathematics in India (Princeton University Press,
+2009).
+
+{[}4{]} Ryan S. Park et al., ``The JPL Planetary and Lunar Ephemerides
+DE440 and DE441,'' Astronomical Journal 161, no. 3 (2021): 105,
+doi:10.3847/1538-3881/abd414.
+
+{[}5{]} Pandu Santhoju et al., ``Mathematical Model as per the Algorithm
+of Sūryasiddhānta for Computation of Location Specific True Position of
+the Planets,'' Journal of Astrophysics and Astronomy 46 (2025): 9,
+doi:10.1007/s12036-024-10018-8.
+
+{[}6{]} Ashutosh Nigam, ``Evaluating the Accuracy of Surya Siddhanta
+Planetary Algorithms against JPL DE440, 1550--2649 CE,'' unpublished
+project manuscript (2026).
+
+\end{document}
